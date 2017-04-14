@@ -1,0 +1,19 @@
+{
+  "name": "sexedchatbot",
+  "version": "1.0.0",
+  "description": "Chatbot For MEssenger",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madagasikara/sexedchatbot.git"
+  },
+  "author": "T&T",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/madagasikara/sexedchatbot/issues"
+  },
+  "homepage": "https://github.com/madagasikara/sexedchatbot#readme"
+}
