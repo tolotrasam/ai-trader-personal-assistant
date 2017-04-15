@@ -26,9 +26,12 @@ app.get("/webhook", function (req, res) {
 
 
 // All callbacks for Messenger will be POST-ed here
+function receivedMessage(event) {
+    console.log("Message data ", event.message)
+}
 app.post("/webhook", function (req, res) {
     // Make sure this is a page subscription
-    if (req.body.object == "page") {
+    if (req.body.object === "page") {
         // Iterate over each entry
         // There may be multiple entries if batched
         req.body.entry.forEach(function(entry) {
@@ -36,6 +39,8 @@ app.post("/webhook", function (req, res) {
             entry.messaging.forEach(function(event) {
                 if (event.postback) {
                     processPostback(event);
+                }else if (event.message){
+                    receivedMessage(event);
                 }
             });
         });
