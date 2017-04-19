@@ -37,6 +37,7 @@ app.listen(app.get('port'), function() {
 
 
 function decideMessage(sender, text) {
+    console.log(text)
     text.toLowerCase()
     if (text === 'image') {
         sendGenericMessage(sender)
@@ -50,9 +51,8 @@ function decideMessage(sender, text) {
     if(text ==='pregnant'){
         sendTextMessage(sender, "Sexual rapport")
     }else {
-
+        sendButtonMessage(sender,text)
     }
-    sendButtonMessage(sender,text)
 }
 app.post('/webhook/', function (req, res) {
     let messaging_events = req.body.entry[0].messaging
