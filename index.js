@@ -1,3 +1,4 @@
+//https://dashboard.heroku.com/apps/rocky-beyond-32293/logs
 'use strict'
 
 const token = process.env.PAGE_ACCESS_TOKEN
@@ -44,7 +45,6 @@ function decideMessage(sender, text) {
         sendTextMessage(sender, "Wear condom")
     }
     if (text ==='age'){
-
         sendTextMessage(sender, "18")
     }
     if(text ==='pregnant'){
@@ -52,7 +52,7 @@ function decideMessage(sender, text) {
     }else {
 
     }
-    //sendButtonMessage(sender,text)
+    sendButtonMessage(sender,text)
 }
 app.post('/webhook/', function (req, res) {
     let messaging_events = req.body.entry[0].messaging
