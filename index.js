@@ -35,6 +35,25 @@ app.listen(app.get('port'), function() {
 })
 
 
+function decideMessage(sender, text) {
+    text.toLowerCase()
+    if (text === 'image') {
+        sendGenericMessage(sender)
+    }
+    if (text ==='health') {
+        sendTextMessage(sender, "Wear condom")
+    }
+    if (text ==='age'){
+
+        sendTextMessage(sender, "18")
+    }
+    if(text ==='pregnant'){
+        sendTextMessage(sender, "Sexual rapport")
+    }else {
+
+    }
+    sendButtonMessage(sender,text)
+}
 app.post('/webhook/', function (req, res) {
     let messaging_events = req.body.entry[0].messaging
     for (let i = 0; i < messaging_events.length; i++) {
@@ -42,17 +61,11 @@ app.post('/webhook/', function (req, res) {
         let sender = event.sender.id
         if (event.message && event.message.text) {
             let text = event.message.text
-            if (text === 'Generic') {
-                sendGenericMessage(sender)
-                continue
-            }
-            sendButtonMessage(sender,text)
-            sendTextMessage(sender, "Message received: " + text.substring(0, 200))
-        }
+            decideMessage(sender, text)
+          }
         if (event.postback) {
             let text = JSON.stringify(event.postback)
-            sendTextMessage(sender, "Postback: "+text.substring(0, 200), token)
-            sendButtonMessage(sender,text)
+            decideMessage(sender, text)
             continue
         }
     }
@@ -83,17 +96,22 @@ function sendButtonMessage(sender, text) {
             "type":"template",
             "payload":{
                 "template_type":"button",
-                "text":"What do you want to do next?",
+                "text":"What do you want to learn about sex?",
                 "buttons":[
                     {
                         "type":"postback",
-                        "title":"Show Website",
-                        "payload":"USER_DEFINED_PAYLOAD"
+                        "title":"How to maintain Sexual Health",
+                        "payload":"health"
                     },
                     {
                         "type":"postback",
-                        "title":"Start Chatting",
-                        "payload":"USER_DEFINED_PAYLOAD"
+                        "title":"How do women get pregnant?",
+                        "payload":"pregnant"
+                    },
+                    {
+                        "type":"postback",
+                        "title":"At which age should I have sex?",
+                        "payload":"age"
                     }
                 ]
             }
@@ -114,26 +132,26 @@ function sendGenericMessage(sender) {
             "payload": {
                 "template_type": "generic",
                 "elements": [{
-                    "title": "First card",
-                    "subtitle": "Element #1 of an hscroll",
-                    "image_url": "http://messengerdemo.parseapp.com/img/rift.png",
+                    "title": "Are you pregrant?",
+                    "subtitle": "Symptom of pregnancy",
+                    "image_url": "http://cdnimage.vishwagujarat.com/wp-content/uploads/2016/10/25121628/PregnantWoman.jpg",
                     "buttons": [{
-                        "type": "web_url",
-                        "url": "https://www.messenger.com",
-                        "title": "web url"
+                        "type": "postback",
+                        "url": "pregnant",
+                        "title": "Read more"
                     }, {
                         "type": "postback",
-                        "title": "Postback",
-                        "payload": "Payload for first element in a generic bubble",
+                        "title": "Read more",
+                        "payload": "Later",
                     }],
                 }, {
-                    "title": "Second card",
-                    "subtitle": "Element #2 of an hscroll",
-                    "image_url": "http://messengerdemo.parseapp.com/img/gearvr.png",
+                    "title": "Should I kiss?",
+                    "subtitle": "Effect of kiss one health",
+                    "image_url": "https://images.washingtonpost.com/?url=http://img.washingtonpost.com/news/morning-mix/wp-content/uploads/sites/21/2015/07/iStock_000046134044_Medium.jpg&w=1484&op=resize&opt=1&filter=antialias",
                     "buttons": [{
                         "type": "postback",
-                        "title": "Postback",
-                        "payload": "Payload for second element in a generic bubble",
+                        "title": "Read more",
+                        "payload": "Later",
                     }],
                 }]
             }
