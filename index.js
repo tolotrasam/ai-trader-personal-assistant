@@ -34,6 +34,7 @@ app.listen(app.get('port'), function() {
     console.log('running on port', app.get('port'))
 })
 
+
 app.post('/webhook/', function (req, res) {
     let messaging_events = req.body.entry[0].messaging
     for (let i = 0; i < messaging_events.length; i++) {
@@ -45,20 +46,20 @@ app.post('/webhook/', function (req, res) {
                 sendGenericMessage(sender)
                 continue
             }
+            sendButtonMessage(sender,text)
             sendTextMessage(sender, "Message received: " + text.substring(0, 200))
         }
         if (event.postback) {
             let text = JSON.stringify(event.postback)
             sendTextMessage(sender, "Postback: "+text.substring(0, 200), token)
+            sendButtonMessage(sender,text)
             continue
         }
     }
     res.sendStatus(200)
 })
 
-
-function sendTextMessage(sender, text) {
-    let messageData = { text:text }
+function sendRequest(sender, messageData) {
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token:token},
@@ -74,6 +75,36 @@ function sendTextMessage(sender, text) {
             console.log('Error: ', response.body.error)
         }
     })
+
+}
+function sendButtonMessage(sender, text) {
+    let messageData = {
+        "attachment":{
+            "type":"template",
+            "payload":{
+                "template_type":"button",
+                "text":"What do you want to do next?",
+                "buttons":[
+                    {
+                        "type":"postback",
+                        "title":"Show Website",
+                        "payload":"USER_DEFINED_PAYLOAD"
+                    },
+                    {
+                        "type":"postback",
+                        "title":"Start Chatting",
+                        "payload":"USER_DEFINED_PAYLOAD"
+                    }
+                ]
+            }
+        }
+    }
+    sendRequest(sender, messageData);
+}
+
+function sendTextMessage(sender, text) {
+    let messageData = { text:text }
+   sendRequest(sender, text)
 }
 
 function sendGenericMessage(sender) {
@@ -108,19 +139,6 @@ function sendGenericMessage(sender) {
             }
         }
     }
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:token},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
-        }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
-    })
+
+    sendRequest(sender, messageData)
 }
