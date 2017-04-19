@@ -140,7 +140,7 @@ function sendGenericMessage(sender) {
                     "image_url": "http://cdnimage.vishwagujarat.com/wp-content/uploads/2016/10/25121628/PregnantWoman.jpg",
                     "buttons": [{
                         "type": "postback",
-                        "url": "pregnant",
+                        "payload": "pregnant",
                         "title": "Read more"
                     }, {
                         "type": "postback",
