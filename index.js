@@ -52,7 +52,7 @@ function decideMessage(sender, text) {
     }else {
 
     }
-    sendButtonMessage(sender,text)
+    //sendButtonMessage(sender,text)
 }
 app.post('/webhook/', function (req, res) {
     let messaging_events = req.body.entry[0].messaging
