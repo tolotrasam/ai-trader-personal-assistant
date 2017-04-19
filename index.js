@@ -46,7 +46,9 @@ function decideMessage(sender, text) {
         sendTextMessage(sender, "Wear condom")
     }
     if (text ==='age'){
+        console.log('age detected')
         sendTextMessage(sender, "18")
+        console.log('age end')
     }
     if(text ==='pregnant'){
         sendTextMessage(sender, "Sexual rapport")
