@@ -31,7 +31,7 @@ app.get('/webhook/', function (req, res) {
 })
 
 // Spin up the server
-app.listen(app.get('port'), function() {
+app.listen(app.get('port'), function () {
     console.log('running on port', app.get('port'))
 })
 
@@ -42,18 +42,21 @@ function decideMessage(sender, text) {
     if (text === 'image') {
         sendGenericMessage(sender)
     }
-    if (text ==='health') {
+    if (text === 'health') {
+        sendTextMessage(sender, "No risks condom")
+    }
+    if (text === 'health') {
         sendTextMessage(sender, "Wear condom")
     }
-    if (text ==='age'){
+    if (text === 'age') {
         console.log('age detected')
         sendTextMessage(sender, "18")
         console.log('age end')
     }
-    if(text ==='pregnant'){
+    if (text === 'pregnant') {
         sendTextMessage(sender, "Sexual rapport")
-    }else {
-        sendButtonMessage(sender,text)
+    } else {
+        sendButtonMessage(sender, text)
     }
 
 }
@@ -65,7 +68,7 @@ app.post('/webhook/', function (req, res) {
         if (event.message && event.message.text) {
             let text = event.message.text
             decideMessage(sender, text)
-          }
+        }
         if (event.postback) {
             let text = JSON.stringify(event.postback)
             decideMessage(sender, text)
@@ -78,13 +81,13 @@ app.post('/webhook/', function (req, res) {
 function sendRequest(sender, messageData) {
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:token},
+        qs: {access_token: token},
         method: 'POST',
         json: {
-            recipient: {id:sender},
+            recipient: {id: sender},
             message: messageData,
         }
-    }, function(error, response, body) {
+    }, function (error, response, body) {
         if (error) {
             console.log('Error sending messages: ', error)
         } else if (response.body.error) {
@@ -95,26 +98,26 @@ function sendRequest(sender, messageData) {
 }
 function sendButtonMessage(sender, text) {
     let messageData = {
-        "attachment":{
-            "type":"template",
-            "payload":{
-                "template_type":"button",
-                "text":"What do you want to learn about sex?",
-                "buttons":[
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "button",
+                "text": "What do you want to learn about sex?",
+                "buttons": [
                     {
-                        "type":"postback",
-                        "title":"How to maintain Sexual Health",
-                        "payload":"health"
+                        "type": "postback",
+                        "title": "How to maintain Sexual Health",
+                        "payload": "health"
                     },
                     {
-                        "type":"postback",
-                        "title":"How do women get pregnant?",
-                        "payload":"pregnant"
+                        "type": "postback",
+                        "title": "How do women get pregnant?",
+                        "payload": "pregnant"
                     },
                     {
-                        "type":"postback",
-                        "title":"At which age should I have sex?",
-                        "payload":"age"
+                        "type": "postback",
+                        "title": "At which age should I have sex?",
+                        "payload": "age"
                     }
                 ]
             }
@@ -124,8 +127,8 @@ function sendButtonMessage(sender, text) {
 }
 
 function sendTextMessage(sender, text) {
-    let messageData = { text:text }
-   sendRequest(sender, text)
+    let messageData = {text: text}
+    sendRequest(sender, messageData)
 }
 
 function sendGenericMessage(sender) {
@@ -144,8 +147,8 @@ function sendGenericMessage(sender) {
                         "title": "Read more"
                     }, {
                         "type": "postback",
-                        "title": "Read more",
-                        "payload": "Later",
+                        "title": "Later",
+                        "payload": "later",
                     }],
                 }, {
                     "title": "Should I kiss?",
@@ -154,7 +157,11 @@ function sendGenericMessage(sender) {
                     "buttons": [{
                         "type": "postback",
                         "title": "Read more",
-                        "payload": "Later",
+                        "payload": "kiss",
+                    }, {
+                        "type": "postback",
+                        "title": "Later",
+                        "payload": "later",
                     }],
                 }]
             }
