@@ -89,7 +89,7 @@ function decideMessage(sender, text) {
 
     if (text == 'get_started') {
         sendTextMessage(sender, "Hello there {{user_full_name}}!")
-        getUserProfile
+        getUserProfile()
     }
 
     if (text === 'image') {
@@ -229,28 +229,27 @@ function callGreetingAPI(greeting) {
   }
 
 function getUserProfile(){
-  request({
-  uri: 'https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic,locale,timezone,gender',
-  qs: {access_token:token},
-  method: 'POST',
-  json:{
-    first_name: first_name,
-    last_name: last_name,
-    locale: locale
-  }, 
+    request({
+        uri: 'https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic,locale,timezone,gender',
+        qs: {access_token:token},
+        method: 'POST',
+        json:{
+            first_name: first_name,
+            last_name: last_name,
+            locale: locale
+        }, 
 
-  function(error, response, body) {
-    if(!error && response.statusCode == 200) {
-        console.log("Successfully sent userProfile")
+        function(error, response, body) {
+            if(!error && response.statusCode == 200) {
+                console.log("Successfully sent userProfile")
+            } else {
 
-    } else {
-
-        console.error("Unable to send userProfile.");
-        console.error(response);
-        console.error(body);
-    }
-  }
-})
+                console.error("Unable to send userProfile.");
+                console.error(response);
+                console.error(body);
+            }
+        }
+    })
 }
 
 function sendGetStarted() {
