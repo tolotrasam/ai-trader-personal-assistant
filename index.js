@@ -49,8 +49,8 @@ app.post('/webhook/', function (req, res) {
             if (event.message && event.message.text) {
                 let text = event.message.text
                 sendGetStarted();
-                decideMessage(sender, text)
                 receivedMessage(event)
+                decideMessage(sender, text)
             }
 
             if (event.postback) {
@@ -80,7 +80,7 @@ function receivedMessage(event) {
   var messageText = message.text;
   var messageAttachments = message.attachments;
 
-  if (payload === 'get_started') {
+  if (payload == 'get_started') {
         sendTextMessage(senderID, "Hello there")
     }
 
