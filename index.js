@@ -54,7 +54,7 @@ app.post('/webhook/', function (req, res) {
             }
 
             if (event.postback) {
-                let text = JSON.stringify(event.postback.payload)
+                let text = event.postback.payload
                 console.log("THE POSTBACK TEXT IS: "+ text)
                // if (event.postback.payload == "get_started") {
                //     sendTextMessage(sender, "Hello There " + event.sender.name)
