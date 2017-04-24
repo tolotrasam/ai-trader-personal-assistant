@@ -88,7 +88,7 @@ function decideMessage(sender, text) {
     text.toLowerCase()
 
     if (text == 'get_started') {
-        sendTextMessage(sender, "Hello there " + {{user_full_name}} + " {{user_full_name}}")
+        sendTextMessage(sender, "Hello there {{user_full_name}}!")
     }
 
     if (text === 'image') {
