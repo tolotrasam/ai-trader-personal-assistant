@@ -84,6 +84,11 @@ function receivedMessage(event) {
 function decideMessage(sender, text) {
     console.log(text)
     text.toLowerCase()
+
+    if (text === 'Get Started') {
+        sendTextMessage(sender, "Hello there")
+    }
+
     if (text === 'image') {
         sendGenericMessage(sender)
     }
