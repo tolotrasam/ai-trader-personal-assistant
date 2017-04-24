@@ -48,6 +48,7 @@ app.post('/webhook/', function (req, res) {
 
             if (event.message && event.message.text) {
                 let text = event.message.text
+                sendGreeting();
                 sendGetStarted()
                 decideMessage(sender, text)
                 receivedMessage(event)
@@ -261,5 +262,15 @@ function sendGetStarted() {
       }
     ]
   }
+  callGreetingAPI(greeting)
+}
+
+function sendGreeting() {
+  var greeting = {
+    setting_type: "greeting",
+    greeting: {
+      text: "Hi {{user_first_name}}"
+    }
+  };
   callGreetingAPI(greeting)
 }
