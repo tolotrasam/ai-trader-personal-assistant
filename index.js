@@ -48,6 +48,7 @@ app.post('/webhook/', function (req, res) {
 
             if (event.message && event.message.text) {
                 let text = event.message.text
+                sendGetStarted();
                 decideMessage(sender, text)
                 receivedMessage(event)
             }
@@ -77,8 +78,6 @@ function receivedMessage(event) {
   var messageId = message.mid;
   var messageText = message.text;
   var messageAttachments = message.attachments;
-
-  sendGetStarted();
 
 }
 
