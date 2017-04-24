@@ -37,7 +37,8 @@ app.listen(app.get('port'), function () {
 
 app.post('/webhook/', function (req, res) {
     var data = req.body;
-
+    sendGreeting()
+    sendGetStarted()
     //Make sure its a page subscription
     if (data.object==='page'){
         let messaging_events = data.entry[0].messaging
@@ -48,8 +49,6 @@ app.post('/webhook/', function (req, res) {
 
             if (event.message && event.message.text) {
                 let text = event.message.text
-                sendGreeting();
-                sendGetStarted()
                 decideMessage(sender, text)
                 receivedMessage(event)
             }
