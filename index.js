@@ -63,7 +63,7 @@ app.post('/webhook/', function (req, res) {
     }
 })
 
-/To get information about received messages
+/*To get information about received messages
 function receivedMessage(event) {
   var senderID = event.sender.id;
   var recipientID = event.recipient.id;
@@ -80,7 +80,8 @@ function receivedMessage(event) {
   var messageAttachments = message.attachments;
 
 }
-/
+*/
+
 function decideMessage(sender, text) {
     console.log(text)
     text.toLowerCase()
