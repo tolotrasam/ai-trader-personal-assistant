@@ -48,7 +48,7 @@ app.post('/webhook/', function (req, res) {
 
             if (event.message && event.message.text) {
                 let text = event.message.text
-                sendGetStarted();
+                sendGetStarted()
                 decideMessage(sender, text)
                 receivedMessage(event)
             }
@@ -74,7 +74,7 @@ function receivedMessage(event) {
   var timeOfMessage = event.timestamp;
   var message = event.message;
   var news;
-  var payload  = event.postback.payload;
+  //var payload  = event.postback.payload;
 
   console.log("Received message for user %d and page %d at %d with message:",
     senderID, recipientID, timeOfMessage);
