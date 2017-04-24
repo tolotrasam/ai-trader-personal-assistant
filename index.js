@@ -234,15 +234,12 @@ function getUserProfile(){
         uri: 'https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic,locale,timezone,gender',
         qs: {access_token:token},
         method: 'POST',
-        json:{
-            first_name:body.first_name,
-            last_name:body.last_name,
-            locale:body.locale
-        }, 
+        json: true, 
 
         function(error, response, body) {
             if(!error && response.statusCode == 200) {
                 console.log("Successfully sent userProfile")
+                console.log("LOOOOOK" + body.first_name + " "  + body.last_name);
             } else {
 
                 console.error("Unable to send userProfile.");
