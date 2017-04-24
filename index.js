@@ -40,18 +40,40 @@ app.post('/webhook/', function (req, res) {
     for (let i = 0; i < messaging_events.length; i++) {
         let event = req.body.entry[0].messaging[i]
         let sender = event.sender.id
+
         if (event.message && event.message.text) {
             let text = event.message.text
             decideMessage(sender, text)
+            receivedMessage(event)
         }
+
         if (event.postback) {
             let text = JSON.stringify(event.postback)
             decideMessage(sender, text)
             continue
         }
+
     }
     res.sendStatus(200)
 })
+
+//To get information about received messages
+function receivedMessage(event) {
+  var senderID = event.sender.id;
+  var recipientID = event.recipient.id;
+  var timeOfMessage = event.timestamp;
+  var message = event.message;
+  var news;
+
+  console.log("Received message for user %d and page %d at %d with message:",
+    senderID, recipientID, timeOfMessage);
+  console.log(JSON.stringify(message));
+
+  var messageId = message.mid;
+  var messageText = message.text;
+  var messageAttachments = message.attachments;
+
+}
 
 function decideMessage(sender, text) {
     console.log(text)
