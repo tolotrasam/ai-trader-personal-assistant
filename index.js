@@ -40,6 +40,7 @@ app.post('/webhook/', function (req, res) {
 
     //Make sure its a page subscription
     if (data.object==='page'){
+        console.log(data.object)
         let messaging_events = req.body.entry[0].messaging
         for (let i = 0; i < messaging_events.length; i++) {
             let event = req.body.entry[0].messaging[i]
