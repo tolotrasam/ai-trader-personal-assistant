@@ -250,7 +250,6 @@ function getUserProfile(){
         console.error(body);
 
       }
-    };
 }
 
 function sendGetStarted() {
