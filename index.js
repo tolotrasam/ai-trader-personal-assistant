@@ -55,12 +55,9 @@ app.post('/webhook/', function (req, res) {
 
             if (event.postback) {
                 let text = JSON.stringify(event.postback)
+                console.log("THE POSTBACK TEXT IS: "+ text)
                 decideMessage(sender, text)
                 continue
-                
-                if (event.postback.payload == 'get_started') {
-                    sendTextMessage(senderID, "Hello there")
-                }
             }
         }
         res.sendStatus(200)
@@ -74,7 +71,6 @@ function receivedMessage(event) {
   var timeOfMessage = event.timestamp;
   var message = event.message;
   var news;
-  //var payload  = event.postback.payload;
 
   console.log("Received message for user %d and page %d at %d with message:",
     senderID, recipientID, timeOfMessage);
@@ -90,6 +86,10 @@ function decideMessage(sender, text) {
 
     console.log(text)
     text.toLowerCase()
+
+    if (text == 'Get Started') {
+        sendTextMessage(senderID, "Hello there")
+    }
 
     if (text === 'image') {
         sendGenericMessage(sender)
