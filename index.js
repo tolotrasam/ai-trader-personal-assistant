@@ -54,14 +54,14 @@ app.post('/webhook/', function (req, res) {
             }
 
             if (event.postback) {
-                let text = JSON.stringify(event.postback)
+                let text = JSON.stringify(event.postback.payload)
                 console.log("THE POSTBACK TEXT IS: "+ text)
-                if (event.postback.payload == "get_started") {
-                    sendTextMessage(sender, "Hello There " + event.sender.name)
-                }
-                else {
+               // if (event.postback.payload == "get_started") {
+               //     sendTextMessage(sender, "Hello There " + event.sender.name)
+              //  }
+              //  else {
                     decideMessage(sender, text) 
-                }
+              //  }
         
                 continue
             }
@@ -93,7 +93,7 @@ function decideMessage(sender, text) {
     console.log(text)
     text.toLowerCase()
 
-    if (text == 'Get Started') {
+    if (text == 'get_started') {
         sendTextMessage(senderID, "Hello there")
     }
 
