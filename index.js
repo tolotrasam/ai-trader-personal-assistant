@@ -248,8 +248,9 @@ function getUserProfile(){
         console.error("Unable to send userProfile.");
         console.error(response);
         console.error(body);
-
-      }
+    }
+  }
+})
 }
 
 function sendGetStarted() {
