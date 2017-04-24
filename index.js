@@ -268,7 +268,7 @@ function sendGreeting() {
   var greeting = {
     setting_type: "greeting",
     greeting: {
-      text: "Hi {{user_first_name}}"
+      text: "Hi {{user_first_name}}, welcome to this bot."
     }
   };
   callGreetingAPI(greeting)
