@@ -40,9 +40,8 @@ app.post('/webhook/', function (req, res) {
 
     //Make sure its a page subscription
     if (data.object==='page'){
-
         let messaging_events = data.entry[0].messaging
-        //iterate over each messaging event
+        //iterate over each messaging events
         for (let i = 0; i < messaging_events.length; i++) {
             let event = data.entry[0].messaging[i]
             let sender = event.sender.id
@@ -50,7 +49,7 @@ app.post('/webhook/', function (req, res) {
             if (event.message && event.message.text) {
                 let text = event.message.text
                 decideMessage(sender, text)
-               // receivedMessage(messaging_events)
+                receivedMessage(event)
             }
 
             if (event.postback) {
@@ -63,7 +62,7 @@ app.post('/webhook/', function (req, res) {
     }
 })
 
-/*To get information about received messages
+//To get information about received messages
 function receivedMessage(event) {
   var senderID = event.sender.id;
   var recipientID = event.recipient.id;
@@ -80,7 +79,6 @@ function receivedMessage(event) {
   var messageAttachments = message.attachments;
 
 }
-*/
 
 function decideMessage(sender, text) {
     console.log(text)
