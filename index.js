@@ -81,7 +81,7 @@ function receivedMessage(event) {
   var messageAttachments = message.attachments;
 
   if (payload === 'Get Started') {
-        sendTextMessage(sender, "Hello there")
+        sendTextMessage(senderID, "Hello there")
     }
 
 }
