@@ -78,6 +78,8 @@ function receivedMessage(event) {
   var messageText = message.text;
   var messageAttachments = message.attachments;
 
+  sendGetStarted();
+
 }
 
 function decideMessage(sender, text) {
@@ -105,24 +107,6 @@ function decideMessage(sender, text) {
 
 }
 
-function sendRequest(sender, messageData) {
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token: token},
-        method: 'POST',
-        json: {
-            recipient: {id: sender},
-            message: messageData,
-        }
-    }, function (error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
-    })
-
-}
 function sendButtonMessage(sender, text) {
     let messageData = {
         "attachment": {
@@ -196,4 +180,56 @@ function sendGenericMessage(sender) {
     }
 
     sendRequest(sender, messageData)
+}
+
+
+function sendRequest(sender, messageData) {
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token: token},
+        method: 'POST',
+        json: {
+            recipient: {id: sender},
+            message: messageData,
+        }
+    }, function (error, response, body) {
+        if (error) {
+            console.log('Error sending messages: ', error)
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+        }
+    })
+
+}
+
+function callGreetingAPI(greeting) {
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
+    qs: { access_token: token},
+    method: 'POST',
+    json: greeting
+
+  }, function(error, response, body) {
+    if(!error && response.statusCode == 200) {
+
+      console.log("Successfully sent greeting message to {{user_full_name}}")
+      } else {
+        console.error("Unable to send greeting.");
+        console.error(response);
+        console.error(body);
+      }
+    });
+  }
+
+function sendGetStarted() {
+  var greeting = {
+    setting_type:"call_to_actions",
+    thread_state:"new_thread",
+    call_to_actions:[
+      {
+        payload:"get_started"
+      }
+    ]
+  }
+  callGreetingAPI(greeting)
 }
