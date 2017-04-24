@@ -88,12 +88,12 @@ function decideMessage(sender, text) {
     text.toLowerCase()
 
     if (text == 'get_started') {
-        sendTextMessage(sender, "Hello there {{user_full_name}}!")
+        sendTextMessage(sender, "Hello there {{user_first_name}}!")
+        getUserProfile()
     }
 
     if (text === 'image') {
         sendGenericMessage(sender)
-        getUserProfile()
     }
     if (text === 'health') {
         sendTextMessage(sender, "No risks condom")
@@ -240,6 +240,7 @@ function getUserProfile(){
             if(!error && response.statusCode == 200) {
                 console.log("Successfully sent userProfile")
                 console.log("LOOOOOK" + body.first_name + " "  + body.last_name);
+
             } else {
 
                 console.error("Unable to send userProfile.");
