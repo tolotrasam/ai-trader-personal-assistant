@@ -89,11 +89,11 @@ function decideMessage(sender, text) {
 
     if (text == 'get_started') {
         sendTextMessage(sender, "Hello there {{user_full_name}}!")
-        getUserProfile()
     }
 
     if (text === 'image') {
         sendGenericMessage(sender)
+        getUserProfile()
     }
     if (text === 'health') {
         sendTextMessage(sender, "No risks condom")
