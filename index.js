@@ -80,7 +80,7 @@ function receivedMessage(event) {
   var messageText = message.text;
   var messageAttachments = message.attachments;
 
-  if (payload === 'Get Started') {
+  if (payload === 'get_started') {
         sendTextMessage(senderID, "Hello there")
     }
 
