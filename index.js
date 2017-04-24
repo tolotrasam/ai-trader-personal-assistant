@@ -40,16 +40,17 @@ app.post('/webhook/', function (req, res) {
 
     //Make sure its a page subscription
     if (data.object==='page'){
-        console.log(data.object)
-        let messaging_events = req.body.entry[0].messaging
+
+        let messaging_events = data.entry[0].messaging
+        //iterate over each messaging event
         for (let i = 0; i < messaging_events.length; i++) {
-            let event = req.body.entry[0].messaging[i]
+            let event = data.entry[0].messaging[i]
             let sender = event.sender.id
 
             if (event.message && event.message.text) {
                 let text = event.message.text
                 decideMessage(sender, text)
-                receivedMessage(event)
+                receivedMessage(messaging_events)
             }
 
             if (event.postback) {
