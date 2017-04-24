@@ -56,13 +56,7 @@ app.post('/webhook/', function (req, res) {
             if (event.postback) {
                 let text = event.postback.payload
                 console.log("THE POSTBACK TEXT IS: "+ text)
-               // if (event.postback.payload == "get_started") {
-               //     sendTextMessage(sender, "Hello There " + event.sender.name)
-              //  }
-              //  else {
-                    decideMessage(sender, text) 
-              //  }
-        
+                decideMessage(sender, text) 
                 continue
             }
         }
@@ -94,7 +88,7 @@ function decideMessage(sender, text) {
     text.toLowerCase()
 
     if (text == 'get_started') {
-        sendTextMessage(sender, "Hello there")
+        sendTextMessage(sender, "Hello there " + {{user_full_name}} + " {{user_full_name}}")
     }
 
     if (text === 'image') {
