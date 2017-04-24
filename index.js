@@ -36,25 +36,29 @@ app.listen(app.get('port'), function () {
 })
 
 app.post('/webhook/', function (req, res) {
-    let messaging_events = req.body.entry[0].messaging
-    for (let i = 0; i < messaging_events.length; i++) {
-        let event = req.body.entry[0].messaging[i]
-        let sender = event.sender.id
+    var data = req.body;
 
-        if (event.message && event.message.text) {
-            let text = event.message.text
-            decideMessage(sender, text)
-            receivedMessage(event)
+    //Make sure its a page subscription
+    if (data.object==='page'){
+        let messaging_events = req.body.entry[0].messaging
+        for (let i = 0; i < messaging_events.length; i++) {
+            let event = req.body.entry[0].messaging[i]
+            let sender = event.sender.id
+
+            if (event.message && event.message.text) {
+                let text = event.message.text
+                decideMessage(sender, text)
+                receivedMessage(event)
+            }
+
+            if (event.postback) {
+                let text = JSON.stringify(event.postback)
+                decideMessage(sender, text)
+                continue
+            }
         }
-
-        if (event.postback) {
-            let text = JSON.stringify(event.postback)
-            decideMessage(sender, text)
-            continue
-        }
-
+        res.sendStatus(200)
     }
-    res.sendStatus(200)
 })
 
 //To get information about received messages
