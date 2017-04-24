@@ -235,9 +235,9 @@ function getUserProfile(){
         qs: {access_token:token},
         method: 'POST',
         json:{
-            body.first_name: first_name,
-            body.last_name: last_name,
-            body.locale: locale
+            first_name:body.first_name,
+            last_name:body.last_name,
+            locale:body.locale
         }, 
 
         function(error, response, body) {
