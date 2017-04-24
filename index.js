@@ -50,7 +50,7 @@ app.post('/webhook/', function (req, res) {
             if (event.message && event.message.text) {
                 let text = event.message.text
                 decideMessage(sender, text)
-                receivedMessage(messaging_events)
+               // receivedMessage(messaging_events)
             }
 
             if (event.postback) {
@@ -63,7 +63,7 @@ app.post('/webhook/', function (req, res) {
     }
 })
 
-//To get information about received messages
+/To get information about received messages
 function receivedMessage(event) {
   var senderID = event.sender.id;
   var recipientID = event.recipient.id;
@@ -80,7 +80,7 @@ function receivedMessage(event) {
   var messageAttachments = message.attachments;
 
 }
-
+/
 function decideMessage(sender, text) {
     console.log(text)
     text.toLowerCase()
