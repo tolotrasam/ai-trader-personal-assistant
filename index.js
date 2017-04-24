@@ -37,6 +37,7 @@ app.listen(app.get('port'), function () {
 
 app.post('/webhook/', function (req, res) {
     var data = req.body;
+    console.log('IT STARTS HERE')
     sendGreeting()
     sendGetStarted()
     //Make sure its a page subscription
@@ -55,7 +56,6 @@ app.post('/webhook/', function (req, res) {
 
             if (event.postback) {
                 let text = event.postback.payload
-                console.log("THE POSTBACK TEXT IS: "+ text)
                 decideMessage(sender, text) 
                 continue
             }
