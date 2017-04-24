@@ -70,6 +70,7 @@ function receivedMessage(event) {
   var timeOfMessage = event.timestamp;
   var message = event.message;
   var news;
+  var payload  = event.postback.payload;
 
   console.log("Received message for user %d and page %d at %d with message:",
     senderID, recipientID, timeOfMessage);
@@ -79,15 +80,16 @@ function receivedMessage(event) {
   var messageText = message.text;
   var messageAttachments = message.attachments;
 
+  if (payload === 'Get Started') {
+        sendTextMessage(sender, "Hello there")
+    }
+
 }
 
 function decideMessage(sender, text) {
+
     console.log(text)
     text.toLowerCase()
-
-    if (text === 'Get Started') {
-        sendTextMessage(sender, "Hello there")
-    }
 
     if (text === 'image') {
         sendGenericMessage(sender)
