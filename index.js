@@ -191,44 +191,6 @@ function sendGenericMessage(sender) {
     sendRequest(sender, messageData)
 }
 
-
-function sendRequest(sender, messageData) {
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token: token},
-        method: 'POST',
-        json: {
-            recipient: {id: sender},
-            message: messageData,
-        }
-    }, function (error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
-    })
-}
-
-function callGreetingAPI(greeting) {
-  request({
-    uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
-    qs: { access_token: token},
-    method: 'POST',
-    json: greeting
-
-  }, function(error, response, body) {
-    if(!error && response.statusCode == 200) {
-      console.log("Successfully sent greeting message to {{user_full_name}}")
-      } else {
-        console.error("Unable to send greeting.");
-        console.error(response);
-        console.error(body);
-      }
-    });
-  }
-
-
 function getUserProfile(){
     request({
         uri: 'https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic,locale,timezone,gender',
@@ -288,3 +250,42 @@ function setPersistentMenu() {
     }
     callGreetingAPI(greeting)
 }
+
+function sendRequest(sender, messageData) {
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token: token},
+        method: 'POST',
+        json: {
+            recipient: {id: sender},
+            message: messageData,
+        }
+    }, function (error, response, body) {
+        if (error) {
+            console.log('Error sending messages: ', error)
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+        }
+    })
+}
+
+
+function callGreetingAPI(greeting) {
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
+    qs: { access_token: token},
+    method: 'POST',
+    json: greeting
+
+  }, function(error, response, body) {
+    if(!error && response.statusCode == 200) {
+      console.log("Successfully sent greeting message to {{user_full_name}}")
+      } else {
+        console.error("Unable to send greeting.");
+        console.error(response);
+        console.error(body);
+      }
+    });
+}
+
+
