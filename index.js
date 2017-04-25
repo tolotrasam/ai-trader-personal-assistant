@@ -43,7 +43,7 @@ app.post('/webhook/', function (req, res) {
     // Set FB bot greeting text
     sendGreeting()
     //set persistent menu
-  //  setPersistentMenu()
+    setPersistentMenu()
     //Make sure its a page subscription
     if (data.object==='page'){
         let messaging_events = data.entry[0].messaging
