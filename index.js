@@ -38,10 +38,12 @@ app.listen(app.get('port'), function () {
 app.post('/webhook/', function (req, res) {
     var data = req.body;
     console.log('IT STARTS HERE')
-    // Set FB bot greeting text
-    sendGreeting()
     //getstarted button
     sendGetStarted()
+    // Set FB bot greeting text
+    sendGreeting()
+    //set persistent menu
+    setPersistentMenu()
     //Make sure its a page subscription
     if (data.object==='page'){
         let messaging_events = data.entry[0].messaging
@@ -262,7 +264,6 @@ function sendGetStarted() {
   callGreetingAPI(greeting)
 }
 
-
 function sendGreeting() {
   var greeting = {
     setting_type: "greeting",
@@ -271,4 +272,19 @@ function sendGreeting() {
     }
   }
   callGreetingAPI(greeting)
+}
+
+function setPersistentMenu() {
+    var greeting = {
+        "setting_type" : "call_to_actions",
+        "thread_state" : "existing_thread",
+        "call_to_actions":[
+        {
+            "type":"postback",
+            "title":"Admin Reset",
+            "payload":"action?POSTBACKHERE"
+        }
+        ]
+    }
+    callGreetingAPI(greeting)
 }
