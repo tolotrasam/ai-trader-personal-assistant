@@ -43,7 +43,7 @@ app.post('/webhook/', function (req, res) {
     // Set FB bot greeting text
     sendGreeting()
     //set persistent menu
-    setPersistentMenu()
+    deletePersistentMenu()
     //Make sure its a page subscription
     if (data.object==='page'){
         let messaging_events = data.entry[0].messaging
@@ -253,6 +253,14 @@ function setPersistentMenu() {
             payload:"action?POSTBACKHERE"
         }
         ]
+    }
+    callGreetingAPI(greeting)
+}
+
+function deletePersistentMenu() {
+    var greeting = {
+        setting_type : "call_to_actions",
+        thread_state: "existing_thread"
     }
     deleteGreetingAPI(greeting)
 }
