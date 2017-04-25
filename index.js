@@ -41,7 +41,7 @@ app.post('/webhook/', function (req, res) {
     // Set FB bot greeting text
    // facebookThreadAPI('./fb-greeting-text.json', 'Greeting Text')
     console.log('HERE IS FACEBOOKTHREAD')
-   // sendGreeting()
+    sendGreeting()
     sendGetStarted()
     //Make sure its a page subscription
     if (data.object==='page'){
@@ -278,7 +278,7 @@ function sendGreeting() {
 }
 
 // Calls the Facebook graph api to change various bot settings
-function facebookThreadAPI(jsonFile, cmd){
+/*function facebookThreadAPI(jsonFile, cmd){
     // Start the request
     request({
         url: 'https://graph.facebook.com/v2.6/me/thread_settings',
@@ -299,4 +299,4 @@ function facebookThreadAPI(jsonFile, cmd){
             console.log(body);
         }
     });
-}
+}*/
