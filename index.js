@@ -244,7 +244,12 @@ function setPersistentMenu() {
         call_to_actions:[
         {
             type:"postback",
-            title:"Admin Reset",
+            title:"Learn",
+            payload:"action?POSTBACKHERE"
+        }
+        {
+            type:"postback",
+            title:"Ask Questions",
             payload:"action?POSTBACKHERE"
         }
         ]
