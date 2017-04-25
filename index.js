@@ -68,6 +68,7 @@ app.post('/webhook/', function (req, res) {
     }
 })
 
+//FUNCTIONS USING APIS -------------------------------------
 //To get information about received messages
 function receivedMessage(event) {
   var senderID = event.sender.id;
@@ -250,7 +251,9 @@ function setPersistentMenu() {
     }
     callGreetingAPI(greeting)
 }
+//---------------------------------
 
+//API REQUESTS ------------------------------
 function sendRequest(sender, messageData) {
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
@@ -269,7 +272,6 @@ function sendRequest(sender, messageData) {
     })
 }
 
-
 function callGreetingAPI(greeting) {
   request({
     uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
@@ -287,5 +289,5 @@ function callGreetingAPI(greeting) {
       }
     });
 }
-
+//------------------------
 
