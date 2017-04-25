@@ -281,9 +281,9 @@ function sendGreeting() {
 function facebookThreadAPI(jsonFile, cmd){
     // Start the request
     request({
-        url: 'https://graph.facebook.com/v2.6/me/thread_settings?access_token='+process.env.FB_PAGE_ACCESS_TOKEN,
-        //url: 'https://graph.facebook.com/v2.6/me/thread_settings',
-       // qs: {access_token: token},
+      //  url: 'https://graph.facebook.com/v2.6/me/thread_settings?access_token='+process.env.FB_PAGE_ACCESS_TOKEN,
+        url: 'https://graph.facebook.com/v2.6/me/thread_settings',
+        qs: {access_token: token},
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         form: require(jsonFile)
