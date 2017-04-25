@@ -1,6 +1,6 @@
 {
-  setting_type:"greeting",
-   greeting: {   
-     text:"Hello {{user_first_name}}"
+  "setting_type":"greeting",
+   "greeting": {   
+     "text":"Hello {{user_first_name}}"
   }
 }
