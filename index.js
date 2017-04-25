@@ -9,13 +9,15 @@ const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
 
-app.set('port', (process.env.PORT || 5000))
+var mongoose = require("mongoose");
+var db = mongoose.connect(process.env.MONGODB_URI);
 
+var Movie = require("./models/users");
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}))
-
 // Process application/json
 app.use(bodyParser.json())
+app.set('port', (process.env.PORT || 5000))
 
 // Index route
 app.get('/', function (req, res) {
@@ -76,6 +78,26 @@ function receivedMessage(event) {
 }
 
 function decideMessage(sender, text) {
+    var query = {user_id: sender};
+    var update = {
+        user_id: sender,
+        title: 'Bouba',
+        plot: 'Chart',
+        date: 'today',
+        runtime: 'haawai',
+        director: 'Nancia',
+        cast: 'AutoCast',
+        rating: '5 stars',
+        poster_url:'nice url .com'
+    };
+    var options = {upsert: true};
+    Movie.findOneAndUpdate(query, update, options, function(err, mov) {
+        if (err) {
+            console.log("Database error: " + err);
+        } else {
+            console.log("Database sucess");
+        }
+    })
     console.log(text)
     text.toLowerCase()
     if (text === 'image') {
@@ -118,6 +140,7 @@ function sendRequest(sender, messageData) {
     })
 
 }
+
 function sendButtonMessage(sender, text) {
     let messageData = {
         "attachment": {
