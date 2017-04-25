@@ -38,8 +38,6 @@ app.listen(app.get('port'), function () {
 app.post('/webhook/', function (req, res) {
     var data = req.body;
     console.log('IT STARTS HERE')
-    // Set FB bot greeting text
-    sendGreeting()
     //getstarted button
     sendGetStarted()
     //Make sure its a page subscription
@@ -49,6 +47,8 @@ app.post('/webhook/', function (req, res) {
         for (let i = 0; i < messaging_events.length; i++) {
             let event = data.entry[0].messaging[i]
             let sender = event.sender.id
+            // Set FB bot greeting text
+            sendGreeting()
 
             if (event.message && event.message.text) {
                 let text = event.message.text
