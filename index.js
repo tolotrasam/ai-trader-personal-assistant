@@ -241,16 +241,21 @@ function setPersistentMenu() {
     var greeting = {
          setting_type : "call_to_actions",
          thread_state : "existing_thread",
-         call_to_actions:[
-        {
-             type:"postback",
-             title:"Learn",
-             payload:"learn"
+         call_to_actions:[ 
+         {
+            type:"postback",
+            title:"Learn",
+            payload:"learn"
         },
         {
-             type:"postback",
-             title:"Ask",
-             payload:"ask"
+            type:"postback",
+            title:"Ask Questions",
+            payload:"ask_questions"
+        },
+        {
+            type:"postback",
+            title:"Help",
+            payload:"get_help"
         }
         ]
     }
