@@ -1,6 +1,6 @@
 {
   "setting_type":"greeting",
-  "greeting":{  
+  "greeting": {   
     "text":"Your greeting text here."
   }
 }
