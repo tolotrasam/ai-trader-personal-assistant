@@ -41,7 +41,7 @@ app.post('/webhook/', function (req, res) {
     //getstarted button
     sendGetStarted()
     // Set FB bot greeting text
-    //sendGreeting()
+    sendGreeting()
     //set persistent menu
     setPersistentMenu()
     //Make sure its a page subscription
@@ -191,17 +191,29 @@ function sendGenericMessage(sender) {
 
     sendRequest(sender, messageData)
 }
-
-function getUserProfile(){
+/*
+function sendUserProfile(){
+    var userProfile = {
+        {
+            "first_name": "Peter",
+            "last_name": "Chang",
+            "locale": "en_US",
+            "gender": "male"
+        }    
+    }
+    getUserProfile(userProfile)
+}
+*/
+function getUserProfile(userProfile){
     request({
         uri: 'https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic,locale,timezone,gender',
         qs: {access_token:token},
-        method: 'POST',
-        json: true, 
+        method: 'GET',
+        json: userProfile, 
 
         function(error, response, body) {
             if(!error && response.statusCode == 200) {
-                console.log("Successfully sent userProfile")
+                console.log("Successfully got userProfile")
                 console.log("LOOOOOK" + body.first_name + " "  + body.last_name);
 
             } else {
