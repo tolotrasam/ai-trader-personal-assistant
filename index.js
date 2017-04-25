@@ -38,13 +38,12 @@ app.listen(app.get('port'), function () {
 app.post('/webhook/', function (req, res) {
     var data = req.body;
     console.log('IT STARTS HERE')
-    console.log('This is the tokenNNNNNN  ' + token)
     //getstarted button
     sendGetStarted()
     // Set FB bot greeting text
     //sendGreeting()
     //set persistent menu
-    //setPersistentMenu()
+    setPersistentMenu()
     //Make sure its a page subscription
     if (data.object==='page'){
         let messaging_events = data.entry[0].messaging
