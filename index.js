@@ -7,6 +7,7 @@ const vtoken = process.env.VERIFICATION_TOKEN
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
+const greetingText = require('./fb-greeting-text.json')
 const app = express()
 
 app.set('port', (process.env.PORT || 5000))
@@ -40,7 +41,7 @@ app.post('/webhook/', function (req, res) {
     console.log('IT STARTS HERE')
     // Set FB bot greeting text
     facebookThreadAPI('./fb-greeting-text.json', 'Greeting Text')
-    console.log('HERE IS FACEBOOKTHREAD' + './fb-greeting-text.json')
+    console.log('HERE IS FACEBOOKTHREAD' + greetingText)
     //sendGreeting()
     sendGetStarted()
     //Make sure its a page subscription
@@ -281,7 +282,6 @@ function sendGreeting() {
 function facebookThreadAPI(jsonFile, cmd){
     // Start the request
     request({
-      //  url: 'https://graph.facebook.com/v2.6/me/thread_settings?access_token='+process.env.FB_PAGE_ACCESS_TOKEN,
         url: 'https://graph.facebook.com/v2.6/me/thread_settings',
         qs: {access_token: token},
         method: 'POST',
