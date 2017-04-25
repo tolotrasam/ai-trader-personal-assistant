@@ -301,3 +301,36 @@ function callGreetingAPI(greeting) {
 }
 //------------------------
 
+/* ALL CURL COMMANDS */
+/* 
+SET PERSISTENT MENU
+curl -X POST -H "Content-Type: application/json" -d '{
+  "setting_type" : "call_to_actions",
+  "thread_state" : "existing_thread",
+  "call_to_actions":[
+    {
+      "type":"postback",
+      "title":"Learn",
+      "payload":"learn"
+    },
+    {
+      "type":"postback",
+      "title":"Ask Questions",
+      "payload":"ask_questions"
+    },
+   {
+      "type":"postback",
+      "title":"Help",
+      "payload":"get_help"
+    }
+  ]
+}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=EAADoHNR65NEBAIeQ4R2hCZAdYfwOHSJjmkMGZCK4clbtL2zjV4cfXPMnZB9A9wbyZBnHa6aHJu8UoHHLHHZAQt1hw2HUkmT1ANuG4GaZAp2sJ79mU7XCwXS5GAX3KoqB5bhxqTw0J0ejz9orTYWg0CewZCZCV84ZCcbAZCbBZCFJxqIjl7d4UKe3tZBg"  
+
+---------------------------------------------
+DELETE PERSISTENT MENU
+curl -X DELETE -H "Content-Type: application/json" -d '{"setting_type":"call_to_actions","thread_state":"existing_thread"}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=EAADoHNR65NEBAIeQ4R2hCZAdYfwOHSJjmkMGZCK4clbtL2zjV4cfXPMnZB9A9wbyZBnHa6aHJu8UoHHLHHZAQt1hw2HUkmT1ANuG4GaZAp2sJ79mU7XCwXS5GAX3KoqB5bhxqTw0J0ejz9orTYWg0CewZCZCV84ZCcbAZCbBZCFJxqIjl7d4UKe3tZBg"
+
+---------------------------------------------
+SET GREETING TEXT
+curl -X POST -H "Content-Type: application/json" -d '{ "setting_type":"greeting", "greeting":{ "text":"Hi there {{user_first_name}} 😊 "}}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=EAADoHNR65NEBAIeQ4R2hCZAdYfwOHSJjmkMGZCK4clbtL2zjV4cfXPMnZB9A9wbyZBnHa6aHJu8UoHHLHHZAQt1hw2HUkmT1ANuG4GaZAp2sJ79mU7XCwXS5GAX3KoqB5bhxqTw0J0ejz9orTYWg0CewZCZCV84ZCcbAZCbBZCFJxqIjl7d4UKe3tZBg"    
+*/
