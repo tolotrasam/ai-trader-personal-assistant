@@ -7,7 +7,6 @@ const vtoken = process.env.VERIFICATION_TOKEN
 const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
-const greetingText = require('./fb-greeting-text.json')
 const app = express()
 
 app.set('port', (process.env.PORT || 5000))
@@ -40,8 +39,8 @@ app.post('/webhook/', function (req, res) {
     var data = req.body;
     console.log('IT STARTS HERE')
     // Set FB bot greeting text
-    facebookThreadAPI('./fb-greeting-text.json', 'Greeting Text')
-    console.log('HERE IS FACEBOOKTHREAD' + greetingText)
+    facebookThreadAPI()
+    console.log('HERE IS FACEBOOKTHREAD')
     //sendGreeting()
     sendGetStarted()
     //Make sure its a page subscription
@@ -279,23 +278,30 @@ function sendGreeting() {
 }
 
 // Calls the Facebook graph api to change various bot settings
-function facebookThreadAPI(jsonFile, cmd){
+function facebookThreadAPI(){
     // Start the request
     request({
         url: 'https://graph.facebook.com/v2.6/me/thread_settings',
         qs: {access_token: token},
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        form: require(jsonFile)
+   //     form: require(jsonFile)
+        json: {
+        "setting_type":"greeting",
+        "greeting": {   
+            "text":"Your greeting text here."
+        }
+    }
     },
+
     function (error, response, body) {
         if (!error && response.statusCode == 200) {
             // Print out the response body
-            console.log(cmd+": Updated.");
+            console.log(": Updated.");
             console.log(body);
         } else { 
             // TODO: Handle errors
-            console.log(cmd+": Failed. Need to handle errors.");
+            console.log(": Failed. Need to handle errors.");
             console.log(body);
         }
     });
