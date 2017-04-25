@@ -286,12 +286,6 @@ function facebookThreadAPI(jsonFile, cmd){
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         form: require(jsonFile)
-        json: {
-        "setting_type":"greeting",
-        "greeting": {   
-            "text":"Your greeting text here."
-        }
-    }
     },
 
     function (error, response, body) {
