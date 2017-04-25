@@ -247,6 +247,11 @@ function setPersistentMenu() {
              title:"Learn",
              payload:"learn"
         }
+        {
+             type:"postback",
+             title:"Ask",
+             payload:"ask"
+        }
         ]
     }
     callGreetingAPI(greeting)
