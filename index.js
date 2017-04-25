@@ -246,7 +246,7 @@ function setPersistentMenu() {
             type:"postback",
             title:"Learn",
             payload:"action?POSTBACKHERE"
-        }
+        },
         {
             type:"postback",
             title:"Ask Questions",
