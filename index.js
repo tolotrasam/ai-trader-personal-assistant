@@ -78,6 +78,7 @@ function receivedMessage(event) {
 }
 
 function decideMessage(sender, text) {
+
     var query = {user_id: sender};
     var update = {
         user_id: sender,
@@ -98,7 +99,7 @@ function decideMessage(sender, text) {
             console.log("Database sucess");
         }
     })
-    console.log(text)
+    console.log('message is: ',text)
     text.toLowerCase()
     if (text === 'image') {
         sendGenericMessage(sender)
