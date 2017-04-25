@@ -42,9 +42,9 @@ app.post('/webhook/', function (req, res) {
     //getstarted button
     sendGetStarted()
     // Set FB bot greeting text
-    sendGreeting()
+    //sendGreeting()
     //set persistent menu
-    deletePersistentMenu()
+    //setPersistentMenu()
     //Make sure its a page subscription
     if (data.object==='page'){
         let messaging_events = data.entry[0].messaging
@@ -257,14 +257,6 @@ function setPersistentMenu() {
     }
     callGreetingAPI(greeting)
 }
-
-function deletePersistentMenu() {
-    var greeting = {
-        setting_type : "call_to_actions",
-        thread_state: "existing_thread"
-    }
-    deleteGreetingAPI(greeting)
-}
 //---------------------------------
 
 //API REQUESTS ------------------------------
@@ -298,24 +290,6 @@ function callGreetingAPI(greeting) {
       console.log("Successfully sent greeting message to {{user_full_name}}")
       } else {
         console.error("Unable to send greeting.");
-        console.error(response);
-        console.error(body);
-      }
-    });
-}
-
-function deleteGreetingAPI(greeting) {
-  request({
-    uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
-    qs: { access_token: token},
-    method: 'DELETE',
-    json: greeting
-
-  }, function(error, response, body) {
-    if(!error && response.statusCode == 200) {
-      console.log("Successfully deleted greeting")
-      } else {
-        console.error("Unable to delete greeting.");
         console.error(response);
         console.error(body);
       }
