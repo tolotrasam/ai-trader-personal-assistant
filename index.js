@@ -239,13 +239,13 @@ function sendGetStarted() {
 
 function setPersistentMenu() {
     var greeting = {
-        "setting_type" : "call_to_actions",
-        "thread_state" : "existing_thread",
-        "call_to_actions":[
+         setting_type : "call_to_actions",
+         thread_state : "existing_thread",
+         call_to_actions:[
         {
-            "type":"postback",
-            "title":"Learn",
-            "payload":"learn"
+             type:"postback",
+             title:"Learn",
+             payload:"learn"
         }
         ]
     }
