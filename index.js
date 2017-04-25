@@ -266,7 +266,7 @@ function sendGetStarted() {
   }
   callGreetingAPI(greeting)
 }
-/*
+
 function sendGreeting() {
   var greeting = {
     setting_type: "greeting",
@@ -275,7 +275,7 @@ function sendGreeting() {
     }
   };
   callGreetingAPI(greeting)
-}*/
+}
 
 // Calls the Facebook graph api to change various bot settings
 function facebookThreadAPI(jsonFile, cmd){
