@@ -249,7 +249,7 @@ function setPersistentMenu() {
         },
         {
             type:"postback",
-            title:"Ask Questions",
+            title:"Ask",
             payload:"action?POSTBACKHERE"
         }
         ]
