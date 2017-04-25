@@ -114,13 +114,24 @@ function decideMessage(sender, text) {
         sendTextMessage(sender, "18")
         console.log('age end')
     }
+
     if (text === 'pregnant') {
         sendTextMessage(sender, "Sexual rapport")
     } else {
         sendButtonMessage(sender, text)
     }
-
+        getMovieDetail(sender, 'director');
 }
+function getMovieDetail(userId, field) {
+    Movie.findOne({user_id: userId}, function(err, movie) {
+        if(err) {
+            sendMessage(userId, {text: "Something went wrong. Try again"});
+        } else {
+            sendMessage(userId, {text: movie[field]});
+        }
+    });
+}
+
 
 function sendRequest(sender, messageData) {
     request({
