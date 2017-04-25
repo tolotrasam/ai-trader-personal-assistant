@@ -120,8 +120,11 @@ function decideMessage(sender, text) {
     } else {
         sendButtonMessage(sender, text)
     }
+    console.log(sender, 'before database fetching user_id')
         getMovieDetail(sender, 'director');
 }
+
+//data base fetching
 function getMovieDetail(userId, field) {
     Movie.findOne({user_id: userId}, function(err, movie) {
         if(err) {
