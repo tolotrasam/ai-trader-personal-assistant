@@ -129,9 +129,9 @@ function decideMessage(sender, text) {
 function getMovieDetail(userId, field) {
     Movie.findOne({user_id: userId}, function(err, movie) {
         if(err) {
-            sendTextMessage(userId, {text: "Something went wrong. Try again"});
+            sendTextMessage(userId, "Something went wrong. Try again");
         } else {
-            sendTextMessage(userId, {text: movie[field]+' sent from mongo DB'});
+            sendTextMessage(userId,  movie[field]+' sent from mongo DB');
         }
     });
 }
