@@ -302,7 +302,7 @@ function callGreetingAPI(greeting) {
 //------------------------
 
 /* ALL CURL COMMANDS */
-/* 
+/*
 SET PERSISTENT MENU
 curl -X POST -H "Content-Type: application/json" -d '{
   "setting_type" : "call_to_actions",
@@ -337,3 +337,5 @@ curl -X POST -H "Content-Type: application/json" -d '{ "setting_type":"greeting"
 -----------------------------------------------
 DELETE GREETING TEXT
 curl -X DELETE -H "Content-Type: application/json" -d '{ "setting_type":"greeting"}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=EAADoHNR65NEBAIeQ4R2hCZAdYfwOHSJjmkMGZCK4clbtL2zjV4cfXPMnZB9A9wbyZBnHa6aHJu8UoHHLHHZAQt1hw2HUkmT1ANuG4GaZAp2sJ79mU7XCwXS5GAX3KoqB5bhxqTw0J0ejz9orTYWg0CewZCZCV84ZCcbAZCbBZCFJxqIjl7d4UKe3tZBg" 
+
+*/
