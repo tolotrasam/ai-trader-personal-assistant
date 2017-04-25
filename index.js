@@ -265,7 +265,7 @@ function sendGetStarted() {
   }
   callGreetingAPI(greeting)
 }
-
+/*
 function sendGreeting() {
   var greeting = {
     setting_type: "greeting",
@@ -275,3 +275,4 @@ function sendGreeting() {
   }
   callGreetingAPI(greeting)
 }
+/
