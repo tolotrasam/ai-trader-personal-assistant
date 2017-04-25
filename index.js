@@ -39,7 +39,7 @@ app.post('/webhook/', function (req, res) {
     var data = req.body;
     console.log('IT STARTS HERE')
     // Set FB bot greeting text
-    //sendGreeting()
+    sendGreeting()
     //getstarted button
     sendGetStarted()
     //Make sure its a page subscription
@@ -265,7 +265,7 @@ function sendGetStarted() {
   callGreetingAPI(greeting)
 }
 
-/*
+
 function sendGreeting() {
   var greeting = {
     setting_type: "greeting",
@@ -275,4 +275,3 @@ function sendGreeting() {
   }
   callGreetingAPI(greeting)
 }
-*/
