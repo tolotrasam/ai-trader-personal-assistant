@@ -41,7 +41,7 @@ app.post('/webhook/', function (req, res) {
     // Set FB bot greeting text
     facebookThreadAPI('./fb-greeting-text.json', 'Greeting Text')
     console.log('HERE IS FACEBOOKTHREAD')
-    sendGreeting()
+   // sendGreeting()
     sendGetStarted()
     //Make sure its a page subscription
     if (data.object==='page'){
@@ -221,8 +221,8 @@ function callGreetingAPI(greeting) {
 
   }, function(error, response, body) {
     if(!error && response.statusCode == 200) {
-
       console.log("Successfully sent greeting message to {{user_full_name}}")
+      console.log(body)
       } else {
         console.error("Unable to send greeting.");
         console.error(response);
