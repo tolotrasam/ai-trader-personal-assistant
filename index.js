@@ -213,6 +213,16 @@ function getUserProfile(){
     })
 }
 
+function sendGreeting() {
+  var greeting = {
+    setting_type: "greeting",
+    greeting: {
+      text: "Hi {{user_first_name}}, welcome to this bot."
+    }
+  }
+  callGreetingAPI(greeting)
+}
+
 function sendGetStarted() {
   var greeting = {
     setting_type:"call_to_actions",
@@ -222,16 +232,6 @@ function sendGetStarted() {
         payload:"get_started"
       }
     ]
-  }
-  callGreetingAPI(greeting)
-}
-
-function sendGreeting() {
-  var greeting = {
-    setting_type: "greeting",
-    greeting: {
-      text: "Hi {{user_first_name}}, welcome to this bot."
-    }
   }
   callGreetingAPI(greeting)
 }
