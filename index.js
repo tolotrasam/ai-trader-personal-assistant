@@ -107,6 +107,8 @@ function askGender(sender) {
 
 
 function decideMessagePostBack(sender, raw_postback) {
+    console.log('message postback')
+
     //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value
     var postback = raw_postback.split("-");
     var postbackcategory = postback[0];
@@ -131,7 +133,6 @@ app.post('/webhook/', function (req, res) {
         let sender = event.sender.id
 
         receivedMessageLog(event) // what did you mean by this function?
-
 
         if (event.message && event.message.text) {
             let text = event.message.text
@@ -184,13 +185,14 @@ function UserMeetsCriteria(sender) {
         askGender(sender)
         return;
     }
-
 }
 function decideMessagePlainText(sender, text) {
+    console.log('message plain text')
 
     //before proceeding, check if user in database:
 
-    if(!UserMeetsCriteria(sender)) {
+    if (!UserMeetsCriteria(sender)) {
+        console.log('user not registered')
         return;
     }
 
