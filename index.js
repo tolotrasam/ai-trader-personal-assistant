@@ -37,20 +37,25 @@ app.listen(app.get('port'), function () {
     console.log('running on port', app.get('port'))
 })
 
-function isUserInDatabase(userId) {
+function isUserInDatabase(senderId) {
 
-    Users.findOne({user_id: userId}, function (err, user) {
+    Users.findOne({user_id: senderId}, function (err, user) {
         if (err) {
-            console.log(userId, "user not found or something weirder");
-            askGender(userId)
+            console.log(senderId, "user not found or something weirder");
+            askGender(senderId)
             return false; // user not found or something weirder
 
         } else {
-            console.log(user, "user found on database");
-            hasCompleteInformation(userId, user)
-            return true; //user found
+            if(user){
+                console.log(user, "user found on database");
+                hasCompleteInformation(senderId, user)
+                return true; //user found
+            }else {
+                console.log('no result from database for', senderId)
+                return false;
+            }
 
-            //    sendTextMessage(userId,  movie[field]+' sent from mongo DB');
+            //    sendTextMessage(senderId,  movie[field]+' sent from mongo DB');
         }
     })
 }
@@ -65,10 +70,10 @@ function hasCompleteInformation(sender, userInDatabase){
         sendGenericMessage(sender)
     }
 }
-function surveyToRegister(sender, update) {
-    console.log('update user ' + sender, JSON.stringify(update))
+function surveyToRegister(senderId, update) {
+    console.log('update user ' + senderId, JSON.stringify(update))
 
-    var query = {user_id: sender};
+    var query = {user_id: senderId};
     var options = {upsert: true};
 
     Users.findOneAndUpdate(query, update, options, function (err, mov) {
@@ -80,7 +85,7 @@ function surveyToRegister(sender, update) {
     })
     //place holder
     // var update = {
-    //     user_id: sender,
+    //     user_id: senderId,
     //     first_name: "",
     //     last_name: "",
     //     date_joined: "",
