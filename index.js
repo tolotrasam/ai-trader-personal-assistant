@@ -41,10 +41,11 @@ function isUserInDatabase(userId) {
 
     Users.findOne({user_id: userId}, function (err, user) {
         if (err) {
+            console.log(userId, "user not found or something weirder");
             return false; // user not found or something weirder
 
-            console.log(userId, "user not found or something weirder");
         } else {
+            console.log(userId, "user found on database");
             return user; //user found
 
             //    sendTextMessage(userId,  movie[field]+' sent from mongo DB');
