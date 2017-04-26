@@ -143,7 +143,7 @@ app.post('/webhook/', function (req, res) {
             let text = event.message.text
             decideMessagePlainText(sender, text)
         } else if (event.postback) {
-            let text = JSON.stringify(event.postback.payload)
+            let text = event.postback.payload
             decideMessagePostBack(sender, text)
         }
         // continue
