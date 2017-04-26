@@ -52,7 +52,7 @@ function isUserInDatabase(userId) {
     })
 }
 function surveyToRegister(sender, update) {
-    console.log('update user '+sender, JSON.stringify(update))
+    console.log('update user ' + sender, JSON.stringify(update))
 
     var query = {user_id: sender};
     var options = {upsert: true};
@@ -119,7 +119,7 @@ function decideMessagePostBack(sender, raw_postback) {
     var postbackcategory = postback[0];
     var postbacksubcategory = postback[1];
     var postbackvalue = postback[2];
-console.log(postback, 'post back')
+    console.log(postback, 'post back')
     if (postbackcategory === 'registration') {
         if (postbacksubcategory === 'gender') {
             var update = {
@@ -143,7 +143,7 @@ app.post('/webhook/', function (req, res) {
             let text = event.message.text
             decideMessagePlainText(sender, text)
         } else if (event.postback) {
-            let text = JSON.stringify(event.postback)
+            let text = JSON.stringify(event.postback.payload)
             decideMessagePostBack(sender, text)
         }
         // continue
