@@ -42,7 +42,7 @@ function isUserInDatabase(userId) {
     Users.findOne({user_id: userId}, function (err, user) {
         if (err) {
             console.log(userId, "user not found or something weirder");
-            askGender(sender)
+            askGender(userId)
             return false; // user not found or something weirder
 
         } else {
