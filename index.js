@@ -135,6 +135,7 @@ app.post('/webhook/', function (req, res) {
         let event = req.body.entry[0].messaging[i]
         let sender = event.sender.id
 
+        receivedMessageLog(event) // what did you mean by this function?
 
         if (event.message && event.message.text) {
             let text = event.message.text
@@ -160,9 +161,9 @@ function receivedMessageLog(event) {
     console.log("Received message for user %d and page %d at %d with message:", senderID, recipientID, timeOfMessage);
     console.log(JSON.stringify(message));
 
-    var messageId = message.mid;
-    var messageText = message.text;
-    var messageAttachments = message.attachments;
+    var messageId = message.mid || '';
+    var messageText = message.text || '';
+    var messageAttachments = message.attachments || '';
 
 }
 
@@ -190,8 +191,6 @@ function UserMeetsCriteria(sender) {
     }
 }
 function decideMessagePlainText(sender, text) {
-    receivedMessageLog(event) // what did you mean by this function?
-
     console.log('message plain text')
 
     //before proceeding, check if user in database:
