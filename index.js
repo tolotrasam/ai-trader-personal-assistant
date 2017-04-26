@@ -11,6 +11,7 @@ const app = express()
 var userData = {};
 var mongoose = require("mongoose");
 var db = mongoose.connect(process.env.MONGODB_URI);
+var tolotrafunctions = require('./tolotrafunctions')
 
 var Users = require("./content/users");
 // Process application/x-www-form-urlencoded
@@ -68,7 +69,8 @@ function hasCompleteInformation(sender, userInDatabase) {
         askAge(sender)
     } else {
         //age and gender saved.
-        sendGenericMessage(sender)
+        tolotrafunctions.senderLearnOrQuestionButton(sender)
+        //sendTopics(sender)
     }
 }
 function surveyToRegister(senderId, update) {
@@ -248,7 +250,7 @@ function decideMessagePlainText(sender, text) {
     console.log('message is: ', text)
     text.toLowerCase()
     if (text === 'image') {
-        sendGenericMessage(sender)
+        sendTopics(sender)
     }
     if (text === 'health') {
         sendTextMessage(sender, "No risks condom")
@@ -335,7 +337,7 @@ function sendTextMessage(sender, text) {
     sendRequest(sender, messageData)
 }
 
-function sendGenericMessage(sender) {
+function sendTopics(sender) {
     let messageData = {
         "attachment": {
             "type": "template",
