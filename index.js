@@ -139,13 +139,20 @@ app.post('/webhook/', function (req, res) {
         receivedMessageLog(event) // what did you mean by this function?
 
         if (event.message && event.message.text) {
-            let text = event.message.text
-            decideMessagePlainText(sender, text)
+            if (!event.message.is_echo) {
+                let text = event.message.text
+                decideMessagePlainText(sender, text)
+            } else {
+                console.log('echo event message')
+            }
+
         } else if (event.postback) {
-            let text = event.postback.payload
-            decideMessagePostBack(sender, text)
-        } else {
-            console.log('echo event')
+            if (!event.postback.is_echo) {
+                let text = event.postback.payload
+                decideMessagePostBack(sender, text)
+            } else {
+                console.log('echo event post back')
+            }
         }
 
         // continue
@@ -218,9 +225,9 @@ function decideMessagePlainText(sender, text) {
         return;
     }
     //before proceeding, check if user in database:
-    insertToSession(sender)
-    if(userData.sender.isAnswering) {
-        if(userData.sender.payload ==='age') {
+    insertToSession(sender) // insert to session if not yet in there
+    if (userData.sender.isAnswering) {
+        if (userData.sender.payload === 'age') {
             var update = {
                 user_id: sender,
                 age: text,
