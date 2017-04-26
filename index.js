@@ -162,7 +162,7 @@ function receivedMessageLog(event) {
     var news;
 
     console.log("Received message for user %d and page %d at %d with message:", senderID, recipientID, timeOfMessage);
-    console.log(JSON.stringify(message));
+    console.log(JSON.stringify(event));
     //
     // var messageId = message.mid || '';
     // var messageText = message.text || '';
