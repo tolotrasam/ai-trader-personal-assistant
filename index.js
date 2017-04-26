@@ -52,7 +52,18 @@ function isUserInDatabase(userId) {
     })
 }
 function surveyToRegister(sender, update) {
+    console.log('update user '+sender, JSON.stringify(update))
+
     var query = {user_id: sender};
+    var options = {upsert: true};
+
+    Users.findOneAndUpdate(query, update, options, function (err, mov) {
+        if (err) {
+            console.log("Database error: " + err);
+        } else {
+            console.log("Database sucess");
+        }
+    })
     //place holder
     // var update = {
     //     user_id: sender,
@@ -65,15 +76,6 @@ function surveyToRegister(sender, update) {
     //     preferences: "",
     //     profile_url: ""
     // };
-    var options = {upsert: true};
-
-    Users.findOneAndUpdate(query, update, options, function (err, mov) {
-        if (err) {
-            console.log("Database error: " + err);
-        } else {
-            console.log("Database sucess");
-        }
-    })
 }
 
 function askGender(sender) {
@@ -110,7 +112,7 @@ function askGender(sender) {
 
 
 function decideMessagePostBack(sender, raw_postback) {
-    console.log('message postback')
+    console.log('message postback', JSON.stringify(raw_postback))
 
     //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value
     var postback = raw_postback.split("-");
