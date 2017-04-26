@@ -155,7 +155,7 @@ function askAge(sender) {
 function UserMeetsCriteria(sender) {
     var userInDatabase = isUserInDatabase(sender)
     if (isUserInDatabase(sender)) {     //check if user_id already in database:
-        if (typeof (userInDatabase[gender]) === 'undefined' || userInDatabase[gender] === '') {
+        if (typeof (userInDatabase[sexe]) === 'undefined' || userInDatabase[sexe] === '') {
             askGender(sender)
         }
         if (typeof (userInDatabase[age]) === 'undefined' || userInDatabase[age] === '') {
