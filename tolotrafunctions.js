@@ -25,7 +25,7 @@ module.exports = {
                 }
             }
         }
-        sendRequest(sender, messageData)
+        globalvars.sendRequest(sender, messageData)
         
     }
 }
