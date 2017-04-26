@@ -218,7 +218,7 @@ function decideMessagePlainText(sender, text) {
         return;
     }
     //before proceeding, check if user in database:
-
+    insertToSession(sender)
     if(userData.sender.isAnswering) {
         if(userData.sender.payload ==='age') {
             var update = {
