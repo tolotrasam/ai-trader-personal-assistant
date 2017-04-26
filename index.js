@@ -182,7 +182,7 @@ function UserMeetsCriteria(sender) {
 function decideMessagePostBack(sender, raw_postback) {
     console.log('message postback', JSON.stringify(raw_postback))
 
-    //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value 
+    //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value
     var postback = raw_postback.split("-");
     var postbackcategory = postback[0];
     var postbacksubcategory = postback[1];
@@ -235,7 +235,7 @@ function decideMessagePlainText(sender, text) {
     }
 }
 
-//data base fetching
+//data base fetching//data base fetching
 function getMovieDetail(userId, field) {
     Users.findOne({user_id: userId}, function (err, movie) {
         if (err) {
