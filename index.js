@@ -9,13 +9,15 @@ const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
 
-app.set('port', (process.env.PORT || 5000))
+var mongoose = require("mongoose");
+var db = mongoose.connect(process.env.MONGODB_URI);
 
+var Movie = require("./content/users");
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}))
-
 // Process application/json
 app.use(bodyParser.json())
+app.set('port', (process.env.PORT || 5000))
 
 // Index route
 app.get('/', function (req, res) {
@@ -88,7 +90,31 @@ function receivedMessage(event) {
 
 function decideMessage(sender, text) {
 
+<<<<<<< HEAD
     console.log(text)
+=======
+    var query = {user_id: sender};
+    var update = {
+        user_id: sender,
+        title: 'Bouba',
+        plot: 'Chart',
+        date: 'today',
+        runtime: 'haawai',
+        director: 'Nancia',
+        cast: 'AutoCast',
+        rating: '5 stars',
+        poster_url:'nice url .com'
+    };
+    var options = {upsert: true};
+    Movie.findOneAndUpdate(query, update, options, function(err, mov) {
+        if (err) {
+            console.log("Database error: " + err);
+        } else {
+            console.log("Database sucess");
+        }
+    })
+    console.log('message is: ',text)
+>>>>>>> 84310ce01df33772c2b06f1a71f3f78607a8d444
     text.toLowerCase()
 
     if (text == 'get_started') {
@@ -110,13 +136,52 @@ function decideMessage(sender, text) {
         sendTextMessage(sender, "18")
         console.log('age end')
     }
+
     if (text === 'pregnant') {
         sendTextMessage(sender, "Sexual rapport")
     } else {
         sendButtonMessage(sender, text)
     }
+<<<<<<< HEAD
 }
 
+=======
+    console.log(sender, 'before database fetching user_id')
+        getMovieDetail(sender, 'director');
+}
+
+//data base fetching
+function getMovieDetail(userId, field) {
+    Movie.findOne({user_id: userId}, function(err, movie) {
+        if(err) {
+            sendTextMessage(userId, "Something went wrong. Try again");
+        } else {
+            sendTextMessage(userId,  movie[field]+' sent from mongo DB');
+        }
+    });
+}
+
+
+function sendRequest(sender, messageData) {
+    request({
+        url: 'https://graph.facebook.com/v2.6/me/messages',
+        qs: {access_token: token},
+        method: 'POST',
+        json: {
+            recipient: {id: sender},
+            message: messageData,
+        }
+    }, function (error, response, body) {
+        if (error) {
+            console.log('Error sending messages: ', error)
+        } else if (response.body.error) {
+            console.log('Error: ', response.body.error)
+        }
+    })
+
+}
+
+>>>>>>> 84310ce01df33772c2b06f1a71f3f78607a8d444
 function sendButtonMessage(sender, text) {
     let messageData = {
         "attachment": {
