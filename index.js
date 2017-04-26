@@ -8,7 +8,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
-
+var userData = {};
 var mongoose = require("mongoose");
 var db = mongoose.connect(process.env.MONGODB_URI);
 
@@ -46,11 +46,11 @@ function isUserInDatabase(senderId) {
             return false; // user not found or something weirder
 
         } else {
-            if(user){
+            if (user) {
                 console.log(user, "user found on database");
                 hasCompleteInformation(senderId, user)
                 return true; //user found
-            }else {
+            } else {
                 console.log('no result from database for', senderId)
                 askGender(senderId)
                 return false;
@@ -60,13 +60,13 @@ function isUserInDatabase(senderId) {
         }
     })
 }
-function hasCompleteInformation(sender, userInDatabase){
+function hasCompleteInformation(sender, userInDatabase) {
     if (typeof (userInDatabase['sexe']) === 'undefined' || userInDatabase['sexe'] === '') {
         askGender(sender)
     }
     if (typeof (userInDatabase['age']) === 'undefined' || userInDatabase['age'] === '') {
         askAge(sender)
-    }else {
+    } else {
         //age and gender saved.
         sendGenericMessage(sender)
     }
@@ -170,8 +170,17 @@ function receivedMessageLog(event) {
 
 }
 
+function insertToSession(sender) {
+    if (typeof (userData.sender) === 'undefined') {
+        userData.sender = {userdId: sender}
+    }
+}
 function askAge(sender) {
+
+    insertToSession(sender);
     console.log('age asked to ', sender)
+    userData.sender.isAnswering = true,
+        userData.sender.payload = 'age'
     var msg = 'How old are you?'
     sendTextMessage(sender, msg)
 }
@@ -210,8 +219,20 @@ function decideMessagePlainText(sender, text) {
     }
     //before proceeding, check if user in database:
 
+    if(userData.sender.isAnswering) {
+        if(userData.sender.payload ==='age') {
+            var update = {
+                user_id: sender,
+                age: text,
+            };
+            surveyToRegister(sender, update)
+        }
+        userData.sender.isAnswering = false
+        return;
+    }
+
     if (!UserMeetsCriteria(sender)) {
-        console.log('user not registered')
+        //console.log('user not registered')
         return;
     }
 
