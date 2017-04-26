@@ -52,6 +52,7 @@ function isUserInDatabase(senderId) {
                 return true; //user found
             }else {
                 console.log('no result from database for', senderId)
+                askGender(senderId)
                 return false;
             }
 
