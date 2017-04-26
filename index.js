@@ -12,7 +12,7 @@ const app = express()
 var mongoose = require("mongoose");
 var db = mongoose.connect(process.env.MONGODB_URI);
 
-var Movie = require("./content/users");
+var Users = require("./content/users");
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}))
 // Process application/json
@@ -37,21 +37,108 @@ app.listen(app.get('port'), function () {
     console.log('running on port', app.get('port'))
 })
 
+function isUserInDatabase(userId) {
+
+    Users.findOne({user_id: userId}, function (err, user) {
+        if (err) {
+            return false; // user not found or something weirder
+
+            console.log(userId, "user not found or something weirder");
+        } else {
+            return user; //user found
+
+            //    sendTextMessage(userId,  movie[field]+' sent from mongo DB');
+        }
+    })
+}
+function surveyToRegister(sender, update) {
+    var query = {user_id: sender};
+    //place holder
+    // var update = {
+    //     user_id: sender,
+    //     first_name: "",
+    //     last_name: "",
+    //     date_joined: "",
+    //     age: "",
+    //     sexe: "",
+    //     interests: "",
+    //     preferences: "",
+    //     profile_url: ""
+    // };
+    var options = {upsert: true};
+
+    Users.findOneAndUpdate(query, update, options, function (err, mov) {
+        if (err) {
+            console.log("Database error: " + err);
+        } else {
+            console.log("Database sucess");
+        }
+    })
+}
+
+function askGender(sender) {
+    let messageData = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "button",
+                "text": "What is your gender?",
+                "buttons": [
+                    {
+                        "type": "postback",
+                        "title": "Male",
+                        "payload": "registration-gender-male"
+                    },
+                    {
+                        "type": "postback",
+                        "title": "Female",
+                        "payload": "registration-gender-female"
+                    },
+                    {
+                        "type": "postback",
+                        "title": "I prefer not to say",
+                        "payload": "registration-gender-undefined"
+                    }
+                ]
+            }
+        }
+    }
+}
+
+
+function decideMessagePostBack(sender, raw_postback) {
+    //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value
+    var postback = raw_postback.split("-");
+    var postbackcategory = postback[0];
+    var postbacksubcategory = postback[1];
+    var postbackvalue = postback[2];
+
+    if (postbackcategory === 'registration') {
+        if (postbacksubcategory === 'gender') {
+            var update = {
+                user_id: sender,
+                sexe: postbackvalue,
+            };
+            surveyToRegister(sender, update)
+        }
+
+    }
+}
 app.post('/webhook/', function (req, res) {
     let messaging_events = req.body.entry[0].messaging
     for (let i = 0; i < messaging_events.length; i++) {
         let event = req.body.entry[0].messaging[i]
         let sender = event.sender.id
 
+        receivedMessageLog(event) // what did you mean by this function?
+
+
         if (event.message && event.message.text) {
             let text = event.message.text
-            decideMessage(sender, text)
-            receivedMessage(event)
-        }
-
-        if (event.postback) {
+            decideMessagePlainText(sender, text)
+        } else if (event.postback) {
             let text = JSON.stringify(event.postback)
-            decideMessage(sender, text)
+            decideMessagePostBack(sender, text)
             continue
         }
 
@@ -60,50 +147,54 @@ app.post('/webhook/', function (req, res) {
 })
 
 //To get information about received messages
-function receivedMessage(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var timeOfMessage = event.timestamp;
-  var message = event.message;
-  var news;
+function receivedMessageLog(event) {
+    var senderID = event.sender.id;
+    var recipientID = event.recipient.id;
+    var timeOfMessage = event.timestamp;
+    var message = event.message;
+    var news;
 
-  console.log("Received message for user %d and page %d at %d with message:",
-    senderID, recipientID, timeOfMessage);
-  console.log(JSON.stringify(message));
+    console.log("Received message for user %d and page %d at %d with message:", senderID, recipientID, timeOfMessage);
+    console.log(JSON.stringify(message));
 
-  var messageId = message.mid;
-  var messageText = message.text;
-  var messageAttachments = message.attachments;
+    var messageId = message.mid;
+    var messageText = message.text;
+    var messageAttachments = message.attachments;
 
 }
 
-function decideMessage(sender, text) {
-
-    var query = {user_id: sender};
-    //place holder
-    var update = {
-        user_id: sender,
-        title: 'Bouba',
-        plot: 'Chart',
-        date: 'today',
-        runtime: 'haawai',
-        director: 'Nancia Tojo',
-        cast: 'AutoCast',
-        rating: '5 stars',
-        poster_url:'nice url .com'
-    };
-    var options = {upsert: true};
-
-    Movie.findOneAndUpdate(query, update, options, function(err, mov) {
-        if (err) {
-            console.log("Database error: " + err);
-        } else {
-            console.log("Database sucess");
+function askAge(sender) {
+    var msg = 'How old are you?'
+    sendTextMessage(sender, msg)
+}
+function UserMeetsCriteria(sender) {
+    var userInDatabase = isUserInDatabase(sender)
+    if (isUserInDatabase(sender)) {     //check if user_id already in database:
+        if (typeof (userInDatabase[gender]) === 'undefined' || userInDatabase[gender] === '') {
+            askGender(sender)
         }
-    })
+        if (typeof (userInDatabase[age]) === 'undefined' || userInDatabase[age] === '') {
+            askAge(sender)
+        }
 
+        else {
+            //age and gender saved.
+        }
+    } else {
+        askGender(sender)
+        return;
+    }
 
-    console.log('message is: ',text)
+}
+function decideMessagePlainText(sender, text) {
+
+    //before proceeding, check if user in database:
+
+    if(!UserMeetsCriteria(sender)) {
+        return;
+    }
+
+    console.log('message is: ', text)
     text.toLowerCase()
     if (text === 'image') {
         sendGenericMessage(sender)
@@ -125,17 +216,15 @@ function decideMessage(sender, text) {
     } else {
         sendButtonMessage(sender, text)
     }
-    console.log(sender, 'before database fetching user_id')
-        getMovieDetail(sender, 'director');
 }
 
 //data base fetching
 function getMovieDetail(userId, field) {
-    Movie.findOne({user_id: userId}, function(err, movie) {
-        if(err) {
+    Users.findOne({user_id: userId}, function (err, movie) {
+        if (err) {
             sendTextMessage(userId, "Something went wrong. Try again");
         } else {
-            sendTextMessage(userId,  movie[field]+' sent from mongo DB');
+            sendTextMessage(userId, movie[field] + ' sent from mongo DB');
         }
     });
 }
