@@ -119,7 +119,7 @@ function decideMessagePostBack(sender, raw_postback) {
     var postbackcategory = postback[0];
     var postbacksubcategory = postback[1];
     var postbackvalue = postback[2];
-
+console.log(postback, 'post back')
     if (postbackcategory === 'registration') {
         if (postbacksubcategory === 'gender') {
             var update = {
