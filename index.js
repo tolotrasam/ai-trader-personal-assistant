@@ -46,7 +46,7 @@ function isUserInDatabase(userId) {
             return false; // user not found or something weirder
 
         } else {
-            console.log(userId, "user found on database");
+            console.log(user, "user found on database");
             hasCompleteInformation(userId, user)
             return true; //user found
 
@@ -55,10 +55,10 @@ function isUserInDatabase(userId) {
     })
 }
 function hasCompleteInformation(sender, userInDatabase){
-    if (typeof (userInDatabase[sexe]) === 'undefined' || userInDatabase[sexe] === '') {
+    if (typeof (userInDatabase['sexe']) === 'undefined' || userInDatabase['sexe'] === '') {
         askGender(sender)
     }
-    if (typeof (userInDatabase[age]) === 'undefined' || userInDatabase[age] === '') {
+    if (typeof (userInDatabase['age']) === 'undefined' || userInDatabase['age'] === '') {
         askAge(sender)
     }else {
         //age and gender saved.
