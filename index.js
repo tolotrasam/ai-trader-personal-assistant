@@ -1,5 +1,5 @@
 //https://dashboard.heroku.com/apps/rocky-beyond-32293/logs
-'use strict'
+// 'use strict'
 
 const token = process.env.PAGE_ACCESS_TOKEN
 const vtoken = process.env.VERIFICATION_TOKEN
@@ -11,8 +11,9 @@ const app = express()
 var userData = {};
 var mongoose = require("mongoose");
 var db = mongoose.connect(process.env.MONGODB_URI);
-var tolotrafunctions = require('./tolotrafunctions')
 
+var globalvars= {sendRequest: sendRequest, userData: userData}
+var tolotrafunctions = require('./tolotrafunctions')(app, globalvars)
 var Users = require("./content/users");
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}))
