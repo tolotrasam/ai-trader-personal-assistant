@@ -42,15 +42,28 @@ function isUserInDatabase(userId) {
     Users.findOne({user_id: userId}, function (err, user) {
         if (err) {
             console.log(userId, "user not found or something weirder");
+            askGender(sender)
             return false; // user not found or something weirder
 
         } else {
             console.log(userId, "user found on database");
-            return user; //user found
+            hasCompleteInformation(sender, user)
+            return true; //user found
 
             //    sendTextMessage(userId,  movie[field]+' sent from mongo DB');
         }
     })
+}
+function hasCompleteInformation(sender, userInDatabase){
+    if (typeof (userInDatabase[sexe]) === 'undefined' || userInDatabase[sexe] === '') {
+        askGender(sender)
+    }
+    if (typeof (userInDatabase[age]) === 'undefined' || userInDatabase[age] === '') {
+        askAge(sender)
+    }else {
+        //age and gender saved.
+        sendGenericMessage(sender)
+    }
 }
 function surveyToRegister(sender, update) {
     console.log('update user ' + sender, JSON.stringify(update))
@@ -119,12 +132,12 @@ app.post('/webhook/', function (req, res) {
 
         receivedMessageLog(event) // what did you mean by this function?
 
-            if (event.message && event.message.text) {
-                let text = event.message.text
-                decideMessagePlainText(sender, text)
-            } else if (event.postback) {
-                let text = event.postback.payload
-                decideMessagePostBack(sender, text)
+        if (event.message && event.message.text) {
+            let text = event.message.text
+            decideMessagePlainText(sender, text)
+        } else if (event.postback) {
+            let text = event.postback.payload
+            decideMessagePostBack(sender, text)
         } else {
             console.log('echo event')
         }
@@ -157,23 +170,8 @@ function askAge(sender) {
     sendTextMessage(sender, msg)
 }
 function UserMeetsCriteria(sender) {
-    var userInDatabase = isUserInDatabase(sender)
-    if (isUserInDatabase(sender)) {     //check if user_id already in database:
-        if (typeof (userInDatabase[sexe]) === 'undefined' || userInDatabase[sexe] === '') {
-            askGender(sender)
-        }
-        if (typeof (userInDatabase[age]) === 'undefined' || userInDatabase[age] === '') {
-            askAge(sender)
-        }
+    var userInDatabase = isUserInDatabase(sender);
 
-        else {
-            //age and gender saved.
-            sendGenericMessage(sender)
-        }
-    } else {
-        askGender(sender)
-        return;
-    }
 }
 
 
@@ -201,7 +199,7 @@ function decideMessagePostBack(sender, raw_postback) {
 
 function decideMessagePlainText(sender, text) {
     console.log('message plain text')
-    if(text.is_echo){
+    if (text.is_echo) {
         return;
     }
     //before proceeding, check if user in database:
