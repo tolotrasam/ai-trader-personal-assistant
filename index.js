@@ -80,18 +80,20 @@ function receivedMessage(event) {
 function decideMessage(sender, text) {
 
     var query = {user_id: sender};
+    //place holder
     var update = {
         user_id: sender,
         title: 'Bouba',
         plot: 'Chart',
         date: 'today',
         runtime: 'haawai',
-        director: 'Nancia',
+        director: 'Nancia Tojo',
         cast: 'AutoCast',
         rating: '5 stars',
         poster_url:'nice url .com'
     };
     var options = {upsert: true};
+
     Movie.findOneAndUpdate(query, update, options, function(err, mov) {
         if (err) {
             console.log("Database error: " + err);
@@ -99,6 +101,8 @@ function decideMessage(sender, text) {
             console.log("Database sucess");
         }
     })
+
+
     console.log('message is: ',text)
     text.toLowerCase()
     if (text === 'image') {
