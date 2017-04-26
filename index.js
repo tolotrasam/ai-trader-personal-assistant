@@ -235,6 +235,8 @@ function decideMessagePlainText(sender, text) {
             surveyToRegister(sender, update)
         }
         userData.sender.isAnswering = false
+        //loop again
+        UserMeetsCriteria(sender)
         return;
     }
 
