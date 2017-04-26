@@ -211,7 +211,7 @@ function decideMessagePlainText(sender, text) {
         return;
     }
 
-    console.log('message is: ',  text)
+    console.log('message is: ', text)
     text.toLowerCase()
     if (text === 'image') {
         sendGenericMessage(sender)
