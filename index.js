@@ -47,7 +47,7 @@ function isUserInDatabase(userId) {
 
         } else {
             console.log(userId, "user found on database");
-            hasCompleteInformation(sender, user)
+            hasCompleteInformation(userId, user)
             return true; //user found
 
             //    sendTextMessage(userId,  movie[field]+' sent from mongo DB');
