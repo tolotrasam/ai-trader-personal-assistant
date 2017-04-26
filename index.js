@@ -77,6 +77,7 @@ function surveyToRegister(sender, update) {
 }
 
 function askGender(sender) {
+    console.log('gender asked to ', sender)
     let messageData = {
         "attachment": {
             "type": "template",
@@ -103,6 +104,8 @@ function askGender(sender) {
             }
         }
     }
+    sendRequest(sender, messageData)
+
 }
 
 
@@ -322,6 +325,5 @@ function sendGenericMessage(sender) {
             }
         }
     }
-
     sendRequest(sender, messageData)
 }
