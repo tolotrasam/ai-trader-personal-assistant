@@ -119,14 +119,12 @@ app.post('/webhook/', function (req, res) {
 
         receivedMessageLog(event) // what did you mean by this function?
 
-        if (!event.message.is_echo) {
             if (event.message && event.message.text) {
                 let text = event.message.text
                 decideMessagePlainText(sender, text)
             } else if (event.postback) {
                 let text = event.postback.payload
                 decideMessagePostBack(sender, text)
-            }
         } else {
             console.log('echo event')
         }
@@ -203,7 +201,9 @@ function decideMessagePostBack(sender, raw_postback) {
 
 function decideMessagePlainText(sender, text) {
     console.log('message plain text')
-
+    if(text.is_echo){
+        return;
+    }
     //before proceeding, check if user in database:
 
     if (!UserMeetsCriteria(sender)) {
