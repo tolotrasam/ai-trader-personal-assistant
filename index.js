@@ -12,7 +12,7 @@ const app = express()
 var mongoose = require("mongoose");
 var db = mongoose.connect(process.env.MONGODB_URI);
 
-var Users = require("./content/users");
+var Users = require("./content/movies");
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}))
 // Process application/json
@@ -110,27 +110,6 @@ function askGender(sender) {
 
 }
 
-
-function decideMessagePostBack(sender, raw_postback) {
-    console.log('message postback', JSON.stringify(raw_postback))
-
-    //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value
-    var postback = raw_postback.split("-");
-    var postbackcategory = postback[0];
-    var postbacksubcategory = postback[1];
-    var postbackvalue = postback[2];
-    console.log(postback, 'post back')
-    if (postbackcategory === 'registration') {
-        if (postbacksubcategory === 'gender') {
-            var update = {
-                user_id: sender,
-                sexe: postbackvalue,
-            };
-            surveyToRegister(sender, update)
-        }
-
-    }
-}
 app.post('/webhook/', function (req, res) {
     let messaging_events = req.body.entry[0].messaging
     for (let i = 0; i < messaging_events.length; i++) {
@@ -185,12 +164,37 @@ function UserMeetsCriteria(sender) {
 
         else {
             //age and gender saved.
+            sendGenericMessage(sender)
         }
     } else {
         askGender(sender)
         return;
     }
 }
+
+
+function decideMessagePostBack(sender, raw_postback) {
+    console.log('message postback', JSON.stringify(raw_postback))
+
+    //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value
+    var postback = raw_postback.split("-");
+    var postbackcategory = postback[0];
+    var postbacksubcategory = postback[1];
+    var postbackvalue = postback[2];
+    console.log(postback, 'post back')
+    if (postbackcategory === 'registration') {
+        if (postbacksubcategory === 'gender') {
+            var update = {
+                user_id: sender,
+                sexe: postbackvalue,
+            };
+            surveyToRegister(sender, update)
+        }
+        //loop again
+        UserMeetsCriteria(sender)
+    }
+}
+
 function decideMessagePlainText(sender, text) {
     console.log('message plain text')
 
