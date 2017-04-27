@@ -171,7 +171,7 @@ function askAge(sender){
     console.log('age asked to ', sender)
     userData.sender.isAnswering = true,
     userData.sender.payload = 'age'
-    var msg = 'How old are you?'
+    var msg = 'Before we start, could you tell me how old you are?'
     sendTextMessage(sender, msg)
 }
 
@@ -194,6 +194,7 @@ function decideMessagePostBack(sender, raw_postback) {
     if(raw_postback == 'get_started') {    
         //sendTextMessage(sender, "Hello there!")
         //before proceeding, check if user in database:
+        sendQuickReply(sender, "Please select the age range that applies to you: ", "text", "<18 years old", "text", ">18 years old")
         insertToSession(sender) // insert to session if not yet in there
         if (userData.sender.isAnswering) {
             if (userData.sender.payload === 'age') {
@@ -326,7 +327,6 @@ function sendTextMessage(sender, text) {
     sendRequest(sender, messageData)
 }
 
-
 function sendTopics(sender) {
     let messageData = {
         "attachment": {
@@ -384,3 +384,31 @@ function callGreetingAPI(greeting) {
       }
     });
   }
+
+function sendQuickReply(sender, messageText, ct1, title1, ct2, title2,ct3,title3) {
+  var messageData = {
+    recipient: {
+      id: sender
+    },
+    message: {
+      text: messageText,
+      quick_replies:[
+        {
+          content_type: ct1,
+          title: title1,
+          payload:"ct1_payload"
+        },
+        {
+          content_type: ct2,
+          title: title2,
+          payload:"ct2_payload"
+        }
+        {
+          content_type: ct3,
+          title: title3,
+          payload:"ct3_payload"
+        }
+      ]}
+    }
+    sendRequest(sender, messageData);
+}
