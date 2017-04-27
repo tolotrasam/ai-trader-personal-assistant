@@ -465,4 +465,4 @@ function sendQuickReply(sender, messageText, ct1, title1, ct2, title2) {
     }
     sendRequest(sender, messageData);
 }
-/*
+*/
