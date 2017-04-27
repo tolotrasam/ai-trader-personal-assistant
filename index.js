@@ -124,18 +124,6 @@ function surveyToRegister(senderId, update) {
             console.log("Database sucess");
         }
     })
-    //place holder
-    // var update = {
-    //     user_id: senderId,
-    //     first_name: "",
-    //     last_name: "",
-    //     date_joined: "",
-    //     age: "",
-    //     sexe: "",
-    //     interests: "",
-    //     preferences: "",
-    //     profile_url: ""
-    // };
 }
 
 function askGender(sender) {
@@ -199,28 +187,6 @@ function askAge(sender){
 
 function decideMessage(sender, text) {
     console.log(text)
-    var query = {user_id: sender};
-    var update = {
-        user_id: sender,
-        title: 'Bouba',
-        plot: 'Chart',
-        date: 'today',
-        runtime: 'haawai',
-        director: 'Nancia',
-        cast: 'AutoCast',
-        rating: '5 stars',
-        poster_url:'nice url .com'
-    };
-    var options = {upsert: true};
-    
-    Users.findOneAndUpdate(query, update, options, function(err, mov) {
-        if (err) {
-            console.log("Database error: " + err);
-        } else {
-            console.log("Database sucess");
-        }
-    }) 
-     
     console.log('message is: ',text)
     /*insertToSession(sender);
     console.log('age asked to ', sender)
