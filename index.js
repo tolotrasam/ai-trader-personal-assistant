@@ -195,7 +195,7 @@ function insertToSession(sender) {
     }
 }
 
-function askAge(sender) {
+//function askAge(sender) {
 
 function decideMessage(sender, text) {
     console.log(text)
