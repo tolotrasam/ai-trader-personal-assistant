@@ -387,10 +387,11 @@ function callGreetingAPI(greeting) {
 
 function sendQuickReply(sender, messageText, ct1, title1, ct2, title2,ct3,title3) {
   var messageData = {
+    /*
     recipient: {
       id: sender
     },
-    message: {
+    message: {*/
       text: messageText,
       quick_replies:[
         {
@@ -409,6 +410,6 @@ function sendQuickReply(sender, messageText, ct1, title1, ct2, title2,ct3,title3
           payload:"ct3_payload"
         }
       ]}
-    }
+  //  }
     sendRequest(sender, messageData);
 }
