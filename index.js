@@ -59,6 +59,7 @@ app.post('/webhook/', function (req, res) {
 
             if (event.message && event.message.text) {
                 let text = event.message.text
+                decideMessage(sender, text)
                 decideMessagePlainText(sender, text)
                 receivedMessageLog(event)
             }
@@ -448,3 +449,4 @@ function sendTopics(sender) {
     }
     sendRequest(sender, messageData)
 }
+
