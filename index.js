@@ -98,6 +98,7 @@ function isUserInDatabase(senderId) {
         }
     })
 }
+
 function hasCompleteInformation(sender, userInDatabase) {
     if (typeof (userInDatabase['sexe']) === 'undefined' || userInDatabase['sexe'] === '') {
         askGender(sender)
@@ -169,37 +170,6 @@ function askGender(sender) {
     sendRequest(sender, messageData)
 }
 
-//FUNCTIONS USING APIS -------------------------------------
-
-app.post('/webhook/', function (req, res) {
-    let messaging_events = req.body.entry[0].messaging
-    for (let i = 0; i < messaging_events.length; i++) {
-        let event = req.body.entry[0].messaging[i]
-        let sender = event.sender.id
-
-        receivedMessageLog(event) // what did you mean by this function?
-
-        if (event.message && event.message.text) {
-            if (!event.message.is_echo) {
-                let text = event.message.text
-                decideMessagePlainText(sender, text)
-            } else {
-                console.log('echo event message')
-            }
-
-        } else if (event.postback) {
-            if (!event.postback.is_echo) {
-                let text = event.postback.payload
-                decideMessagePostBack(sender, text)
-            } else {
-                console.log('echo event post back')
-            }
-        }
-
-        // continue
-    }
-    res.sendStatus(200)
-})
 
 //To get information about received messages
 function receivedMessageLog(event) {
@@ -224,9 +194,7 @@ function insertToSession(sender) {
     }
 }
 
-function askAge(sender) {
-
-//function askAge(sender) {   //What is this for?
+//function askAge(sender) { //What is this for?
 
 function decideMessage(sender, text) {
     console.log(text)
@@ -263,7 +231,6 @@ function decideMessage(sender, text) {
 
 function UserMeetsCriteria(sender) {
     var userInDatabase = isUserInDatabase(sender);
-
 }
 
 
@@ -358,6 +325,7 @@ function getMovieDetail(userId, field) {
     })
 }
 
+//API REQUEST
 function sendRequest(sender, messageData) {
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
