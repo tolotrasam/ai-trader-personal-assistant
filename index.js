@@ -378,11 +378,4 @@ function sendTopics(sender) {
         }
     }
     sendRequest(sender, messageData)
-}
-
-curl -X POST -H "Content-Type: application/json" -d '{
-  "setting_type":"greeting",
-  "greeting":{
-    "text":"Hello {{user_first_name}} 😊, welcome to Sex Education Bot!"
-  }
-}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=PAGE_ACCESS_TOKEN"    
+}   
