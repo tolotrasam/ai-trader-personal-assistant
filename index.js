@@ -216,7 +216,7 @@
                 messageTurn = !messageTurn
                 console.log("MESSAGETURN IS ", messageTurn)
                 //to make sure messages execute one after the other
-                if(messageTurn==true) {
+                if(message.is_echo) {
                 //before proceeding, check if user in database:
                 //sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor", "text", "more than 18", "major");
                 insertToSession(sender) // insert to session if not yet in there
