@@ -390,6 +390,54 @@ function callGreetingAPI(greeting) {
     });
   }
 
+//FOR TRYOUTS
+function callSendAPI(messageData) {
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: { access_token: access },
+    method: 'POST',
+    json: messageData
+
+  }, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      var recipientId = body.recipient_id;
+      var messageId = body.message_id;
+
+      console.log("Successfully sent message with id %s to recipient %s",
+        messageId, recipientId);
+    } else {
+      console.error("Unable to send message.");
+      console.error(response);
+      console.error(error);
+    }
+  });
+}
+
+function sendQuickReply(recipientId, messageText, ct1, title1, ct2, title2) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      text: messageText,
+      quick_replies:[
+        {
+          content_type: ct1,
+          title: title1,
+          payload:"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+        },
+        {
+          content_type: ct2,
+          title: title2,
+          payload:"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+        }
+      ]}
+    }
+    callSendAPI(messageData);
+  }
+
+//REAL ONE
+/*
 function sendQuickReply(sender, messageText, ct1, title1, ct2, title2) {
   var messageData = {
     recipient: {
@@ -407,13 +455,14 @@ function sendQuickReply(sender, messageText, ct1, title1, ct2, title2) {
           content_type: ct2,
           title: title2,
           payload:"ct2_payload"
-        }/*,
+        },
         {
           content_type: ct3,
           title: title3,
           payload:"ct3_payload"
-        }*/
+        }
       ]}
     }
     sendRequest(sender, messageData);
 }
+/*
