@@ -199,6 +199,8 @@ function decideMessagePostBack(sender, raw_postback) {
 
     if(raw_postback == 'get_started') {
         sendTextMessage(sender, "Hello there!")
+        askAge(sender)
+        askGender(sender)
     }
 
 
