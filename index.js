@@ -194,7 +194,7 @@ function decideMessagePostBack(sender, raw_postback) {
     if(raw_postback == 'get_started') {    
         //sendTextMessage(sender, "Hello there!")
         //before proceeding, check if user in database:
-        sendQuickReply(sender, "What do you want to do?", "text", "Play", "text", "Talk");
+        sendQuickReply(sender, "Select your age range", "text", "less than 18", "text", "more than 18");
       /*  insertToSession(sender) // insert to session if not yet in there
         if (userData.sender.isAnswering) {
             if (userData.sender.payload === 'age') {
@@ -424,12 +424,12 @@ function sendQuickReply(recipientId, messageText, ct1, title1, ct2, title2) {
         {
           content_type: ct1,
           title: title1,
-          payload:"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_RED"
+          payload:"ct1_payload"
         },
         {
           content_type: ct2,
           title: title2,
-          payload:"DEVELOPER_DEFINED_PAYLOAD_FOR_PICKING_GREEN"
+          payload:"ct2_payload"
         }
       ]}
     }
