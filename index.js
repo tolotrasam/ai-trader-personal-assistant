@@ -118,6 +118,7 @@ function surveyToRegister(senderId, update) {
 
 function askGender(sender) {
     console.log('gender asked to ', sender)
+    
     let messageData = {
         "attachment": {
             "type": "template",
@@ -145,6 +146,8 @@ function askGender(sender) {
         }
     }
     sendRequest(sender, messageData)
+    
+   // sendQuickReply(sender, "What is your gender?", "text", "Male", "text", "Female")
 }
 
 
@@ -194,7 +197,7 @@ function decideMessagePostBack(sender, raw_postback) {
     if(raw_postback == 'get_started') {    
         //sendTextMessage(sender, "Hello there!")
         //before proceeding, check if user in database:
-        sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "text", "more than 18");
+        sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor," "text", "more than 18", "major");
         insertToSession(sender) // insert to session if not yet in there
         if (userData.sender.isAnswering) {
             if (userData.sender.payload === 'age') {
@@ -413,7 +416,7 @@ function callSendAPI(messageData) {
   });
 }
 
-function sendQuickReply(recipientId, messageText, ct1, title1, ct2, title2) {
+function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2, ct3, title3, pt3) {
   var messageData = {
     recipient: {
       id: recipientId
@@ -424,12 +427,17 @@ function sendQuickReply(recipientId, messageText, ct1, title1, ct2, title2) {
         {
           content_type: ct1,
           title: title1,
-          payload:"ct1_payload"
+          payload:pt1
         },
         {
           content_type: ct2,
           title: title2,
-          payload:"ct2_payload"
+          payload:pt2
+        },
+        {
+          content_type: ct3,
+          title: title3,
+          payload:pt3
         }
       ]}
     }
