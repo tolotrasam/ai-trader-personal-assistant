@@ -390,7 +390,7 @@ function callGreetingAPI(greeting) {
     });
   }
 
-//FOR TRYOUTS
+//SET UP FOR QUICK REPLY
 function callSendAPI(messageData) {
   request({
     uri: 'https://graph.facebook.com/v2.6/me/messages',
@@ -433,36 +433,6 @@ function sendQuickReply(recipientId, messageText, ct1, title1, ct2, title2) {
         }
       ]}
     }
-    sendRequest(recipientId, messageData);
-  }
-
-//REAL ONE
-/*
-function sendQuickReply(sender, messageText, ct1, title1, ct2, title2) {
-  var messageData = {
-    recipient: {
-      id: sender
-    },
-    message: {
-      text: messageText,
-      quick_replies:[
-        {
-          content_type: ct1,
-          title: title1,
-          payload:"ct1_payload"
-        },
-        {
-          content_type: ct2,
-          title: title2,
-          payload:"ct2_payload"
-        },
-        {
-          content_type: ct3,
-          title: title3,
-          payload:"ct3_payload"
-        }
-      ]}
-    }
-    sendRequest(sender, messageData);
+    callSendAPI(messageData);
 }
-*/
+//------------------------------------------------------------
