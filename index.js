@@ -167,9 +167,8 @@ function askGender(sender) {
     }
     sendRequest(sender, messageData)
 }
-<<<<<<< HEAD
+
 //FUNCTIONS USING APIS -------------------------------------
-=======
 
 app.post('/webhook/', function (req, res) {
     let messaging_events = req.body.entry[0].messaging
@@ -201,7 +200,6 @@ app.post('/webhook/', function (req, res) {
     res.sendStatus(200)
 })
 
->>>>>>> a0232680d977b831727c737f1a0a562559d8dff5
 //To get information about received messages
 function receivedMessageLog(event) {
     var senderID = event.sender.id;
@@ -226,7 +224,6 @@ function insertToSession(sender) {
 }
 function askAge(sender) {
 
-<<<<<<< HEAD
 //function askAge(sender) {   //What is this for?
 
 function decideMessage(sender, text) {
@@ -254,8 +251,6 @@ function decideMessage(sender, text) {
     }) 
 */ 
     console.log('message is: ',text)
-=======
->>>>>>> a0232680d977b831727c737f1a0a562559d8dff5
     insertToSession(sender);
     console.log('age asked to ', sender)
     userData.sender.isAnswering = true,
@@ -341,7 +336,7 @@ function decideMessagePlainText(sender, text) {
     }
 }
 
-<<<<<<< HEAD
+
 //=======
        // console.log(sender, 'before database fetching user_id')
       //  getMovieDetail(sender, 'director');
@@ -349,8 +344,6 @@ function decideMessagePlainText(sender, text) {
 //>>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
 //}
 
-=======
->>>>>>> a0232680d977b831727c737f1a0a562559d8dff5
 //data base fetching//data base fetching
 function getMovieDetail(userId, field) {
     Users.findOne({user_id: userId}, function (err, movie) {
