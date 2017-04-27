@@ -211,7 +211,7 @@ function decideMessagePostBack(sender, raw_postback) {
                 greeting = "Hi " + name + ". ";
             }
             var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex.";
-            sendTextMessage(senderId, message);
+            sendTextMessage(sender, message);
         });  
         //before proceeding, check if user in database:
         //sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor", "text", "more than 18", "major");
