@@ -194,6 +194,7 @@ function decideMessagePostBack(sender, raw_postback) {
     console.log(postback, 'post back')
 
     if(raw_postback == 'get_started') {  
+        var messageTurn = false
         request({
             url: "https://graph.facebook.com/v2.6/" + sender,
             qs: {
@@ -212,9 +213,11 @@ function decideMessagePostBack(sender, raw_postback) {
             }
             var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex.";
             sendTextMessage(sender, message);
+            messageTurn = true
         });  
         //before proceeding, check if user in database:
         //sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor", "text", "more than 18", "major");
+        if (messageTurn == true) {
           insertToSession(sender) // insert to session if not yet in there
             if (userData.sender.isAnswering) {
             if (userData.sender.payload === 'age') {
@@ -233,6 +236,7 @@ function decideMessagePostBack(sender, raw_postback) {
         //console.log('user not registered')
             return;
         } 
+    }
     }
 
 
