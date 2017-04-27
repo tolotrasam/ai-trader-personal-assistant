@@ -284,7 +284,12 @@ function sendRequest(sender, messageData) {
             message: messageData,
         }
     }, function (error, response, body) {
-        if (error) {
+        if (!error && response.statusCode == 200) {
+            var recipientId = body.recipient_id;
+            var messageId = body.message_id;
+            console.log("Successfully sent message with id %s to recipient %s", messageId, recipientId);
+        } 
+        else if (error) {
             console.log('Error sending messages: ', error)
         } else if (response.body.error) {
             console.log('Error: ', response.body.error)
@@ -385,7 +390,7 @@ function callGreetingAPI(greeting) {
     });
   }
 
-function sendQuickReply(sender, messageText, ct1, title1, ct2, title2,ct3,title3) {
+function sendQuickReply(sender, messageText, ct1, title1, ct2, title2) {
   var messageData = {
     recipient: {
       id: sender
@@ -402,12 +407,12 @@ function sendQuickReply(sender, messageText, ct1, title1, ct2, title2,ct3,title3
           content_type: ct2,
           title: title2,
           payload:"ct2_payload"
-        },
+        }/*,
         {
           content_type: ct3,
           title: title3,
           payload:"ct3_payload"
-        }
+        }*/
       ]}
     }
     sendRequest(sender, messageData);
