@@ -45,10 +45,7 @@ app.post('/webhook/', function (req, res) {
     console.log('IT STARTS HERE')
     //getstarted button
     sendGetStarted()
-    // Set FB bot greeting text
-    //sendGreeting()
-    //set persistent menu
-   // setPersistentMenu()
+
     //Make sure its a page subscription
     if (data.object==='page'){
         let messaging_events = data.entry[0].messaging
@@ -66,7 +63,6 @@ app.post('/webhook/', function (req, res) {
             if (event.postback) {
                 let text = event.postback.payload
                 decideMessagePostBack(sender, text) 
-                continue
             }
         }
         res.sendStatus(200)
@@ -185,17 +181,6 @@ function askAge(sender){
     sendTextMessage(sender, msg)
 }
 
-function decideMessage(sender, text) {
-    console.log(text)
-    console.log('message is: ',text)
-    /*insertToSession(sender);
-    console.log('age asked to ', sender)
-    userData.sender.isAnswering = true,
-        userData.sender.payload = 'age'
-    var msg = 'How old are you?'
-    sendTextMessage(sender, msg)*/
-    askAge(sender)
-}
 
 function UserMeetsCriteria(sender) {
     var userInDatabase = isUserInDatabase(sender);

@@ -20,7 +20,7 @@ module.exports = {
                             "payload": "nav-main-learn"
                         },
                         {
-                            "title": "Quick Replies",
+                            "title": "Ask Question",
                             "type": "postback",
                             "payload": "nav-main-learn"
                         }
