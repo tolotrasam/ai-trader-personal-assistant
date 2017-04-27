@@ -38,12 +38,12 @@ app.get('/webhook/', function (req, res) {
 // Spin up the server
 app.listen(app.get('port'), function () {
     console.log('running on port', app.get('port'))
+    sendGreeting()
 })
 
 app.post('/webhook/', function (req, res) {
     var data = req.body;
     console.log('IT STARTS HERE')
-    sendGreeting()
     //Make sure its a page subscription
     if (data.object==='page'){
         let messaging_events = data.entry[0].messaging
@@ -375,7 +375,6 @@ function sendGreeting() {
     }
   };
   callGreetingAPI(greeting)
-  sendRequest(greeting)
 }
 
 function callGreetingAPI(greeting) {
