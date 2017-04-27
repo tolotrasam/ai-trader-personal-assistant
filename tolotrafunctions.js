@@ -2,6 +2,7 @@
  * Created by Tolotra Samuel on 27/04/2017.
  */
 const request = require('request') // Added by Tojosoa Ramarlina 4:03 pm the same day mdr
+const token = process.env.PAGE_ACCESS_TOKEN // same
 
 module.exports = {
     senderLearnOrQuestionButton : function (sender) {
