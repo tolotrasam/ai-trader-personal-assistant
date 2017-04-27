@@ -194,7 +194,7 @@ function decideMessagePostBack(sender, raw_postback) {
     if(raw_postback == 'get_started') {    
         //sendTextMessage(sender, "Hello there!")
         //before proceeding, check if user in database:
-        sendQuickReply(sender, "Please select the age range that applies to you: ", "text", "<18 years old", "text", ">18 years old")
+        sendQuickReply(sender, "What do you want to do?", "text", "Play", "text", "Talk");
       /*  insertToSession(sender) // insert to session if not yet in there
         if (userData.sender.isAnswering) {
             if (userData.sender.payload === 'age') {
@@ -387,11 +387,10 @@ function callGreetingAPI(greeting) {
 
 function sendQuickReply(sender, messageText, ct1, title1, ct2, title2,ct3,title3) {
   var messageData = {
-    /*
     recipient: {
       id: sender
     },
-    message: {*/
+    message: {
       text: messageText,
       quick_replies:[
         {
