@@ -402,7 +402,7 @@ function sendQuickReply(sender, messageText, ct1, title1, ct2, title2,ct3,title3
           content_type: ct2,
           title: title2,
           payload:"ct2_payload"
-        }
+        },
         {
           content_type: ct3,
           title: title3,
