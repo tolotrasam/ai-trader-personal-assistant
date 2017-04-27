@@ -155,7 +155,7 @@ app.post('/webhook/', function (req, res) {
             if (event.message && event.message.text) {
                 let text = event.message.text
                 decideMessage(sender, text)
-                receivedMessage(event)
+                receivedMessageLog(event)
             }
 
             if (event.postback) {
