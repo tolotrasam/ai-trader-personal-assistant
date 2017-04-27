@@ -107,7 +107,7 @@ function hasCompleteInformation(sender, userInDatabase) {
     } else {
         //age and gender saved.
         tolotrafunctions.senderLearnOrQuestionButton(sender)
-        //sendTopics(sender)
+        sendTopics(sender)
     }
 }
 
