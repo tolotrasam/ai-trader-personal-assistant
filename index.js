@@ -195,7 +195,7 @@ function decideMessagePostBack(sender, raw_postback) {
         //sendTextMessage(sender, "Hello there!")
         //before proceeding, check if user in database:
         sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "text", "more than 18");
-      /*  insertToSession(sender) // insert to session if not yet in there
+        insertToSession(sender) // insert to session if not yet in there
         if (userData.sender.isAnswering) {
             if (userData.sender.payload === 'age') {
                 var update = {
@@ -212,7 +212,7 @@ function decideMessagePostBack(sender, raw_postback) {
         if (!UserMeetsCriteria(sender)) {
         //console.log('user not registered')
         return;
-    } */
+    } 
     }
 
 
