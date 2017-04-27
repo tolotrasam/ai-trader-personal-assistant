@@ -181,11 +181,6 @@ function receivedMessageLog(event) {
 
     console.log("Received message for user %d and page %d at %d with message:", senderID, recipientID, timeOfMessage);
     console.log(JSON.stringify(event));
-    //
-    // var messageId = message.mid || '';
-    // var messageText = message.text || '';
-    // var messageAttachments = message.attachments || '';
-
 }
 
 function insertToSession(sender) {
@@ -194,7 +189,14 @@ function insertToSession(sender) {
     }
 }
 
-//function askAge(sender) { //What is this for?
+function askAge(sender){
+    insertToSession(sender);
+    console.log('age asked to ', sender)
+    userData.sender.isAnswering = true,
+    userData.sender.payload = 'age'
+    var msg = 'How old are you?'
+    sendTextMessage(sender, msg)
+}
 
 function decideMessage(sender, text) {
     console.log(text)
@@ -221,12 +223,13 @@ function decideMessage(sender, text) {
     }) 
      */ 
     console.log('message is: ',text)
-    insertToSession(sender);
+    /*insertToSession(sender);
     console.log('age asked to ', sender)
     userData.sender.isAnswering = true,
         userData.sender.payload = 'age'
     var msg = 'How old are you?'
-    sendTextMessage(sender, msg)
+    sendTextMessage(sender, msg)*/
+    askAge(sender)
 }
 
 function UserMeetsCriteria(sender) {
@@ -306,13 +309,8 @@ function decideMessagePlainText(sender, text) {
     }
 }
 
-
-//=======
        // console.log(sender, 'before database fetching user_id')
       //  getMovieDetail(sender, 'director');
-//=======
-//>>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
-//}
 
 //data base fetching//data base fetching
 function getMovieDetail(userId, field) {
