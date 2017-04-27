@@ -212,7 +212,7 @@ function decideMessage(sender, text) {
         poster_url:'nice url .com'
     };
     var options = {upsert: true};
-
+/*
     Movie.findOneAndUpdate(query, update, options, function(err, mov) {
         if (err) {
             console.log("Database error: " + err);
@@ -220,7 +220,7 @@ function decideMessage(sender, text) {
             console.log("Database sucess");
         }
     }) 
-
+*/ 
     console.log('message is: ',text)
     insertToSession(sender);
     console.log('age asked to ', sender)
@@ -313,8 +313,8 @@ function decideMessagePlainText(sender, text) {
 }
 
 //=======
-        console.log(sender, 'before database fetching user_id')
-        getMovieDetail(sender, 'director');
+       // console.log(sender, 'before database fetching user_id')
+      //  getMovieDetail(sender, 'director');
 //=======
 //>>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
 //}
