@@ -1,5 +1,5 @@
 //https://dashboard.heroku.com/apps/rocky-beyond-32293/logs
-// 'use strict'
+'use strict'
 
 const token = process.env.PAGE_ACCESS_TOKEN
 const vtoken = process.env.VERIFICATION_TOKEN
