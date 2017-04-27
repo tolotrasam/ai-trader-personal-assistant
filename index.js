@@ -195,6 +195,7 @@ function decideMessagePostBack(sender, raw_postback) {
     console.log(postback, 'post back')
 
     if(raw_postback == 'get_started') {    
+        sendGreeting()
         sendTextMessage(sender, "Hello there!")
         //before proceeding, check if user in database:
         insertToSession(sender) // insert to session if not yet in there
@@ -378,4 +379,33 @@ function sendTopics(sender) {
         }
     }
     sendRequest(sender, messageData)
-}   
+}
+
+function sendGreeting() {
+  var greeting = {
+    setting_type: "greeting",
+    greeting: {
+      text: "Hi there {{user_first_name}} 😊 "
+    }
+  };
+  callGreetingAPI(greeting)
+}
+
+function callGreetingAPI(greeting) {
+  request({
+    uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
+    qs: { access_token: token},
+    method: 'POST',
+    json: greeting
+
+  }, function(error, response, body) {
+    if(!error && response.statusCode == 200) {
+
+      console.log("Successfully sent greeting message to {{user_full_name}}")
+      } else {
+        console.error("Unable to send greeting.");
+        console.error(response);
+        console.error(body);
+      }
+    });
+  }
