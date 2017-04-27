@@ -416,7 +416,7 @@ function callSendAPI(messageData) {
   });
 }
 
-function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
+function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2,ct3,title3,pt3) {
   var messageData = {
     recipient: {
       id: recipientId
@@ -433,6 +433,11 @@ function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2,
           content_type: ct2,
           title: title2,
           payload:pt2
+        },
+        {
+          content_type: ct3,
+          title: title3,
+          payload:pt3
         }
       ]}
     }
