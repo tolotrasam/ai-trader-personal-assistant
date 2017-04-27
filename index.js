@@ -433,7 +433,7 @@ function sendQuickReply(recipientId, messageText, ct1, title1, ct2, title2) {
         }
       ]}
     }
-    sendRequest(recepientId, messageData);
+    sendRequest(recipientId, messageData);
   }
 
 //REAL ONE
