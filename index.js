@@ -354,9 +354,8 @@ function getMovieDetail(userId, field) {
         } else {
             sendTextMessage(userId, movie[field] + ' sent from mongo DB');
         }
-    });
+    })
 }
-
 
 function sendRequest(sender, messageData) {
     request({
