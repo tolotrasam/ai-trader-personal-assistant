@@ -315,7 +315,7 @@ function decideMessagePlainText(sender, text) {
         getMovieDetail(sender, 'director');
 //=======
 //>>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
-}
+//}
 
 //data base fetching//data base fetching
 function getMovieDetail(userId, field) {
