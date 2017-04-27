@@ -40,6 +40,40 @@ app.listen(app.get('port'), function () {
     console.log('running on port', app.get('port'))
 })
 
+app.post('/webhook/', function (req, res) {
+    var data = req.body;
+    console.log('IT STARTS HERE')
+    //getstarted button
+    sendGetStarted()
+    // Set FB bot greeting text
+    sendGreeting()
+    //set persistent menu
+    setPersistentMenu()
+    //Make sure its a page subscription
+    if (data.object==='page'){
+        let messaging_events = data.entry[0].messaging
+        //iterate over each messaging events
+        for (let i = 0; i < messaging_events.length; i++) {
+            let event = data.entry[0].messaging[i]
+            let sender = event.sender.id
+
+            if (event.message && event.message.text) {
+                let text = event.message.text
+                decideMessage(sender, text)
+                receivedMessageLog(event)
+            }
+
+            if (event.postback) {
+                let text = event.postback.payload
+                decideMessage(sender, text) 
+                continue
+            }
+        }
+        res.sendStatus(200)
+}
+})
+
+//Functions 
 function isUserInDatabase(senderId) {
 
     Users.findOne({user_id: senderId}, function (err, user) {
@@ -76,6 +110,7 @@ function hasCompleteInformation(sender, userInDatabase) {
         sendTopics(sender)
     }
 }
+
 function surveyToRegister(senderId, update) {
     console.log('update user ' + senderId, JSON.stringify(update))
 
@@ -132,42 +167,7 @@ function askGender(sender) {
         }
     }
     sendRequest(sender, messageData)
-
 }
-
-app.post('/webhook/', function (req, res) {
-    var data = req.body;
-    console.log('IT STARTS HERE')
-    //getstarted button
-    sendGetStarted()
-    // Set FB bot greeting text
-    sendGreeting()
-    //set persistent menu
-    setPersistentMenu()
-    //Make sure its a page subscription
-    if (data.object==='page'){
-        let messaging_events = data.entry[0].messaging
-        //iterate over each messaging events
-        for (let i = 0; i < messaging_events.length; i++) {
-            let event = data.entry[0].messaging[i]
-            let sender = event.sender.id
-
-            if (event.message && event.message.text) {
-                let text = event.message.text
-                decideMessage(sender, text)
-                receivedMessageLog(event)
-            }
-
-            if (event.postback) {
-                let text = event.postback.payload
-                decideMessage(sender, text) 
-                continue
-            }
-        }
-        res.sendStatus(200)
-}
-})
-
 //FUNCTIONS USING APIS -------------------------------------
 //To get information about received messages
 function receivedMessageLog(event) {
@@ -220,7 +220,7 @@ function decideMessage(sender, text) {
             console.log("Database sucess");
         }
     }) 
-    
+
     console.log('message is: ',text)
     insertToSession(sender);
     console.log('age asked to ', sender)
@@ -313,8 +313,8 @@ function decideMessagePlainText(sender, text) {
 }
 
 //=======
-   // console.log(sender, 'before database fetching user_id')
-  //      getMovieDetail(sender, 'director');
+        console.log(sender, 'before database fetching user_id')
+        getMovieDetail(sender, 'director');
 //=======
 //>>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
 //}

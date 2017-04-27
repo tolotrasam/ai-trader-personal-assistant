@@ -28,6 +28,7 @@ module.exports = {
         sendRequest(sender, messageData)
     }
 }
+
 function sendRequest(sender, messageData) {
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
