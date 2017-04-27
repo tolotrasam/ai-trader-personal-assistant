@@ -165,32 +165,6 @@ app.post('/webhook/', function (req, res) {
             }
         }
         res.sendStatus(200)
-
-    let messaging_events = req.body.entry[0].messaging
-    for (let i = 0; i < messaging_events.length; i++) {
-        let event = req.body.entry[0].messaging[i]
-        let sender = event.sender.id
-
-        //receivedMessageLog(event) // what did you mean by this function?
-
-        if (event.message && event.message.text) {
-            if (!event.message.is_echo) {
-                let text = event.message.text
-                decideMessagePlainText(sender, text)
-            } else {
-                console.log('echo event message')
-            }
-
-        } else if (event.postback) {
-            if (!event.postback.is_echo) {
-                let text = event.postback.payload
-                decideMessagePostBack(sender, text)
-            } else {
-                console.log('echo event post back')
-            }
-        }
-        continue
-    }
 }
 })
 
