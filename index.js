@@ -60,13 +60,14 @@ app.post('/webhook/', function (req, res) {
                 receivedMessageLog(event)
             }
 
-            if (event.postback) {
+            else if (event.postback) {
                 let text = event.postback.payload
                 decideMessagePostBack(sender, text) 
             }
 
             else {
                 sendTextMessage(sender, "it is working!")
+            }
             }
         }
         res.sendStatus(200)
