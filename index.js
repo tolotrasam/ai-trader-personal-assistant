@@ -180,6 +180,7 @@ function askAge(sender){
 
 function firstGreet(sender){
     console.log('Greeted ', sender)
+    userData.sender = sender
     userData.sender.payload = 'first_greeted'
     var msg = 'Hello there, I am the Sex Ed Bot. Here you can learn and share your experiences.'
     sendTextMessage(sender, msg)
