@@ -97,7 +97,6 @@ function isUserInDatabase(senderId) {
         }
     })
 }
-
 function hasCompleteInformation(sender, userInDatabase) {
     if (typeof (userInDatabase['sexe']) === 'undefined' || userInDatabase['sexe'] === '') {
         askGender(sender)
@@ -106,8 +105,8 @@ function hasCompleteInformation(sender, userInDatabase) {
         askAge(sender)
     } else {
         //age and gender saved.
-        //tolotrafunctions.senderLearnOrQuestionButton(sender)
-        sendTopics(sender)
+        tolotrafunctions.senderLearnOrQuestionButton(sender)
+        //sendTopics(sender)
     }
 }
 
@@ -168,7 +167,41 @@ function askGender(sender) {
     }
     sendRequest(sender, messageData)
 }
+<<<<<<< HEAD
 //FUNCTIONS USING APIS -------------------------------------
+=======
+
+app.post('/webhook/', function (req, res) {
+    let messaging_events = req.body.entry[0].messaging
+    for (let i = 0; i < messaging_events.length; i++) {
+        let event = req.body.entry[0].messaging[i]
+        let sender = event.sender.id
+
+        receivedMessageLog(event) // what did you mean by this function?
+
+        if (event.message && event.message.text) {
+            if (!event.message.is_echo) {
+                let text = event.message.text
+                decideMessagePlainText(sender, text)
+            } else {
+                console.log('echo event message')
+            }
+
+        } else if (event.postback) {
+            if (!event.postback.is_echo) {
+                let text = event.postback.payload
+                decideMessagePostBack(sender, text)
+            } else {
+                console.log('echo event post back')
+            }
+        }
+
+        // continue
+    }
+    res.sendStatus(200)
+})
+
+>>>>>>> a0232680d977b831727c737f1a0a562559d8dff5
 //To get information about received messages
 function receivedMessageLog(event) {
     var senderID = event.sender.id;
@@ -184,9 +217,6 @@ function receivedMessageLog(event) {
     // var messageText = message.text || '';
     // var messageAttachments = message.attachments || '';
 
-  var messageId = message.mid;
-  var messageText = message.text;
-  var messageAttachments = message.attachments;
 }
 
 function insertToSession(sender) {
@@ -194,7 +224,9 @@ function insertToSession(sender) {
         userData.sender = {userdId: sender}
     }
 }
+function askAge(sender) {
 
+<<<<<<< HEAD
 //function askAge(sender) {   //What is this for?
 
 function decideMessage(sender, text) {
@@ -222,6 +254,8 @@ function decideMessage(sender, text) {
     }) 
 */ 
     console.log('message is: ',text)
+=======
+>>>>>>> a0232680d977b831727c737f1a0a562559d8dff5
     insertToSession(sender);
     console.log('age asked to ', sender)
     userData.sender.isAnswering = true,
@@ -229,14 +263,15 @@ function decideMessage(sender, text) {
     var msg = 'How old are you?'
     sendTextMessage(sender, msg)
 }
-
 function UserMeetsCriteria(sender) {
     var userInDatabase = isUserInDatabase(sender);
+
 }
 
 
 function decideMessagePostBack(sender, raw_postback) {
     console.log('message postback', JSON.stringify(raw_postback))
+
     //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value     f
     var postback = raw_postback.split("-");
     var postbackcategory = postback[0];
@@ -284,12 +319,6 @@ function decideMessagePlainText(sender, text) {
 
     console.log('message is: ', text)
     text.toLowerCase()
-
-    if (text == 'get_started') {
-        sendTextMessage(sender, "Hello there {{user_first_name}}!")
-        getUserProfile()
-    }
-
     if (text === 'image') {
         sendTopics(sender)
     }
@@ -312,6 +341,7 @@ function decideMessagePlainText(sender, text) {
     }
 }
 
+<<<<<<< HEAD
 //=======
        // console.log(sender, 'before database fetching user_id')
       //  getMovieDetail(sender, 'director');
@@ -319,6 +349,8 @@ function decideMessagePlainText(sender, text) {
 //>>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
 //}
 
+=======
+>>>>>>> a0232680d977b831727c737f1a0a562559d8dff5
 //data base fetching//data base fetching
 function getMovieDetail(userId, field) {
     Users.findOne({user_id: userId}, function (err, movie) {
@@ -423,163 +455,3 @@ function sendTopics(sender) {
     }
     sendRequest(sender, messageData)
 }
-/*
-function sendUserProfile(){
-    var userProfile = {
-        {
-            "first_name": "Peter",
-            "last_name": "Chang",
-            "locale": "en_US",
-            "gender": "male"
-        }    
-    }
-    getUserProfile(userProfile)
-}
-*/
-function getUserProfile(userProfile){
-    request({
-        uri: 'https://graph.facebook.com/v2.6/<USER_ID>?fields=first_name,last_name,profile_pic,locale,timezone,gender',
-        qs: {access_token:token},
-        method: 'GET',
-        json: userProfile, 
-
-        function(error, response, body) {
-            if(!error && response.statusCode == 200) {
-                console.log("Successfully got userProfile")
-                console.log("LOOOOOK" + body.first_name + " "  + body.last_name);
-
-            } else {
-
-                console.error("Unable to send userProfile.");
-                console.error(response);
-                console.error(body);
-            }
-        }
-    })
-}
-
-function sendGreeting() {
-  var greeting = {
-    setting_type: "greeting",
-    greeting: {
-      text: "Hi {{user_first_name}}, welcome to this bot."
-    }
-  }
-  callGreetingAPI(greeting)
-}
-
-function sendGetStarted() {
-  var greeting = {
-    setting_type:"call_to_actions",
-    thread_state:"new_thread",
-    call_to_actions:[
-      {
-        payload:"get_started"
-      }
-    ]
-  }
-  callGreetingAPI(greeting)
-}
-
-function setPersistentMenu() {
-    var greeting = {
-         setting_type : "call_to_actions",
-         thread_state : "existing_thread",
-         call_to_actions:[ 
-         {
-            type:"postback",
-            title:"Learn",
-            payload:"learn"
-        },
-        {
-            type:"postback",
-            title:"Ask Questions",
-            payload:"ask_questions"
-        },
-        {
-            type:"postback",
-            title:"Help",
-            payload:"get_help"
-        }
-        ]
-    }
-    callGreetingAPI(greeting)
-}
-//---------------------------------
-
-//API REQUESTS ------------------------------
-function sendRequest(sender, messageData) {
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token: token},
-        method: 'POST',
-        json: {
-            recipient: {id: sender},
-            message: messageData,
-        }
-    }, function (error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
-    })
-}
-
-function callGreetingAPI(greeting) {
-  request({
-    uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
-    qs: { access_token: token},
-    method: 'POST',
-    json: greeting
-
-  }, function(error, response, body) {
-    if(!error && response.statusCode == 200) {
-      console.log("Successfully sent greeting message to {{user_full_name}}")
-      } else {
-        console.error("Unable to send greeting.");
-        console.error(response);
-        console.error(body);
-      }
-    });
-}
-//------------------------
-
-/* ALL CURL COMMANDS */
-/*
-SET PERSISTENT MENU
-curl -X POST -H "Content-Type: application/json" -d '{
-  "setting_type" : "call_to_actions",
-  "thread_state" : "existing_thread",
-  "call_to_actions":[
-    {
-      "type":"postback",
-      "title":"Learn",
-      "payload":"learn"
-    },
-    {
-      "type":"postback",
-      "title":"Ask Questions",
-      "payload":"ask_questions"
-    },
-   {
-      "type":"postback",
-      "title":"Help",
-      "payload":"get_help"
-    }
-  ]
-}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=EAADoHNR65NEBAIeQ4R2hCZAdYfwOHSJjmkMGZCK4clbtL2zjV4cfXPMnZB9A9wbyZBnHa6aHJu8UoHHLHHZAQt1hw2HUkmT1ANuG4GaZAp2sJ79mU7XCwXS5GAX3KoqB5bhxqTw0J0ejz9orTYWg0CewZCZCV84ZCcbAZCbBZCFJxqIjl7d4UKe3tZBg"  
-
----------------------------------------------
-DELETE PERSISTENT MENU
-curl -X DELETE -H "Content-Type: application/json" -d '{"setting_type":"call_to_actions","thread_state":"existing_thread"}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=EAADoHNR65NEBAIeQ4R2hCZAdYfwOHSJjmkMGZCK4clbtL2zjV4cfXPMnZB9A9wbyZBnHa6aHJu8UoHHLHHZAQt1hw2HUkmT1ANuG4GaZAp2sJ79mU7XCwXS5GAX3KoqB5bhxqTw0J0ejz9orTYWg0CewZCZCV84ZCcbAZCbBZCFJxqIjl7d4UKe3tZBg"
-
----------------------------------------------
-SET GREETING TEXT
-curl -X POST -H "Content-Type: application/json" -d '{ "setting_type":"greeting", "greeting":{ "text":"Hi there {{user_first_name}} 😊 "}}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=EAADoHNR65NEBAIeQ4R2hCZAdYfwOHSJjmkMGZCK4clbtL2zjV4cfXPMnZB9A9wbyZBnHa6aHJu8UoHHLHHZAQt1hw2HUkmT1ANuG4GaZAp2sJ79mU7XCwXS5GAX3KoqB5bhxqTw0J0ejz9orTYWg0CewZCZCV84ZCcbAZCbBZCFJxqIjl7d4UKe3tZBg"    
-
------------------------------------------------
-DELETE GREETING TEXT
-curl -X DELETE -H "Content-Type: application/json" -d '{ "setting_type":"greeting"}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=EAADoHNR65NEBAIeQ4R2hCZAdYfwOHSJjmkMGZCK4clbtL2zjV4cfXPMnZB9A9wbyZBnHa6aHJu8UoHHLHHZAQt1hw2HUkmT1ANuG4GaZAp2sJ79mU7XCwXS5GAX3KoqB5bhxqTw0J0ejz9orTYWg0CewZCZCV84ZCcbAZCbBZCFJxqIjl7d4UKe3tZBg" 
-
-*/
