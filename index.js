@@ -38,7 +38,6 @@ app.get('/webhook/', function (req, res) {
 // Spin up the server
 app.listen(app.get('port'), function () {
     console.log('running on port', app.get('port'))
-    sendGreeting()
 })
 
 app.post('/webhook/', function (req, res) {
@@ -193,7 +192,7 @@ function decideMessagePostBack(sender, raw_postback) {
     console.log(postback, 'post back')
 
     if(raw_postback == 'get_started') {    
-        sendTextMessage(sender, "Hello there!")
+        //sendTextMessage(sender, "Hello there!")
         //before proceeding, check if user in database:
         insertToSession(sender) // insert to session if not yet in there
         if (userData.sender.isAnswering) {
@@ -365,16 +364,6 @@ function sendTopics(sender) {
         }
     }
     sendRequest(sender, messageData)
-}
-
-function sendGreeting() {
-  var greeting = {
-    setting_type: "greeting",
-    greeting: {
-      text: "Hi there {{user_first_name}} 😊 "
-    }
-  };
-  callGreetingAPI(greeting)
 }
 
 function callGreetingAPI(greeting) {
