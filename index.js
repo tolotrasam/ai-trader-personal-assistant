@@ -63,6 +63,7 @@ function isUserInDatabase(senderId) {
         }
     })
 }
+
 function hasCompleteInformation(sender, userInDatabase) {
     if (typeof (userInDatabase['sexe']) === 'undefined' || userInDatabase['sexe'] === '') {
         askGender(sender)
@@ -135,7 +136,6 @@ function askGender(sender) {
 }
 
 app.post('/webhook/', function (req, res) {
-<<<<<<< HEAD
     var data = req.body;
     console.log('IT STARTS HERE')
     //getstarted button
@@ -165,13 +165,13 @@ app.post('/webhook/', function (req, res) {
             }
         }
         res.sendStatus(200)
-=======
+
     let messaging_events = req.body.entry[0].messaging
     for (let i = 0; i < messaging_events.length; i++) {
         let event = req.body.entry[0].messaging[i]
         let sender = event.sender.id
 
-        receivedMessageLog(event) // what did you mean by this function?
+        //receivedMessageLog(event) // what did you mean by this function?
 
         if (event.message && event.message.text) {
             if (!event.message.is_echo) {
@@ -189,10 +189,9 @@ app.post('/webhook/', function (req, res) {
                 console.log('echo event post back')
             }
         }
-
-        // continue
->>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
+        continue
     }
+}
 })
 
 //FUNCTIONS USING APIS -------------------------------------
@@ -211,27 +210,21 @@ function receivedMessageLog(event) {
     // var messageText = message.text || '';
     // var messageAttachments = message.attachments || '';
 
-<<<<<<< HEAD
   var messageId = message.mid;
   var messageText = message.text;
   var messageAttachments = message.attachments;
-=======
 }
 
 function insertToSession(sender) {
     if (typeof (userData.sender) === 'undefined') {
         userData.sender = {userdId: sender}
     }
->>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
 }
+
 function askAge(sender) {
 
-<<<<<<< HEAD
 function decideMessage(sender, text) {
-
-<<<<<<< HEAD
     console.log(text)
-=======
     var query = {user_id: sender};
     var update = {
         user_id: sender,
@@ -253,8 +246,6 @@ function decideMessage(sender, text) {
         }
     })
     console.log('message is: ',text)
->>>>>>> 84310ce01df33772c2b06f1a71f3f78607a8d444
-=======
     insertToSession(sender);
     console.log('age asked to ', sender)
     userData.sender.isAnswering = true,
@@ -262,15 +253,14 @@ function decideMessage(sender, text) {
     var msg = 'How old are you?'
     sendTextMessage(sender, msg)
 }
+
 function UserMeetsCriteria(sender) {
     var userInDatabase = isUserInDatabase(sender);
-
 }
 
 
 function decideMessagePostBack(sender, raw_postback) {
     console.log('message postback', JSON.stringify(raw_postback))
-
     //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value     f
     var postback = raw_postback.split("-");
     var postbackcategory = postback[0];
@@ -317,7 +307,6 @@ function decideMessagePlainText(sender, text) {
     }
 
     console.log('message is: ', text)
->>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
     text.toLowerCase()
 
     if (text == 'get_started') {
@@ -345,15 +334,13 @@ function decideMessagePlainText(sender, text) {
     } else {
         sendButtonMessage(sender, text)
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
 }
 
-=======
+//=======
     console.log(sender, 'before database fetching user_id')
         getMovieDetail(sender, 'director');
-=======
->>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
+//=======
+//>>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
 }
 
 //data base fetching//data base fetching
@@ -387,7 +374,6 @@ function sendRequest(sender, messageData) {
 
 }
 
->>>>>>> 84310ce01df33772c2b06f1a71f3f78607a8d444
 function sendButtonMessage(sender, text) {
     let messageData = {
         "attachment": {
