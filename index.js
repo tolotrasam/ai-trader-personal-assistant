@@ -43,9 +43,7 @@ app.listen(app.get('port'), function () {
 app.post('/webhook/', function (req, res) {
     var data = req.body;
     console.log('IT STARTS HERE')
-    //getstarted button
-    sendGetStarted()
-
+    sendGreeting()
     //Make sure its a page subscription
     if (data.object==='page'){
         let messaging_events = data.entry[0].messaging
@@ -195,7 +193,6 @@ function decideMessagePostBack(sender, raw_postback) {
     console.log(postback, 'post back')
 
     if(raw_postback == 'get_started') {    
-        sendGreeting()
         sendTextMessage(sender, "Hello there!")
         //before proceeding, check if user in database:
         insertToSession(sender) // insert to session if not yet in there
@@ -330,17 +327,6 @@ function sendTextMessage(sender, text) {
     sendRequest(sender, messageData)
 }
 
-function sendGetStarted() {
-  var greeting = {
-    setting_type:"call_to_actions",
-    thread_state:"new_thread",
-    call_to_actions:[
-      {
-        payload:"get_started"
-      }
-    ]
-  }
-}
 
 function sendTopics(sender) {
     let messageData = {
