@@ -197,10 +197,27 @@ function decideMessagePostBack(sender, raw_postback) {
     var postbackvalue = postback[2];
     console.log(postback, 'post back')
 
-    if(raw_postback == 'get_started') {
+    if(raw_postback == 'get_started') {    
         sendTextMessage(sender, "Hello there!")
-        askAge(sender)
-        askGender(sender)
+        //before proceeding, check if user in database:
+        insertToSession(sender) // insert to session if not yet in there
+        if (userData.sender.isAnswering) {
+            if (userData.sender.payload === 'age') {
+                var update = {
+                    user_id: sender,
+                    age: text,
+                };
+                surveyToRegister(sender, update)
+            }
+            userData.sender.isAnswering = false
+            //loop again
+            UserMeetsCriteria(sender)
+            return;
+        }
+        if (!UserMeetsCriteria(sender)) {
+        //console.log('user not registered')
+        return;
+    }
     }
 
 
@@ -220,26 +237,6 @@ function decideMessagePostBack(sender, raw_postback) {
 function decideMessagePlainText(sender, text) {
     console.log('message plain text')
     if (text.is_echo) {
-        return;
-    }
-    //before proceeding, check if user in database:
-    insertToSession(sender) // insert to session if not yet in there
-    if (userData.sender.isAnswering) {
-        if (userData.sender.payload === 'age') {
-            var update = {
-                user_id: sender,
-                age: text,
-            };
-            surveyToRegister(sender, update)
-        }
-        userData.sender.isAnswering = false
-        //loop again
-        UserMeetsCriteria(sender)
-        return;
-    }
-
-    if (!UserMeetsCriteria(sender)) {
-        //console.log('user not registered')
         return;
     }
 
