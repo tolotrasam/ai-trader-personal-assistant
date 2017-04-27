@@ -195,7 +195,7 @@ function insertToSession(sender) {
     }
 }
 
-//function askAge(sender) {
+//function askAge(sender) {   //What is this for?
 
 function decideMessage(sender, text) {
     console.log(text)
@@ -212,13 +212,13 @@ function decideMessage(sender, text) {
         poster_url:'nice url .com'
     };
     var options = {upsert: true};
-    Movie.findOneAndUpdate(query, update, options, function(err, mov) {
+/*    Movie.findOneAndUpdate(query, update, options, function(err, mov) {
         if (err) {
             console.log("Database error: " + err);
         } else {
             console.log("Database sucess");
         }
-    })
+    }) */
     console.log('message is: ',text)
     insertToSession(sender);
     console.log('age asked to ', sender)
