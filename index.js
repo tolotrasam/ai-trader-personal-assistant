@@ -62,9 +62,6 @@ app.post('/webhook/', function (req, res) {
 
             else if (event.postback) {
                 let text = event.postback.payload
-                if(text == 'get_started') {
-                    sendTextMessage(sender, "Hello there!")
-                }
                 decideMessagePostBack(sender, text) 
             }
             }
@@ -199,6 +196,12 @@ function decideMessagePostBack(sender, raw_postback) {
     var postbacksubcategory = postback[1];
     var postbackvalue = postback[2];
     console.log(postback, 'post back')
+
+    if(raw_postback == 'get_started') {
+        sendTextMessage(sender, "Hello there!")
+    }
+
+
     if (postbackcategory === 'registration') {
         if (postbacksubcategory === 'gender') {
             var update = {
