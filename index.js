@@ -222,6 +222,7 @@ function insertToSession(sender) {
         userData.sender = {userdId: sender}
     }
 }
+
 function askAge(sender) {
 
 //function askAge(sender) {   //What is this for?
@@ -241,7 +242,7 @@ function decideMessage(sender, text) {
         poster_url:'nice url .com'
     };
     var options = {upsert: true};
-/*
+    /*
     Movie.findOneAndUpdate(query, update, options, function(err, mov) {
         if (err) {
             console.log("Database error: " + err);
@@ -249,7 +250,7 @@ function decideMessage(sender, text) {
             console.log("Database sucess");
         }
     }) 
-*/ 
+     */ 
     console.log('message is: ',text)
     insertToSession(sender);
     console.log('age asked to ', sender)
@@ -258,6 +259,7 @@ function decideMessage(sender, text) {
     var msg = 'How old are you?'
     sendTextMessage(sender, msg)
 }
+
 function UserMeetsCriteria(sender) {
     var userInDatabase = isUserInDatabase(sender);
 
@@ -372,7 +374,6 @@ function sendRequest(sender, messageData) {
             console.log('Error: ', response.body.error)
         }
     })
-
 }
 
 function sendButtonMessage(sender, text) {
