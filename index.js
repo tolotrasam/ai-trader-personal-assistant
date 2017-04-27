@@ -409,6 +409,6 @@ function sendQuickReply(sender, messageText, ct1, title1, ct2, title2,ct3,title3
           payload:"ct3_payload"
         }
       ]}
-  //  }
+    }
     sendRequest(sender, messageData);
 }
