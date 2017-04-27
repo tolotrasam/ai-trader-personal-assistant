@@ -62,11 +62,10 @@ app.post('/webhook/', function (req, res) {
 
             else if (event.postback) {
                 let text = event.postback.payload
+                if(text == 'get_started') {
+                    sendTextMessage(sender, "Hello there!")
+                }
                 decideMessagePostBack(sender, text) 
-            }
-
-            else {
-                sendTextMessage(sender, "it is working!")
             }
             }
         }
