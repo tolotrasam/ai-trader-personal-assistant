@@ -71,8 +71,8 @@ function hasCompleteInformation(sender, userInDatabase) {
         askAge(sender)
     } else {
         //age and gender saved.
-        tolotrafunctions.senderLearnOrQuestionButton(sender)
-        //sendTopics(sender)
+        //tolotrafunctions.senderLearnOrQuestionButton(sender)
+        sendTopics(sender)
     }
 }
 function surveyToRegister(senderId, update) {
