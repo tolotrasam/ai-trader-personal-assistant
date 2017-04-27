@@ -46,9 +46,9 @@ app.post('/webhook/', function (req, res) {
     //getstarted button
     sendGetStarted()
     // Set FB bot greeting text
-    sendGreeting()
+    //sendGreeting()
     //set persistent menu
-    setPersistentMenu()
+   // setPersistentMenu()
     //Make sure its a page subscription
     if (data.object==='page'){
         let messaging_events = data.entry[0].messaging
@@ -71,7 +71,7 @@ app.post('/webhook/', function (req, res) {
             }
         }
         res.sendStatus(200)
-}
+    }
 })
 
 //Functions 
@@ -378,6 +378,17 @@ function sendTextMessage(sender, text) {
     let messageData = {text: text}
     sendRequest(sender, messageData)
 }
+
+function sendGetStarted() {
+  var greeting = {
+    setting_type:"call_to_actions",
+    thread_state:"new_thread",
+    call_to_actions:[
+      {
+        payload:"get_started"
+      }
+    ]
+  }
 
 function sendTopics(sender) {
     let messageData = {
