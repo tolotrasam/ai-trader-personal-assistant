@@ -197,8 +197,8 @@ function decideMessagePostBack(sender, raw_postback) {
     if(raw_postback == 'get_started') {    
         //sendTextMessage(sender, "Hello there!")
         //before proceeding, check if user in database:
-        sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor", "text", "more than 18", "major");
-       /* insertToSession(sender) // insert to session if not yet in there
+        //sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor", "text", "more than 18", "major");
+        insertToSession(sender) // insert to session if not yet in there
         if (userData.sender.isAnswering) {
             if (userData.sender.payload === 'age') {
                 var update = {
@@ -215,7 +215,7 @@ function decideMessagePostBack(sender, raw_postback) {
         if (!UserMeetsCriteria(sender)) {
         //console.log('user not registered')
         return;
-    } */
+    } 
     }
 
 
@@ -416,7 +416,7 @@ function callSendAPI(messageData) {
   });
 }
 
-function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2,ct3,title3,pt3) {
+function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
   var messageData = {
     recipient: {
       id: recipientId
@@ -433,11 +433,6 @@ function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2,
           content_type: ct2,
           title: title2,
           payload:pt2
-        },
-        {
-          content_type: ct3,
-          title: title3,
-          payload:pt3
         }
       ]}
     }
