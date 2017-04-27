@@ -387,6 +387,7 @@ function sendGetStarted() {
       }
     ]
   }
+}
 
 function sendTopics(sender) {
     let messageData = {
@@ -426,4 +427,3 @@ function sendTopics(sender) {
     }
     sendRequest(sender, messageData)
 }
-
