@@ -12,7 +12,7 @@ module.exports = {
                 "type": "template",
                 "payload": {
                     "template_type": "button",
-                    "text": "What is your gender?",
+                    "text": "What do you want to do?",
                     "buttons": [
                         {
                             "title": "Learn",

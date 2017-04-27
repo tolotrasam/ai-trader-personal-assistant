@@ -71,7 +71,6 @@ app.post('/webhook/', function (req, res) {
 
 //Functions 
 function isUserInDatabase(senderId) {
-
     Users.findOne({user_id: senderId}, function (err, user) {
         if (err) {
             console.log(senderId, "user not found or something weirder");
@@ -88,8 +87,6 @@ function isUserInDatabase(senderId) {
                 askGender(senderId)
                 return false;
             }
-
-            //    sendTextMessage(senderId,  movie[field]+' sent from mongo DB');
         }
     })
 }
