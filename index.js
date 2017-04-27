@@ -178,16 +178,6 @@ function askAge(sender){
     sendTextMessage(sender, msg)
 }
 
-function firstGreet(sender){
-    console.log('Greeted ', sender)
-    userData.sender = sender
-    userData.sender.payload = 'first_greeted'
-    var msg = 'Hello there, I am the Sex Ed Bot. Here you can learn and share your experiences.'
-    sendTextMessage(sender, msg)
-}
-
-
-
 function UserMeetsCriteria(sender) {
     var userInDatabase = isUserInDatabase(sender);
 }
@@ -203,12 +193,29 @@ function decideMessagePostBack(sender, raw_postback) {
     var postbackvalue = postback[2];
     console.log(postback, 'post back')
 
-    if(raw_postback == 'get_started') {    
-        firstGreet()
-        if(raw_postback == 'first_greeted'){
+    if(raw_postback == 'get_started') {  
+        request({
+            url: "https://graph.facebook.com/v2.6/" + sender,
+            qs: {
+                access_token: token,
+                fields: "first_name"
+            },
+            method: "GET"
+        }, function(error, response, body) {
+            var greeting = "";
+            if (error) {
+                console.log("Error getting user's name: " +  error);
+            } else {
+                var bodyObj = JSON.parse(body);
+                name = bodyObj.first_name;
+                greeting = "Hi " + name + ". ";
+            }
+            var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex.";
+            sendTextMessage(senderId, message);
+        });  
         //before proceeding, check if user in database:
         //sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor", "text", "more than 18", "major");
-            insertToSession(sender) // insert to session if not yet in there
+        /*   insertToSession(sender) // insert to session if not yet in there
             if (userData.sender.isAnswering) {
             if (userData.sender.payload === 'age') {
                 var update = {
@@ -225,8 +232,7 @@ function decideMessagePostBack(sender, raw_postback) {
         if (!UserMeetsCriteria(sender)) {
         //console.log('user not registered')
             return;
-        } 
-    }
+        } */
     }
 
 
