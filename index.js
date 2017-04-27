@@ -13,7 +13,8 @@ var mongoose = require("mongoose");
 var db = mongoose.connect(process.env.MONGODB_URI);
 
 var globalvars= {sendRequest: sendRequest, userData: userData}
-var tolotrafunctions = require('./tolotrafunctions')(app, globalvars)
+
+var tolotrafunctions = require('./tolotrafunctions')
 var Users = require("./content/users");
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}))
