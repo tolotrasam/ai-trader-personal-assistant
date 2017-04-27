@@ -311,8 +311,8 @@ function decideMessagePlainText(sender, text) {
 }
 
 //=======
-    console.log(sender, 'before database fetching user_id')
-        getMovieDetail(sender, 'director');
+   // console.log(sender, 'before database fetching user_id')
+  //      getMovieDetail(sender, 'director');
 //=======
 //>>>>>>> 14d7b1fa878d0f6aabff97cc5385427eaf74f08e
 //}
