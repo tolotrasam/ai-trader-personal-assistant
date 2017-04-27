@@ -375,6 +375,7 @@ function sendGreeting() {
     }
   };
   callGreetingAPI(greeting)
+  sendRequest(greeting)
 }
 
 function callGreetingAPI(greeting) {
