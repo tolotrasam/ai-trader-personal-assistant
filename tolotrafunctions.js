@@ -1,6 +1,8 @@
 /**
  * Created by Tolotra Samuel on 27/04/2017.
  */
+const request = require('request') // Added by Tojosoa Ramarlina 4:03 pm the same day mdr
+
 module.exports = {
     senderLearnOrQuestionButton : function (sender) {
         console.log('tolotra send learn question', sender)
