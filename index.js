@@ -174,9 +174,17 @@ function askAge(sender){
     console.log('age asked to ', sender)
     userData.sender.isAnswering = true,
     userData.sender.payload = 'age'
-    var msg = 'Before we start, could you tell me how old you are?'
+    var msg = 'But before we start, please type your age: '
     sendTextMessage(sender, msg)
 }
+
+function firstGreet(sender){
+    console.log('Greeted ', sender)
+    userData.sender.payload = 'first_greeted'
+    var msg = 'Hello there, I am the Sex Ed Bot. Here you can learn and share your experiences.'
+    sendTextMessage(sender, msg)
+}
+
 
 
 function UserMeetsCriteria(sender) {
@@ -195,11 +203,12 @@ function decideMessagePostBack(sender, raw_postback) {
     console.log(postback, 'post back')
 
     if(raw_postback == 'get_started') {    
-        //sendTextMessage(sender, "Hello there!")
+        firstGreet()
+        if(raw_postback == 'first_greeted'){
         //before proceeding, check if user in database:
         //sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor", "text", "more than 18", "major");
-        insertToSession(sender) // insert to session if not yet in there
-        if (userData.sender.isAnswering) {
+            insertToSession(sender) // insert to session if not yet in there
+            if (userData.sender.isAnswering) {
             if (userData.sender.payload === 'age') {
                 var update = {
                     user_id: sender,
@@ -214,8 +223,9 @@ function decideMessagePostBack(sender, raw_postback) {
         }
         if (!UserMeetsCriteria(sender)) {
         //console.log('user not registered')
-        return;
-    } 
+            return;
+        } 
+    }
     }
 
 
