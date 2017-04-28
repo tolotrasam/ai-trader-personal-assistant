@@ -222,7 +222,7 @@
             });
         }
 
-        if (postbackcategory === 'nav' && postbacksubcategory === 'main') {
+        if (postbackcategory === 'nav' && postbacksubcategory === 'main' && postbacksubcategory === 'learn') {
                 sendTopics(sender)
             }
 
@@ -276,6 +276,7 @@
         if (text === 'health') {
             sendTextMessage(sender, "Wear condom")
         }
+        
         if (text === 'age') {
             console.log('age detected')
             sendTextMessage(sender, "18")
@@ -284,7 +285,9 @@
 
         if (text === 'pregnant') {
             sendTextMessage(sender, "Sexual rapport")
-        } else {
+        } 
+
+        else {
             tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
         }
     }
