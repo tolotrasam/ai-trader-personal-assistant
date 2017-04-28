@@ -218,7 +218,7 @@
                 var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex. 👨‍❤️‍💋‍👨 💑 👫";
                 sendTextMessage(sender, message)
                 .then(sendTextMessage.bind(null,sender, "And to make the experience better, I'd like to get to know a bit about you."))
-                .then(sendQuickReply.bind(null,sender, "Check which applies", "text", "I am under 18.", "minor", "text", "I am above 18.", "major"))
+                .then(sendQuickReply.bind(null,sender, "Check which one applies to you:", "text", "I am under 18.", "minor", "text", "I am above 18.", "major"))
                 .catch(function (body) {
                     console.log('aborted');
                 });
@@ -276,6 +276,7 @@
             };
             surveyToRegister(sender, update)
             console.log("MINORITY OR MAJORITY REGISTERED")
+            UserMeetsCriteria(sender)
         }
 
         if (text === 'image') {
