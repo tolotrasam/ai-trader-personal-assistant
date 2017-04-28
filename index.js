@@ -247,6 +247,17 @@
                 console.log('aborted');
             });
         }
+
+        if (postback == 'ask_questions') {
+            console.log('question attempt by ', sender)
+            sendTextMessage(sender, "Send your question here as a message 👇☺️")
+            //Options: Post Question, Cancel Question| All Questions are posted anonymously.
+        }
+
+        if (postback == 'learn') { 
+            tolotrafunctions.sendTopics(sender)
+        }
+
     }
 
     function decideMessagePlainText(sender, text) {
