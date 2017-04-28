@@ -451,6 +451,7 @@
 
     //SET UP FOR QUICK REPLY
     function callSendAPI(messageData) {
+    return new Promise(function (resolve, reject) { // *****
       request({
         uri: 'https://graph.facebook.com/v2.6/me/messages',
         qs: { access_token: token },
@@ -464,10 +465,12 @@
 
           console.log("Successfully sent message with id %s to recipient %s",
             messageId, recipientId);
+          resolve(body); // ***
       } else {
           console.error("Unable to send message.");
           console.error(response);
           console.error(error);
+          reject(body.error); // ***
       }
   });
   }
@@ -520,7 +523,7 @@
           }
           ]}
       }
-     return sendRequest(recipientId,messageData);
+     return callSendAPI(messageData);
   }
 
   function sendImageMessage(recipientId, imageUrl) {
@@ -537,6 +540,6 @@
       }
     }
   };
- return sendRequest(recipientId, messageData);
+ return callSendAPI(messageData);
 }
     //------------------------------------------------------------
