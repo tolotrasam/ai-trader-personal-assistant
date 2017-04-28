@@ -279,8 +279,7 @@
         if (text === 'pregnant') {
             sendTextMessage(sender, "Sexual rapport")
         } else {
-            tolotrafunctions.senderLearnOrQuestionButton(sender)
-        //    sendButtonMessage(sender, text)
+            sendButtonMessage(sender, text)
         }
     }
 
