@@ -195,7 +195,7 @@ function get_more_content(sender, content_target_id, id_in_group) {
                 } else {
                     var text_main = chat_content.text_content;
                     if (typeof (text_main) === 'undefined') {
-                        console('error in get_child_content_of', 'no proriety found')
+                        console.log('error in get_child_content_of', 'no proriety found')
                     } else {
                         chat_content = content_target_id
                         //generate card if menu, send only one if content
@@ -224,7 +224,7 @@ function get_child_content_of(sender, content_target_id) {
             } else {
                 var text_main = chat_content.text_content;
                 if (typeof (text_main) === 'undefined') {
-                    console('error in get_child_content_of', 'no proriety found')
+                    console.log('error in get_child_content_of', 'no proriety found')
                 } else {
                     if (content_target_id.length > 1) {
                         chat_content = content_target_id[0]
