@@ -560,7 +560,7 @@
   }
 
   function sendImageMessage(recipientId, imageUrl) {
-  var messageData = {
+    var messageData = {
     recipient: {
       id: recipientId
     },
