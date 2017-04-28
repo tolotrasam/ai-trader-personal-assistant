@@ -201,12 +201,17 @@ function get_more_content(sender, content_target_id, id_in_group) {
                     if (typeof (text_main) === 'undefined') {
                         console.log('error in get_child_content_of', 'no proriety found')
                     } else {
-                        chat_content = content_target_id;
-                        //generate card if menu, send only one if content
-                        var payload_for_more = chat_content.payload_for_more;
-                        var payload_for_something_else = chat_content.payload_for_something_else;
-                        //var payload_for_something_else = chat_content.text_content;
-                        tolotrafunctions.sendContentButton(sender, text_main, payload_for_more, payload_for_something_else);
+                        var the_content = chat_content[0];
+                        var text_main = the_content.text_content;
+                        if (typeof (text_main) === 'undefined') {
+                            console.log('error in get_child_content_of', 'no attribute found')
+                        } else {
+                            //generate card if menu, send only one if content
+                            var payload_for_more = the_content.payload_for_more;
+                            var payload_for_something_else = the_content.payload_for_something_else;
+                            //var payload_for_something_else = the_content.text_content;
+                            tolotrafunctions.sendContentButton(sender, text_main, payload_for_more, payload_for_something_else);
+                        }
                     }
                 }
 
