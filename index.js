@@ -303,6 +303,7 @@
 
     //API REQUEST
     function sendRequest(sender, messageData) {
+        return new Promise(function (resolve, reject) { // *****
         request({
             url: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {access_token: token},
@@ -316,13 +317,15 @@
                 var recipientId = body.recipient_id;
                 var messageId = body.message_id;
                 console.log("Successfully sent message with id %s to recipient %s", messageId, recipientId);
+                resolve(body); // ***
             } 
-            else if (error) {
-                console.log('Error sending messages: ', error)
-            } else if (response.body.error) {
-                console.log('Error: ', response.body.error)
+            else {
+                console.error("Failed calling Send API", response.statusCode,
+                response.statusMessage, body.error);
+                reject(body.error); // ***
             }
         })
+    })
     }
 
     function sendButtonMessage(sender, text) {
@@ -400,23 +403,22 @@
     }
 
     function callGreetingAPI(greeting) {
-      request({
-        uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
-        qs: { access_token: token},
-        method: 'POST',
-        json: greeting
+        request({
+            uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
+            qs: { access_token: token},
+            method: 'POST',
+            json: greeting
 
-    }, function(error, response, body) {
-        if(!error && response.statusCode == 200) {
-
-          console.log("Successfully sent greeting message to {{user_full_name}}")
-      } else {
-        console.error("Unable to send greeting.");
-        console.error(response);
-        console.error(body);
+        }, function(error, response, body) {
+            if(!error && response.statusCode == 200) {
+                console.log("Successfully sent greeting message to {{user_full_name}}")
+          } else {
+            console.error("Unable to send greeting.");
+            console.error(response);
+            console.error(body);
+        }
+    });
     }
-});
-  }
 
     //SET UP FOR QUICK REPLY
     function callSendAPI(messageData) {
