@@ -314,31 +314,28 @@ function decideMessagePostBack(sender, raw_postback) {
     }
 
 
-    if (postback == 'get_help') {
+    if (postback === 'get_help') {
         sendTextMessage(sender, "A bit lost? 😜 No problem.")
-        if (postback == 'get_help') {
-            sendTextMessage(sender, "A bit lost? 😜 No problem.")
-                .then(sendTextMessage.bind(null, sender, "You can always navigate by clicking the persistent menu 👇"))
-                .then(sendImageMessage.bind(null, sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234"))
-                .then(sendQuickReplyThreeBtn.bind(null, sender, "And here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
-                .catch(function (body) {
-                    console.log('aborted');
-                });
-        }
-
-        if (postback == 'ask_questions') {
-            console.log('question attempt by ', sender)
-            sendTextMessage(sender, "Send your question here as a message 👇☺️")
-            //Options: Post Question, Cancel Question| All Questions are posted anonymously.
-        }
-
-        if (postback == 'learn') {
-            tolotrafunctions.sendTopics(sender)
-        }
-
+            .then(sendTextMessage.bind(null, sender, "You can always navigate by clicking the persistent menu 👇"))
+            .then(sendImageMessage.bind(null, sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234"))
+            .then(sendQuickReplyThreeBtn.bind(null, sender, "And here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
+            .catch(function (body) {
+                console.log('aborted');
+            });
     }
 
-    if (postback == 'learn') {
+    if (postback === 'ask_questions') {
+        console.log('question attempt by ', sender)
+        sendTextMessage(sender, "Send your question here as a message 👇☺️")
+        //Options: Post Question, Cancel Question| All Questions are posted anonymously.
+    }
+
+    if (postback === 'learn') {
+        tolotrafunctions.sendTopics(sender)
+    }
+
+
+    if (postback === 'learn') {
         tolotrafunctions.sendTopics(sender)
     }
 }
