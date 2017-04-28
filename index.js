@@ -240,7 +240,7 @@
 
         if (postback == 'get_help') {
             sendTextMessage(sender, "A bit lost? 😜 No problem.")
-            .then(sendTextMessage.bind(null,sender, "You can always navigate by clicking the persistent menu"))
+            .then(sendTextMessage.bind(null,sender, "You can always navigate by clicking the persistent menu 👇"))
             .then(sendImageMessage.bind(null,sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234"))
             .then(sendQuickReply1.bind(null,sender, "And here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
             .catch(function (body) {
