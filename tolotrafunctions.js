@@ -5,14 +5,14 @@ const request = require('request') // Added by Tojosoa Ramarlina 4:03 pm the sam
 const token = process.env.PAGE_ACCESS_TOKEN // same
 
 module.exports = {
-    senderLearnOrQuestionButton : function (sender) {
+    senderLearnOrQuestionButton : function (sender, text_main) {
         console.log('tolotra send learn question', sender)
         let messageData = {
             "attachment": {
                 "type": "template",
                 "payload": {
                     "template_type": "button",
-                    "text": "Okay! Here we go. What do you want to do? 😏 ",
+                    "text": text_main,
                     "buttons": [
                         {
                             "title": "Learn",
