@@ -581,6 +581,7 @@ function sendQuickReplyThreeBtn(recipientId, messageText, ct1, title1, pt1, ct2,
 }
 
 function sendImageMessage(recipientId, imageUrl) {
+    console.log(imageUrl, 'url that is trying to be uploaded');
     var messageData = {
         recipient: {
             id: recipientId
