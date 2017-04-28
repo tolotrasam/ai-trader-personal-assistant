@@ -219,23 +219,6 @@
                 //before proceeding, check if user in database:
                 //sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor", "text", "more than 18", "major");
                 insertToSession(sender) // insert to session if not yet in there
-                if (userData.sender.isAnswering) {
-                    if (userData.sender.payload === 'age') {
-                        var update = {
-                            user_id: sender,
-                            age: text,
-                        };
-                        surveyToRegister(sender, update)
-                    }
-                    userData.sender.isAnswering = false
-                //loop again
-                UserMeetsCriteria(sender)
-                return;
-            }
-            if (!UserMeetsCriteria(sender)) {
-            //console.log('user not registered')
-            return;
-        }
             });
         }
 
@@ -259,6 +242,24 @@
             return;
         }
 
+        if (userData.sender.isAnswering) {
+                    if (userData.sender.payload === 'age') {
+                        var update = {
+                            user_id: sender,
+                            age: text,
+                        };
+                        surveyToRegister(sender, update)
+                    }
+                    userData.sender.isAnswering = false
+                //loop again
+                UserMeetsCriteria(sender)
+                return;
+            }
+            if (!UserMeetsCriteria(sender)) {
+            //console.log('user not registered')
+            return;
+        }
+        
         console.log('message is: ', text)
         text.toLowerCase()
         if (text === 'image') {
