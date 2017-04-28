@@ -365,12 +365,12 @@
                 "payload": {
                     "template_type": "generic",
                     "elements": [{
-                        "title": "Are you pregrant?",
-                        "subtitle": "Symptom of pregnancy",
-                        "image_url": "http://cdnimage.vishwagujarat.com/wp-content/uploads/2016/10/25121628/PregnantWoman.jpg",
+                        "title": "Anatomy",
+                        "subtitle": "Let's learn about the genitals.",
+                        "image_url": "https://davidventzelblog.files.wordpress.com/2016/05/vitruvian.jpg?w=1200",
                         "buttons": [{
                             "type": "postback",
-                            "payload": "pregnant",
+                            "payload": "anatomy",
                             "title": "Read more"
                         }, {
                             "type": "postback",
@@ -378,13 +378,41 @@
                             "payload": "later",
                         }],
                     }, {
-                        "title": "Should I kiss?",
-                        "subtitle": "Effect of kiss one health",
-                        "image_url": "https://images.washingtonpost.com/?url=http://img.washingtonpost.com/news/morning-mix/wp-content/uploads/sites/21/2015/07/iStock_000046134044_Medium.jpg&w=1484&op=resize&opt=1&filter=antialias",
+                        "title": "Contraception",
+                        "subtitle": "Pleasure without the Consequences",
+                        "image_url": "http://blog.francetvinfo.fr/medecine/files/2013/11/contraception.jpg?w=640",
+                        "buttons": [{
+                            "type": "postback",
+                            "payload": "contraception",
+                            "title": "Read more"
+                        }, {
+                            "type": "postback",
+                            "title": "Later",
+                            "payload": "later",
+                        }],
+                    },
+                    {
+                        "title": "Puberty",
+                        "subtitle": "Symptoms of puberty",
+                        "image_url": "https://i.ytimg.com/vi/Rsj6dW6qKRc/maxresdefault.jpg",
+                        "buttons": [{
+                            "type": "postback",
+                            "payload": "puberty",
+                            "title": "Read more"
+                        }, {
+                            "type": "postback",
+                            "title": "Later",
+                            "payload": "later",
+                        }],
+                    },
+                    {
+                        "title": "Sexual Orientation",
+                        "subtitle": "Heterosexual? Homosexual? Bisexual? What Am I?",
+                        "image_url": "http://theastrologypodcast.com/wp-content/uploads/2016/04/sexual-orientation-astrology-660.jpg",
                         "buttons": [{
                             "type": "postback",
                             "title": "Read more",
-                            "payload": "kiss",
+                            "payload": "sex_orientation",
                         }, {
                             "type": "postback",
                             "title": "Later",
