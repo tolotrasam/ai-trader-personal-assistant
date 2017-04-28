@@ -187,7 +187,7 @@ function get_more_content(sender, content_target_id, id_in_group) {
     console.log('getting to sender: ' + sender + ' id: ' + content_target_id + ' id in group ' + id_in_group);
     if (!(typeof (id_in_group) === 'undefined')) {
         console.log(id_in_group, 'id in group');
-        Content.find({content_id: content_target_id}, function (err, chat_content) {
+        Content.find({content_id: content_target_id, id_in_group: Number(id_in_group)}, function (err, chat_content) {
             // Content.find({id_in_group: Number(id_in_group)}, function (err, chat_content) {
             if (err) {
                 sendTextMessage(sender, "Sorry, I couldn't get what you asked for the moment. Try out later");
