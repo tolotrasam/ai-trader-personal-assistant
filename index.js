@@ -144,7 +144,7 @@
        // if (typeof (userInDatabase['sexe']) != 'undefined' || userInDatabase['sexe'] != '') {
         else {
             //age and gender saved.
-            tolotrafunctions.senderLearnOrQuestionButton(sender)
+            tolotrafunctions.senderLearnOrQuestionButton(sender, "Okay! Here we go. What do you want to do? 😏 ")
             //sendTopics(sender)
         }
     }
@@ -260,7 +260,7 @@
             return;
         }
         if (text === 'hi' || text == 'hello') {
-            sendTextMessage(sender, "Hey there! What do you want to do? 😏 ")
+            tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ")
         }
 
         if (text === 'exit') {
@@ -285,7 +285,7 @@
         if (text === 'pregnant') {
             sendTextMessage(sender, "Sexual rapport")
         } else {
-            tolotrafunctions.senderLearnOrQuestionButton(sender)
+            tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
         }
     }
 
