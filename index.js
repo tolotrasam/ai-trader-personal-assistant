@@ -128,15 +128,6 @@
        // sendQuickReply(sender, "What is your gender?", "text", "Male", "text", "Female")
     }
 
-    function askAge(sender){
-        insertToSession(sender);
-        console.log('age asked to ', sender)
-        userData.sender.isAnswering = true,
-        userData.sender.payload = 'age'
-        var msg = 'And lastly, please type your age: '
-        sendTextMessage(sender, msg)
-    }
-
     function checkMinor(sender){
         console.log('check if minor or major')
         sendQuickReply(sender, "Check which applies", "text", "I am under 18.", "minor", "text", "I am above 18.", "major")
@@ -224,7 +215,6 @@
                 });
 
                 //before proceeding, check if user in database:
-                //sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor", "text", "more than 18", "major");
                 insertToSession(sender) // insert to session if not yet in there
             });
         }
@@ -247,25 +237,7 @@
         if (text.is_echo) {
             return;
         }
-        /*
-        if (userData.sender.isAnswering) {
-                    if (userData.sender.payload === 'age') {
-                        var update = {
-                            user_id: sender,
-                            age: text,
-                        };
-                        surveyToRegister(sender, update)
-                    }
-                    userData.sender.isAnswering = false
-                //loop again
-                UserMeetsCriteria(sender)
-                return;
-            }
-            if (!UserMeetsCriteria(sender)) {
-            //console.log('user not registered')
-            return;
-        }
-        */
+
         console.log('message is: ', text)
         text.toLowerCase()
 
@@ -280,7 +252,7 @@
             return;
         }
 
-        if (text === 'image') {
+        if (text === 'learn') {
             sendTopics(sender)
         }
         if (text === 'health') {
