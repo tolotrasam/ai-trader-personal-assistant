@@ -215,7 +215,7 @@ function get_more_content(sender, content_target_id, id_in_group) {
 function get_child_content_of(sender, content_target_id) {
     console.log('getting child of', content_target_id);
   //  Content.find({parent_id: content_target_id}, function (err, chat_content) {
-    Content.findOne({}, function (err, chat_content) {
+    Users.findOne({}, function (err, chat_content) {
         if (err) {
             sendTextMessage(sender, "Sorry, I couldn't get what you asked for the moment. Try out later");
         } else {
