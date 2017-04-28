@@ -152,7 +152,7 @@
         } else {
             //age and gender saved.
             tolotrafunctions.senderLearnOrQuestionButton(sender)
-            sendTopics(sender)
+            //sendTopics(sender)
         }
     }
 
@@ -277,6 +277,7 @@
             surveyToRegister(sender, update)
             console.log("MINORITY OR MAJORITY REGISTERED")
             UserMeetsCriteria(sender)
+            return;
         }
 
         if (text === 'image') {
