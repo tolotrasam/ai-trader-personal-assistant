@@ -256,7 +256,6 @@
         }
 
         console.log('message is: ', text)
-<<<<<<< HEAD
         var textLower = text.toLowerCase()
         var questionMark = textLower.substring(textLower.length-1,textLower.length)
         //check if it's a question
@@ -286,7 +285,7 @@
                 user_id: sender,
                 minor: text,
             };
-            
+
             surveyToRegister(sender, update)
             console.log("MINORITY OR MAJORITY REGISTERED")
             askGender(sender)
