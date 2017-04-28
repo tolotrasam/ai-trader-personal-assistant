@@ -352,6 +352,10 @@ function decideMessagePostBack(sender, raw_postback) {
 <<<<<<< Updated upstream
         console.log('message is: ', text)
         var textLower = text.toLowerCase()
+
+        if(text.substring(text.length-1,text.length) == '?') {
+            sendTextMessage(sender, 'Is that a question? Do you want it posted to the forum?')
+        }
    
         switch (textLower) {
 
