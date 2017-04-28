@@ -222,17 +222,24 @@ function get_child_content_of(sender, content_target_id) {
             if (!chat_content) {
                 console.log('error missing child with id:', content_target_id)
             } else {
-                var text_main = chat_content.text_content;
-                if (typeof (text_main) === 'undefined') {
-                    console.log('error in get_child_content_of', 'no proriety found')
+
+                if (typeof (chat_content) === 'undefined' || typeof (chat_content[0]) === 'undefined') {
+                    console.log('error in get_child_content_of', 'no object found')
                 } else {
-                    if (content_target_id.length > 1) {
-                        chat_content = content_target_id[0]
-                        //generate card if menu, send only one if content
-                        var payload_for_more = chat_content.payload_for_more;
-                        var payload_for_something_else = chat_content.payload_for_something_else;
-                        //var payload_for_something_else = chat_content.text_content;
-                        tolotrafunctions.sendContentButton(sender, text_main, payload_for_more, payload_for_something_else);
+                    if (chat_content.length > 1) {
+
+                        var the_content = chat_content[0]
+                        var text_main = the_content.text_content;
+                        if (typeof (text_main) === 'undefined') {
+                            console.log('error in get_child_content_of', 'no attribute found')
+                        } else {
+                            //generate card if menu, send only one if content
+                            var payload_for_more = the_content.payload_for_more;
+                            var payload_for_something_else = the_content.payload_for_something_else;
+                            //var payload_for_something_else = the_content.text_content;
+                            tolotrafunctions.sendContentButton(sender, text_main, payload_for_more, payload_for_something_else);
+                        }
+
 
                     }
                     //  for(var i = 0; i < content_target_id.length; i++){
