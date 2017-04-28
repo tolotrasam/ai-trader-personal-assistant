@@ -222,7 +222,7 @@
             });
         }
 
-        if (postbackcategory === 'nav' && postbacksubcategory === 'main' && postbacksubcategory === 'learn') {
+        if (postbackcategory === 'nav' && postbacksubcategory === 'main' && postbackvalue === 'learn') {
                 sendTopics(sender)
             }
 
@@ -276,7 +276,7 @@
         if (text === 'health') {
             sendTextMessage(sender, "Wear condom")
         }
-        
+
         if (text === 'age') {
             console.log('age detected')
             sendTextMessage(sender, "18")
