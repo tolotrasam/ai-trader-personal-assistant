@@ -492,7 +492,7 @@
           }
           ]}
       }
-      return sendRequest(recipientId,messageData);
+      callSendAPI(messageData);
   }
 
   function sendQuickReply1(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2, ct3, title3, pt3) {
