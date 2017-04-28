@@ -133,7 +133,7 @@
         console.log('age asked to ', sender)
         userData.sender.isAnswering = true,
         userData.sender.payload = 'age'
-        var msg = 'But before we start, please type your age: '
+        var msg = 'And lastly, please type your age: '
         sendTextMessage(sender, msg)
     }
 
