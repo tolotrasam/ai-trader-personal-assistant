@@ -112,7 +112,7 @@ module.exports = {
                                 "buttons": [{
                                     "type": "postback",
                                     "title": "Read more",
-                                    "payload": "get_content-child_of-sex_orientation",
+                                    "payload": "get_content-child_of-sexual_orientation",
                                 }, {
                                     "type": "postback",
                                     "title": "Later",

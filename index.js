@@ -192,72 +192,63 @@ function get_more_content(sender, content_target_id, id_in_group) {
             if (err) {
                 sendTextMessage(sender, "Sorry, I couldn't get what you asked for the moment. Try out later");
             } else {
-                console.log(chat_content, 'the fetched object');
-                //if chate_Content refered to the id of a missing or a non existing child
-                if (!chat_content) {
-                    console.log('error missing child with id:', content_target_id)
-                } else {
-                    if (typeof (chat_content) === 'undefined' || typeof (chat_content[0]) === 'undefined') {
-                        console.log('error in get_child_content_of', 'no object found');
-                    } else {
-                        var the_content = chat_content[0];
-                        var text_main = the_content.text_content;
-                        if (typeof (text_main) === 'undefined') {
-                            console.log('error in get_child_content_of', 'no attribute found')
-                        } else {
-                            //generate card if menu, send only one if content
-                            var payload_for_more = the_content.payload_for_more;
-                            var payload_for_something_else = the_content.payload_for_something_else;
-                            //var payload_for_something_else = the_content.text_content;
-                            tolotrafunctions.sendContentButton(sender, text_main, payload_for_more, payload_for_something_else);
-                        }
-                    }
-                }
-
+                sendSingleContentButton(sender, chat_content)
             }
         })
     }
 }
 
 
+function sendSingleContentButton(sender, chat_content) {
+    console.log(chat_content, 'this is the object');
+    //if chate_Content refered to the id of a missing or a non existing child
+    if (!chat_content) {
+        console.log('error missing child with id:', content_target_id)
+    } else {
+
+        if (typeof (chat_content) === 'undefined' || typeof (chat_content[0]) === 'undefined') {
+            console.log('error in get_child_content_of', 'no object found');
+
+        } else {
+            if (chat_content.length > 1) {
+
+                var the_content = chat_content[0];
+                var text_main = the_content.text_content;
+                var image_url = the_content.image_url;
+                if (typeof (text_main) === 'undefined') {
+                    console.log('error in get_child_content_of', 'no attribute found')
+                } else {
+                    //generate card if menu, send only one if content
+                    var payload_for_more = the_content.payload_for_more;
+                    var payload_for_something_else = the_content.payload_for_something_else;
+                    //var payload_for_something_else = the_content.text_content;
+                    if (typeof (text_main) === 'undefined' || text_main === '') {
+                        if (typeof (image_url) !== 'undefined' && text_main === '') {
+                            sendImageMessage(sender, image_url)
+                        } else {
+                            sendTextMessage(sender, 'Sorry, this is not available for the moment. Try again later');
+                            tolotrafunctions.sendTopics(sender)
+                        }
+                    } else {
+                        tolotrafunctions.sendContentButton(sender, text_main, payload_for_more, payload_for_something_else);
+                    }
+                }
+
+
+            }
+            //  for(var i = 0; i < content_target_id.length; i++){
+            // }
+        }
+    }
+}
 function get_child_content_of(sender, content_target_id) {
     console.log('getting child of', content_target_id);
-      Content.find({parent_id: content_target_id}, function (err, chat_content) {
-    //Content.find({}, function (err, chat_content) {
+    Content.find({parent_id: content_target_id}, function (err, chat_content) {
+        //Content.find({}, function (err, chat_content) {
         if (err) {
             sendTextMessage(sender, "Sorry, I couldn't get what you asked for the moment. Try out later");
         } else {
-            console.log(chat_content, 'this is the object');
-            //if chate_Content refered to the id of a missing or a non existing child
-            if (!chat_content) {
-                console.log('error missing child with id:', content_target_id)
-            } else {
-
-                if (typeof (chat_content) === 'undefined' || typeof (chat_content[0]) === 'undefined') {
-                    console.log('error in get_child_content_of', 'no object found');
-
-                } else {
-                    if (chat_content.length > 1) {
-
-                        var the_content = chat_content[0];
-                        var text_main = the_content.text_content;
-                        if (typeof (text_main) === 'undefined') {
-                            console.log('error in get_child_content_of', 'no attribute found')
-                        } else {
-                            //generate card if menu, send only one if content
-                            var payload_for_more = the_content.payload_for_more;
-                            var payload_for_something_else = the_content.payload_for_something_else;
-                            //var payload_for_something_else = the_content.text_content;
-                            tolotrafunctions.sendContentButton(sender, text_main, payload_for_more, payload_for_something_else);
-                        }
-
-
-                    }
-                    //  for(var i = 0; i < content_target_id.length; i++){
-                    // }
-                }
-            }
-
+            sendSingleContentButton(sender, chat_content )
         }
     })
 }
