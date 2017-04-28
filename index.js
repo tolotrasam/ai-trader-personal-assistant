@@ -207,9 +207,9 @@
                 } else {
                     var bodyObj = JSON.parse(body);
                     var name = bodyObj.first_name;
-                    greeting = "Hi " + name + ". ";
+                    greeting = "Hi " + name + " 😃 ";
                 }
-                var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex.";
+                var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex. 👨‍❤️‍💋‍👨 💑 👫";
                 sendTextMessage(sender, message)
                 .then(sendTextMessage.bind(null,sender, "And to make the experience better, I'd like to get to know a bit about you."))
                 .catch(function (body) {
