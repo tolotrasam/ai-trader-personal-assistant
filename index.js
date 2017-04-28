@@ -256,7 +256,7 @@
         }
 
         console.log('message is: ', text)
-        text.toLowerCase()
+        text = text.toLowerCase()
         //Here is the switch case
         switch (text) {
             case 'I am above 18.':
