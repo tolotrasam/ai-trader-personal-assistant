@@ -1,12 +1,12 @@
 /**
  * Created by Tolotra Samuel on 27/04/2017.
  */
-const request = require('request') // Added by Tojosoa Ramarlina 4:03 pm the same day mdr
-const token = process.env.PAGE_ACCESS_TOKEN // same
+const request = require('request'); // Added by Tojosoa Ramarlina 4:03 pm the same day mdr
+const token = process.env.PAGE_ACCESS_TOKEN; // same
 
 module.exports = {
     senderLearnOrQuestionButton : function (sender, text_main) {
-        console.log('tolotra send learn question', sender)
+        console.log('tolotra send learn question', sender);
         let messageData = {
             "attachment": {
                 "type": "template",
@@ -27,14 +27,14 @@ module.exports = {
                     ]
                 }
             }
-        }
+        };
         sendRequest(sender, messageData)
     } ,
 
     //text_main is the content,
     //payload_for_something_else and payload_for_more should have category, subcategory and value separeted with a dash
     sendContentButton : function (sender, text_main, payload_for_more, payload_for_something_else) {
-        console.log('tolotra send learn question', sender, payload_for_more, payload_for_something_else)
+        console.log('tolotra send learn question', sender, payload_for_more, payload_for_something_else);
         let messageData = {
             "attachment": {
                 "type": "template",
@@ -43,7 +43,7 @@ module.exports = {
                     "text": text_main,
                     "buttons": [
                         {
-                            "title": "Learn More",
+                            "title": "Read More",
                             "type": "postback",
                             "payload": payload_for_more
                         },
@@ -55,7 +55,7 @@ module.exports = {
                     ]
                 }
             }
-        }
+        };
         sendRequest(sender, messageData)
     },
     sendTopics : function sendTopics(sender) {
@@ -121,10 +121,10 @@ module.exports = {
                             }]
                     }
                 }
-            }
+            };
             sendRequest(sender, messageData)
         }
-}
+};
 
 
 function sendRequest(sender, messageData) {
