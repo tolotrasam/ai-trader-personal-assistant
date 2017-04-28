@@ -225,7 +225,8 @@ function sendSingleContentButton(sender, chat_content) {
                     //var payload_for_something_else = the_content.text_content;
                     if (typeof (text_main) === 'undefined' || text_main === '') {
                         if (typeof (image_url) !== 'undefined' && text_main === '') {
-                            sendImageMessage(sender, image_url)
+                            sendImageMessage(sender, image_url);
+                            sendQuickReplyTwoBtn(sender, 'text','What\'s next?',  'Read more', payload_for_more, 'text', 'Something else', payload_for_something_else )
                         } else {
                             sendTextMessage(sender, 'Sorry, this is not available for the moment. Try again later');
                             tolotrafunctions.sendTopics(sender)
@@ -526,7 +527,7 @@ function callSendAPI(messageData) {
     })
 }
 
-function sendQuickReplyTwoBtn(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
+function sendQuickReplyTwoBtn(recipientId, messageText, contentType1, title1, playload1, contentType2, title2, playload2) {
     var messageData = {
         recipient: {
             id: recipientId
@@ -536,14 +537,14 @@ function sendQuickReplyTwoBtn(recipientId, messageText, ct1, title1, pt1, ct2, t
             text: messageText,
             quick_replies: [
                 {
-                    content_type: ct1,
+                    content_type: contentType1,
                     title: title1,
-                    payload: pt1
+                    payload: playload1
                 },
                 {
-                    content_type: ct2,
+                    content_type: contentType2,
                     title: title2,
-                    payload: pt2
+                    payload: playload2
                 }
             ]
         }
