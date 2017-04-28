@@ -268,13 +268,20 @@
 
         console.log('message is: ', text)
         var textLower = text.toLowerCase()
-
-        if(text.substring(text.length-1,text.length) == '?') {
-            sendTextMessage(sender, 'Is that a question? Do you want it posted to the forum?')
+        var questionMark = textLower.substring(textLower.length-1,textLower.length)
+        //check if it's a question
+        function checkQuestionMark() {
+            if(questionMark == '?') {
+                return true;
+            }
+            return false
         }
    
         switch (textLower) {
 
+                 //   if(questionMark == '?') {
+         //   sendTextMessage(sender, 'Is that a question? Do you want it posted to the forum?')
+      //  }
             //to lower case because
             case 'i am above 18.':
             case 'i am under 18.':
@@ -301,7 +308,11 @@
             break;
 
             default:
+            if(checkQuestionMark(textLower)){
+                sendTextMessage(sender,'its working!')
+            } else {
             tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
+        }
         }
     }
 
