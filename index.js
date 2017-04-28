@@ -242,7 +242,7 @@
             sendTextMessage(sender, "A bit lost? 😜 No problem.")
             .then(sendQuickReply1.bind(null,sender, "Here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
             .then(sendTextMessage.bind(null,sender, "And you can always navigate through here by clicking the persistent menu"))
-            .then(sendImageMessage.bind(null,sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234")
+            .then(sendImageMessage.bind(null,sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234"))
             .catch(function (body) {
                 console.log('aborted');
             });
