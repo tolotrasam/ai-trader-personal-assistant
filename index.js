@@ -496,145 +496,142 @@ function callSendAPI(messageData) {
     })
 }
 
+//SET UP FOR QUICK REPLY
+function callSendAPI(messageData) {
+    return new Promise(function (resolve, reject) { // *****
+        request({
+            uri: 'https://graph.facebook.com/v2.6/me/messages',
+            qs: {access_token: token},
+            method: 'POST',
+            json: messageData
+
+        }, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                var recipientId = body.recipient_id;
+                var messageId = body.message_id;
+
+                console.log("Successfully sent message with id %s to recipient %s",
+                    messageId, recipientId);
+                resolve(body); // ***
+            } else {
+                console.error("Unable to send message.");
+                console.error(response);
+                console.error(error);
+                reject(body.error); // ***
+            }
+        });
+    })
+}
+
 function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
     var messageData = {
-//SET UP FOR QUICK REPLY
-        function callSendAPI(messageData)
-    {
-        return new Promise(function (resolve, reject) { // *****
-            request({
-                uri: 'https://graph.facebook.com/v2.6/me/messages',
-                qs: {access_token: token},
-                method: 'POST',
-                json: messageData
-
-            }, function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    var recipientId = body.recipient_id;
-                    var messageId = body.message_id;
-
-                    console.log("Successfully sent message with id %s to recipient %s",
-                        messageId, recipientId);
-                    resolve(body); // ***
-                } else {
-                    console.error("Unable to send message.");
-                    console.error(response);
-                    console.error(error);
-                    reject(body.error); // ***
+        recipient: {
+            id: recipientId
+        }
+        ,
+        message: {
+            text: messageText,
+            quick_replies: [
+                {
+                    content_type: ct1,
+                    title: title1,
+                    payload: pt1
+                },
+                {
+                    content_type: ct2,
+                    title: title2,
+                    payload: pt2
                 }
-            });
-        })
-    }
-
-    function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            }
-            ,
-            message: {
-                text: messageText,
-                quick_replies: [
-                    {
-                        content_type: ct1,
-                        title: title1,
-                        payload: pt1
-                    },
-                    {
-                        content_type: ct2,
-                        title: title2,
-                        payload: pt2
-                    }
-                ]
-            }
+            ]
         }
-        callSendAPI(messageData);
     }
+    callSendAPI(messageData);
+}
 
-    function sendQuickReply1(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2, ct3, title3, pt3) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                text: messageText,
-                quick_replies: [
-                    {
-                        content_type: ct1,
-                        title: title1,
-                        payload: pt1
-                    },
-                    {
-                        content_type: ct2,
-                        title: title2,
-                        payload: pt2
-                    },
-                    {
-                        content_type: ct3,
-                        title: title3,
-                        payload: pt3
-                    }
-                ]
-            }
-        }
-        return callSendAPI(messageData);
-    }
-
-    function sendImageMessage(recipientId, imageUrl) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                attachment: {
-                    type: "image",
-                    payload: {
-                        url: imageUrl,
-                        id: recipientId
-                    },
-                    message: {
-                        text: messageText,
-                        quick_replies: [
-                            {
-                                content_type: ct1,
-                                title: title1,
-                                payload: pt1
-                            },
-                            {
-                                content_type: ct2,
-                                title: title2,
-                                payload: pt2
-                            },
-                            {
-                                content_type: ct3,
-                                title: title3,
-                                payload: pt3
-                            }
-                        ]
-                    }
+function sendQuickReply1(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2, ct3, title3, pt3) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: messageText,
+            quick_replies: [
+                {
+                    content_type: ct1,
+                    title: title1,
+                    payload: pt1
+                },
+                {
+                    content_type: ct2,
+                    title: title2,
+                    payload: pt2
+                },
+                {
+                    content_type: ct3,
+                    title: title3,
+                    payload: pt3
                 }
-            }
+            ]
         }
     }
-
     return callSendAPI(messageData);
 }
 
-    function sendImageMessage(recipientId, imageUrl) {
-        var messageData = {
-            recipient: {
-                id: recipientId
-            },
-            message: {
-                attachment: {
-                    type: "image",
-                    payload: {
-                        url: imageUrl
-                    }
+function sendImageMessage(recipientId, imageUrl) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "image",
+                payload: {
+                    url: imageUrl,
+                    id: recipientId
+                },
+                message: {
+                    text: messageText,
+                    quick_replies: [
+                        {
+                            content_type: ct1,
+                            title: title1,
+                            payload: pt1
+                        },
+                        {
+                            content_type: ct2,
+                            title: title2,
+                            payload: pt2
+                        },
+                        {
+                            content_type: ct3,
+                            title: title3,
+                            payload: pt3
+                        }
+                    ]
                 }
             }
-        };
-        return callSendAPI(messageData);
+        }
     }
+}
+
+return callSendAPI(messageData);
+}
+
+function sendImageMessage(recipientId, imageUrl) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "image",
+                payload: {
+                    url: imageUrl
+                }
+            }
+        }
+    };
+    return callSendAPI(messageData);
+}
 
 //------------------------------------------------------------
