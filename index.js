@@ -180,7 +180,8 @@
     }
 
     function decideMessagePostBack(sender, raw_postback) {
-        console.log('message postback', JSON.stringify(raw_postback))
+        var postbackText = JSON.stringify(raw_postback)
+        console.log('message postback', postbackText)
 
         //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value     f
         var postback = raw_postback.split("-");
@@ -217,6 +218,10 @@
                 //before proceeding, check if user in database:
                 insertToSession(sender) // insert to session if not yet in there
             });
+        }
+
+        if (postbackText == 'nav-main-learn') {
+            sendTopics(sender)
         }
 
         if (postbackcategory === 'registration') {
