@@ -220,9 +220,9 @@
             });
         }
 
-        if (postbackText == 'nav-main-learn') {
-            sendTopics(sender)
-        }
+        if (postbackcategory === 'nav' && postbacksubcategory === 'main') {
+                sendTopics(sender)
+            }
 
         if (postbackcategory === 'registration') {
             if (postbacksubcategory === 'gender') {
