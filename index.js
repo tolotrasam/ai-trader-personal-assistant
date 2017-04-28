@@ -197,9 +197,8 @@ function get_more_content(sender, content_target_id, id_in_group) {
                 if (!chat_content) {
                     console.log('error missing child with id:', content_target_id)
                 } else {
-                    var text_main = chat_content.text_content;
-                    if (typeof (text_main) === 'undefined') {
-                        console.log('error in get_child_content_of', 'no proriety found')
+                    if (typeof (chat_content) === 'undefined' || typeof (chat_content[0]) === 'undefined') {
+                        console.log('error in get_child_content_of', 'no object found');
                     } else {
                         var the_content = chat_content[0];
                         var text_main = the_content.text_content;
