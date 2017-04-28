@@ -219,6 +219,7 @@ function get_child_content_of(sender, content_target_id) {
         if (err) {
             sendTextMessage(sender, "Sorry, I couldn't get what you asked for the moment. Try out later");
         } else {
+            console.log(chat_content, 'this is the object');
             //if chate_Content refered to the id of a missing or a non existing child
             if (!chat_content) {
                 console.log('error missing child with id:', content_target_id)
@@ -226,7 +227,7 @@ function get_child_content_of(sender, content_target_id) {
 
                 if (typeof (chat_content) === 'undefined' || typeof (chat_content[0]) === 'undefined') {
                     console.log('error in get_child_content_of', 'no object found');
-                    console.log(chat_content, 'this is the object')
+
                 } else {
                     if (chat_content.length > 1) {
 
