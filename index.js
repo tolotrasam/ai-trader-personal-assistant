@@ -69,6 +69,10 @@
     })
 
     //Functions 
+    function UserMeetsCriteria(sender) {
+        var userInDatabase = isUserInDatabase(sender);
+    }
+
     function isUserInDatabase(senderId) {
         Users.findOne({user_id: senderId}, function (err, user) {
             if (err) {
@@ -86,34 +90,6 @@
                     askGender(senderId)
                     return false;
                 }
-            }
-        })
-    }
-
-    function hasCompleteInformation(sender, userInDatabase) {
-        if (typeof (userInDatabase['sexe']) === 'undefined' || userInDatabase['sexe'] === '') {
-            askGender(sender)
-        }
-        if (typeof (userInDatabase['age']) === 'undefined' || userInDatabase['age'] === '') {
-            askAge(sender)
-        } else {
-            //age and gender saved.
-            tolotrafunctions.senderLearnOrQuestionButton(sender)
-            sendTopics(sender)
-        }
-    }
-
-    function surveyToRegister(senderId, update) {
-        console.log('update user ' + senderId, JSON.stringify(update))
-
-        var query = {user_id: senderId};
-        var options = {upsert: true};
-
-        Users.findOneAndUpdate(query, update, options, function (err, mov) {
-            if (err) {
-                console.log("Database error: " + err);
-            } else {
-                console.log("Database sucess");
             }
         })
     }
@@ -150,25 +126,6 @@
         sendRequest(sender, messageData)
         
        // sendQuickReply(sender, "What is your gender?", "text", "Male", "text", "Female")
-   }
-
-
-    //To get information about received messages
-    function receivedMessageLog(event) {
-        var senderID = event.sender.id;
-        var recipientID = event.recipient.id;
-        var timeOfMessage = event.timestamp;
-        var message = event.message || event.postback;
-        var news;
-
-        console.log("Received message for user %d and page %d at %d with message:", senderID, recipientID, timeOfMessage);
-        console.log(JSON.stringify(event));
-    }
-
-    function insertToSession(sender) {
-        if (typeof (userData.sender) === 'undefined') {
-            userData.sender = {userdId: sender}
-        }
     }
 
     function askAge(sender){
@@ -180,10 +137,50 @@
         sendTextMessage(sender, msg)
     }
 
-    function UserMeetsCriteria(sender) {
-        var userInDatabase = isUserInDatabase(sender);
+    function hasCompleteInformation(sender, userInDatabase) {
+        if (typeof (userInDatabase['sexe']) === 'undefined' || userInDatabase['sexe'] === '') {
+            askGender(sender)
+        }
+        if (typeof (userInDatabase['age']) === 'undefined' || userInDatabase['age'] === '') {
+            askAge(sender)
+        } else {
+            //age and gender saved.
+            tolotrafunctions.senderLearnOrQuestionButton(sender)
+            sendTopics(sender)
+        }
     }
 
+    function surveyToRegister(senderId, update) {
+        console.log('update user ' + senderId, JSON.stringify(update))
+
+        var query = {user_id: senderId};
+        var options = {upsert: true};
+
+        Users.findOneAndUpdate(query, update, options, function (err, mov) {
+            if (err) {
+                console.log("Database error: " + err);
+            } else {
+                console.log("Database sucess");
+            }
+        })
+    }
+
+    function insertToSession(sender) {
+        if (typeof (userData.sender) === 'undefined') {
+            userData.sender = {userdId: sender}
+        }
+    }
+    //To gather information about received messages
+    function receivedMessageLog(event) {
+        var senderID = event.sender.id;
+        var recipientID = event.recipient.id;
+        var timeOfMessage = event.timestamp;
+        var message = event.message || event.postback;
+        var news;
+
+        console.log("Received message for user %d and page %d at %d with message:", senderID, recipientID, timeOfMessage);
+        console.log(JSON.stringify(event));
+    }
 
     function decideMessagePostBack(sender, raw_postback) {
         console.log('message postback', JSON.stringify(raw_postback))
@@ -215,13 +212,10 @@
                 var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex.";
                 sendTextMessage(sender, message)
                 .then(sendTextMessage.bind(null,sender, "And I want to tell you something."))
-                .then(sendTextMessage.bind(null,sender, "You!"))
-                .then(sendTextMessage.bind(null,sender, "You are beautiful :)"))
                 .catch(function (body) {
                     console.log('aborted');
                 });
-                console.log("MESSAGE.is_echo IS ", message.is_echo)
-                //to make sure messages execute one after the other
+
                 //before proceeding, check if user in database:
                 //sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor", "text", "more than 18", "major");
                 insertToSession(sender) // insert to session if not yet in there
