@@ -275,17 +275,18 @@
             //to lower case because
             case 'i am above 18.':
             case 'i am under 18.':
-=======
+
         text.toLowerCase()
         //Here is the switch case
         switch (text) {
             case 'I am above 18.':
             case 'I am under 18.':
->>>>>>> 66b28c3b789cdb47a22c63cae9941e560d1cfbd4
+
             var update = {
                 user_id: sender,
                 minor: text,
             };
+            
             surveyToRegister(sender, update)
             console.log("MINORITY OR MAJORITY REGISTERED")
             askGender(sender)
