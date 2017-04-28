@@ -190,6 +190,7 @@ function get_more_content(sender, content_target_id, id_in_group) {
             if (err) {
                 sendTextMessage(sender, "Sorry, I couldn't get what you asked for the moment. Try out later");
             } else {
+                console.log(chat_content, 'the fetched object');
                 //if chate_Content refered to the id of a missing or a non existing child
                 if (!chat_content) {
                     console.log('error missing child with id:', content_target_id)
