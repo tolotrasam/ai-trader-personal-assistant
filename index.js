@@ -229,15 +229,6 @@
             });
         }
 
-        if(raw_postback == 'minor' || raw_postback == 'major') {
-            var update = {
-                user_id: sender,
-                minor: raw_postback,
-            };
-            surveyToRegister(sender, update)
-        }
-
-
         if (postbackcategory === 'registration') {
             if (postbacksubcategory === 'gender') {
                 var update = {
@@ -277,6 +268,16 @@
         */
         console.log('message is: ', text)
         text.toLowerCase()
+
+        if(text == 'I am above 18.' || text == 'I am under 18.') {
+            var update = {
+                user_id: sender,
+                minor: text,
+            };
+            surveyToRegister(sender, update)
+            console.log("MINORITY OR MAJORITY REGISTERED")
+        }
+
         if (text === 'image') {
             sendTopics(sender)
         }
