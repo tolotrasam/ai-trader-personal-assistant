@@ -248,9 +248,15 @@
             });
         }
 
+        if (postback == 'ask_questions') {
+            console.log('question attempt by ', sender)
+            sendTextMessage(sender, "Send your question here as a message ☺️")
+        }
+
         if (postback == 'learn') {
             sendTopics(sender)
         }
+
     }
 
     function decideMessagePlainText(sender, text) {
