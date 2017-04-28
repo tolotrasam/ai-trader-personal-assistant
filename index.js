@@ -247,6 +247,10 @@
                 console.log('aborted');
             });
         }
+
+        if (postback == 'learn') {
+            sendTopics(sender)
+        }
     }
 
     function decideMessagePlainText(sender, text) {
