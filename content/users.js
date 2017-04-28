@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-var MovieSchema = new Schema({
+var UserSchema = new Schema({
     user_id: {type: String},
     first_name: {type: String},
     last_name: {type: String},
