@@ -259,8 +259,6 @@
         textLower = text.toLowerCase()
         //handle the age
         if(text == 'I am above 18.' || 'I am under 18.'){
-            case 'I am above 18.':
-            case 'I am under 18.':
             var update = {
                 user_id: sender,
                 minor: text,
