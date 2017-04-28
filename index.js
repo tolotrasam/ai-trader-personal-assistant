@@ -8,6 +8,7 @@
     const bodyParser = require('body-parser')
     const request = require('request')
     const app = express()
+    var Promise = require('promise');
     var userData = {};
     var mongoose = require("mongoose");
     var db = mongoose.connect(process.env.MONGODB_URI);
