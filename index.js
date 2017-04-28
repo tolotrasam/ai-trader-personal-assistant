@@ -324,18 +324,13 @@ function decideMessagePostBack(sender, raw_postback) {
             });
     }
 
-    if (postback === 'ask_questions') {
+    if (raw_postback === 'ask_questions') {
         console.log('question attempt by ', sender)
         sendTextMessage(sender, "Send your question here as a message 👇☺️")
         //Options: Post Question, Cancel Question| All Questions are posted anonymously.
     }
 
-    if (postback === 'learn') {
-        tolotrafunctions.sendTopics(sender)
-    }
-
-
-    if (postback === 'learn') {
+    if (raw_postback === 'learn') {
         tolotrafunctions.sendTopics(sender)
     }
 }
