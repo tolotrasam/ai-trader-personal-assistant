@@ -238,7 +238,7 @@
             UserMeetsCriteria(sender)
         }
 
-        if (postbackText === 'get_help') {
+        if (postback == 'get_help') {
             sendTextMessage(sender, "A bit lost? 😜 No problem.")
             //.then(sendQuickReply1.bind(null,sender, "Here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
           //  .then(sendTextMessage.bind(null,sender, "And you can always navigate through here by clicking the persistent menu"))
