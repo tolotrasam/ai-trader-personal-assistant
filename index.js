@@ -256,9 +256,9 @@
         }
 
         console.log('message is: ', text)
-        text = text.toLowerCase()
-        //Here is the switch case
-        switch (text) {
+        textLower = text.toLowerCase()
+        //handle the age
+        if(text == 'I am above 18.' || 'I am under 18.'){
             case 'I am above 18.':
             case 'I am under 18.':
             var update = {
@@ -268,8 +268,9 @@
             surveyToRegister(sender, update)
             console.log("MINORITY OR MAJORITY REGISTERED")
             askGender(sender)
-            break;
-
+        }
+        //Here is the switch case
+        switch (textLower) {
             case 'hi':
             case 'hello':
             tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ")
