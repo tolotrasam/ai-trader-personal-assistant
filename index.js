@@ -13,6 +13,9 @@
     var db = mongoose.connect(process.env.MONGODB_URI);
 
     var globalvars= {sendRequest: sendRequest, userData: userData}
+    //for messages sequence
+    var queue = [];
+    var queueProcessing = false;
 
     var tolotrafunctions = require('./tolotrafunctions')
     var Users = require("./content/users");
@@ -61,9 +64,9 @@
                     let text = event.postback.payload
                     decideMessagePostBack(sender, text) 
                 }
-                }
             }
-            res.sendStatus(200)
+        }
+        res.sendStatus(200)
     })
 
     //Functions 
@@ -126,21 +129,21 @@
                     "template_type": "button",
                     "text": "What is your gender?",
                     "buttons": [
-                        {
-                            "type": "postback",
-                            "title": "Male",
-                            "payload": "registration-gender-male"
-                        },
-                        {
-                            "type": "postback",
-                            "title": "Female",
-                            "payload": "registration-gender-female"
-                        },
-                        {
-                            "type": "postback",
-                            "title": "I prefer not to say",
-                            "payload": "registration-gender-undefined"
-                        }
+                    {
+                        "type": "postback",
+                        "title": "Male",
+                        "payload": "registration-gender-male"
+                    },
+                    {
+                        "type": "postback",
+                        "title": "Female",
+                        "payload": "registration-gender-female"
+                    },
+                    {
+                        "type": "postback",
+                        "title": "I prefer not to say",
+                        "payload": "registration-gender-undefined"
+                    }
                     ]
                 }
             }
@@ -148,7 +151,7 @@
         sendRequest(sender, messageData)
         
        // sendQuickReply(sender, "What is your gender?", "text", "Male", "text", "Female")
-    }
+   }
 
 
     //To get information about received messages
@@ -194,7 +197,6 @@
         console.log(postback, 'post back')
 
         if(raw_postback == 'get_started') {  
-            var messageTurn = false
             request({
                 url: "https://graph.facebook.com/v2.6/" + sender,
                 qs: {
@@ -212,33 +214,30 @@
                     greeting = "Hi " + name + ". ";
                 }
                 var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex.";
-                sendTextMessage(sender, message);
-                messageTurn = !messageTurn
+                queueRequest(sendTextMessage(sender, message));
                 console.log("MESSAGE.is_echo IS ", message.is_echo)
                 //to make sure messages execute one after the other
-                if(message.is_echo) {
                 //before proceeding, check if user in database:
                 //sendQuickReply(sender, "Select your age range: ", "text", "less than 18", "minor", "text", "more than 18", "major");
                 insertToSession(sender) // insert to session if not yet in there
                 if (userData.sender.isAnswering) {
-                if (userData.sender.payload === 'age') {
-                    var update = {
-                        user_id: sender,
-                        age: text,
-                    };
-                    surveyToRegister(sender, update)
-                }
-                userData.sender.isAnswering = false
+                    if (userData.sender.payload === 'age') {
+                        var update = {
+                            user_id: sender,
+                            age: text,
+                        };
+                        surveyToRegister(sender, update)
+                    }
+                    userData.sender.isAnswering = false
                 //loop again
                 UserMeetsCriteria(sender)
                 return;
             }
             if (!UserMeetsCriteria(sender)) {
             //console.log('user not registered')
-                return;
-            } 
-        }
-    });
+            return;
+        } 
+});
         }
 
 
@@ -331,21 +330,21 @@
                     "template_type": "button",
                     "text": "What do you want to learn about sex?",
                     "buttons": [
-                        {
-                            "type": "postback",
-                            "title": "How to maintain Sexual Health",
-                            "payload": "health"
-                        },
-                        {
-                            "type": "postback",
-                            "title": "How do women get pregnant?",
-                            "payload": "pregnant"
-                        },
-                        {
-                            "type": "postback",
-                            "title": "At which age should I have sex?",
-                            "payload": "age"
-                        }
+                    {
+                        "type": "postback",
+                        "title": "How to maintain Sexual Health",
+                        "payload": "health"
+                    },
+                    {
+                        "type": "postback",
+                        "title": "How do women get pregnant?",
+                        "payload": "pregnant"
+                    },
+                    {
+                        "type": "postback",
+                        "title": "At which age should I have sex?",
+                        "payload": "age"
+                    }
                     ]
                 }
             }
@@ -404,17 +403,17 @@
         method: 'POST',
         json: greeting
 
-      }, function(error, response, body) {
+    }, function(error, response, body) {
         if(!error && response.statusCode == 200) {
 
           console.log("Successfully sent greeting message to {{user_full_name}}")
-          } else {
-            console.error("Unable to send greeting.");
-            console.error(response);
-            console.error(body);
-          }
-        });
-      }
+      } else {
+        console.error("Unable to send greeting.");
+        console.error(response);
+        console.error(body);
+    }
+});
+  }
 
     //SET UP FOR QUICK REPLY
     function callSendAPI(messageData) {
@@ -424,41 +423,63 @@
         method: 'POST',
         json: messageData
 
-      }, function (error, response, body) {
+    }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
           var recipientId = body.recipient_id;
           var messageId = body.message_id;
 
           console.log("Successfully sent message with id %s to recipient %s",
             messageId, recipientId);
-        } else {
+      } else {
           console.error("Unable to send message.");
           console.error(response);
           console.error(error);
-        }
-      });
-    }
+      }
+  });
+  }
 
-    function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
+  function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
       var messageData = {
         recipient: {
           id: recipientId
-        },
-        message: {
+      },
+      message: {
           text: messageText,
           quick_replies:[
-            {
+          {
               content_type: ct1,
               title: title1,
               payload:pt1
-            },
-            {
+          },
+          {
               content_type: ct2,
               title: title2,
               payload:pt2
-            }
+          }
           ]}
-        }
-        callSendAPI(messageData);
-    }
+      }
+      callSendAPI(messageData);
+  }
     //------------------------------------------------------------
+    function queueRequest(request) {
+        queue.push(request);
+        if (queueProcessing) {
+            return;
+        }
+        queueProcessing = true;
+        processQueue();
+    }
+
+    function processQueue() {
+        if (queue.length == 0) {
+            queueProcessing = false;
+            return;
+        }
+        var currentRequest = queue.shift();
+        request(currentRequest, function(error, response, body) {
+            if (error || response.body.error) {
+                console.log("Error sending messages!");
+            }
+            processQueue();
+        });
+    }
