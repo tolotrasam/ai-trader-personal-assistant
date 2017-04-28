@@ -255,7 +255,8 @@
             };
             surveyToRegister(sender, update)
             console.log("MINORITY OR MAJORITY REGISTERED")
-            UserMeetsCriteria(sender)
+            askGender(sender)
+            //UserMeetsCriteria(sender)
             return;
         }
 
