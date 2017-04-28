@@ -14,8 +14,6 @@
 
     var globalvars= {sendRequest: sendRequest, userData: userData}
     //for messages sequence
-    var queue = [];
-    var queueProcessing = false;
 
     var tolotrafunctions = require('./tolotrafunctions')
     var Users = require("./content/users");
@@ -215,10 +213,10 @@
                 }
                 var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex.";
                 sendTextMessage(sender, message);
-                queueRequest(sendTextMessage(sender, "Hi"));
-                queueRequest(sendTextMessage(sender, "You"));
-                queueRequest(sendTextMessage(sender, "There"));
-                queueRequest(sendTextMessage(sender, "Lol"));
+                sendTextMessage(sender, "Hi")
+                sendTextMessage(sender, "You")
+                sendTextMessage(sender, "There")
+                sendTextMessage(sender, "Lol")
                 console.log("MESSAGE.is_echo IS ", message.is_echo)
                 //to make sure messages execute one after the other
                 //before proceeding, check if user in database:
@@ -465,25 +463,3 @@
       callSendAPI(messageData);
   }
     //------------------------------------------------------------
-    function queueRequest(request) {
-        queue.push(request);
-        if (queueProcessing) {
-            return;
-        }
-        queueProcessing = true;
-        processQueue();
-    }
-
-    function processQueue() {
-        if (queue.length == 0) {
-            queueProcessing = false;
-            return;
-        }
-        var currentRequest = queue.shift();
-        request(currentRequest, function(error, response, body) {
-            if (error || response.body.error) {
-                console.log("Error sending messages!");
-            }
-            processQueue();
-        });
-    }
