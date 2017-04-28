@@ -213,6 +213,7 @@ function get_more_content(sender, content_target_id, id_in_group) {
 
 
 function get_child_content_of(sender, content_target_id) {
+    console.log('getting child of', content_target_id)
     Content.find({parent_id: content_target_id}, function (err, chat_content) {
         if (err) {
             sendTextMessage(sender, "Sorry, I couldn't get what you asked for the moment. Try out later");
@@ -314,7 +315,7 @@ function decideMessagePostBack(sender, raw_postback) {
     }
 
 
-    if (postback === 'get_help') {
+    if (raw_postback === 'get_help') {
         sendTextMessage(sender, "A bit lost? 😜 No problem.")
             .then(sendTextMessage.bind(null, sender, "You can always navigate by clicking the persistent menu 👇"))
             .then(sendImageMessage.bind(null, sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234"))
