@@ -612,25 +612,7 @@ function sendImageMessage(recipientId, imageUrl) {
             }
         }
     }
-}
-
-return callSendAPI(messageData);
-}
-
-function sendImageMessage(recipientId, imageUrl) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            attachment: {
-                type: "image",
-                payload: {
-                    url: imageUrl
-                }
-            }
-        }
-    };
+    
     return callSendAPI(messageData);
 }
 
