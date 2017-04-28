@@ -213,11 +213,13 @@
                     greeting = "Hi " + name + ". ";
                 }
                 var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex.";
-                sendTextMessage(sender, message);
-                sendTextMessage(sender, "Hi")
-                sendTextMessage(sender, "You")
-                sendTextMessage(sender, "There")
-                sendTextMessage(sender, "Lol")
+                sendTextMessage(sender, message)
+                .then(sendTextMessage(sender, "Hi"))
+                .then(sendTextMessage(sender, "You!"))
+                .then(sendTextMessage(sender, "You are beautiful :)"))
+                .catch(function (body) {
+                    console.log('aborted');
+                });
                 console.log("MESSAGE.is_echo IS ", message.is_echo)
                 //to make sure messages execute one after the other
                 //before proceeding, check if user in database:
