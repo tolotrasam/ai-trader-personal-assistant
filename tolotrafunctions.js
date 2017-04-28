@@ -83,7 +83,7 @@ module.exports = {
                             "image_url": "http://blog.francetvinfo.fr/medecine/files/2013/11/contraception.jpg?w=640",
                             "buttons": [{
                                 "type": "postback",
-                                "payload": "contraception",
+                                "payload": "get_content-child_of-contraception",
                                 "title": "Read more"
                             }, {
                                 "type": "postback",
@@ -97,7 +97,7 @@ module.exports = {
                                 "image_url": "https://i.ytimg.com/vi/Rsj6dW6qKRc/maxresdefault.jpg",
                                 "buttons": [{
                                     "type": "postback",
-                                    "payload": "puberty",
+                                    "payload": "get_content-child_of-puberty",
                                     "title": "Read more"
                                 }, {
                                     "type": "postback",
@@ -112,7 +112,21 @@ module.exports = {
                                 "buttons": [{
                                     "type": "postback",
                                     "title": "Read more",
-                                    "payload": "sex_orientation",
+                                    "payload": "get_content-child_of-sex_orientation",
+                                }, {
+                                    "type": "postback",
+                                    "title": "Later",
+                                    "payload": "later",
+                                }],
+                            },
+                            {
+                                "title": "Sexual Relationship",
+                                "subtitle": "Learn how to maintain a healthy sexual life with your partener",
+                                "image_url": "https://static1.squarespace.com/static/5669cab769492e7282c869cc/5841cc16f7e0ab54ad769bdd/5841cc32b3db2b1a4a87f65a/1480707123893/SEXUAL-HEALTH-BANNER-1000x493.png?format=1000w",
+                                "buttons": [{
+                                    "type": "postback",
+                                    "title": "Read more",
+                                    "payload": "get_content-child_of-stds",
                                 }, {
                                     "type": "postback",
                                     "title": "Later",
