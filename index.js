@@ -137,12 +137,18 @@
         sendTextMessage(sender, msg)
     }
 
+    function checkMinor(sender){
+        console.log('check if minor or major')
+        sendQuickReply(sender, "Check which applies", "text", "I am under 18.", "minor", "text", "I am above 18.", "major")
+    }
+
     function hasCompleteInformation(sender, userInDatabase) {
         if (typeof (userInDatabase['sexe']) === 'undefined' || userInDatabase['sexe'] === '') {
             askGender(sender)
         }
-        if (typeof (userInDatabase['age']) === 'undefined' || userInDatabase['age'] === '') {
-            askAge(sender)
+        if (typeof (userInDatabase['minor']) === 'undefined' || userInDatabase['minor'] === '') {
+            //askAge(sender)
+            checkMinor(sender)
         } else {
             //age and gender saved.
             tolotrafunctions.senderLearnOrQuestionButton(sender)
@@ -222,6 +228,14 @@
             });
         }
 
+        if(raw_postback == 'minor' || raw_postback == 'major') {
+            var update = {
+                user_id: sender,
+                minor: raw_postback,
+            };
+            surveyToRegister(sender, update)
+        }
+
 
         if (postbackcategory === 'registration') {
             if (postbacksubcategory === 'gender') {
@@ -241,7 +255,7 @@
         if (text.is_echo) {
             return;
         }
-
+        /*
         if (userData.sender.isAnswering) {
                     if (userData.sender.payload === 'age') {
                         var update = {
@@ -259,7 +273,7 @@
             //console.log('user not registered')
             return;
         }
-        
+        */
         console.log('message is: ', text)
         text.toLowerCase()
         if (text === 'image') {

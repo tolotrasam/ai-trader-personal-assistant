@@ -7,6 +7,7 @@ var UserSchema = new Schema({
     last_name: {type: String},
     date_joined: {type: String},
     age: {type: String},
+    minor: {type:String},
     sexe: {type: String},
     interests: {type: String},
     preferences: {type: String},
