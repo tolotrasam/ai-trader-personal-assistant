@@ -141,10 +141,8 @@
             //askAge(sender)
             checkMinor(sender)
         }
-        else if (typeof (userInDatabase['minor']) != 'undefined' || userInDatabase['minor'] != '') {
-            askGender(sender)
-        }
-        else if (typeof (userInDatabase['sexe']) != 'undefined' || userInDatabase['sexe'] != '') {
+       // if (typeof (userInDatabase['sexe']) != 'undefined' || userInDatabase['sexe'] != '') {
+        else {
             //age and gender saved.
             tolotrafunctions.senderLearnOrQuestionButton(sender)
             //sendTopics(sender)
