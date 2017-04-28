@@ -271,9 +271,9 @@
         switch (textLower) {
 
             //to lower case because
-            case: 'i am above 18.':
-            case: 'i am under 18.':
-                var update = {
+            case 'i am above 18.':
+            case 'i am under 18.':
+            var update = {
                 user_id: sender,
                 minor: text,
             }
