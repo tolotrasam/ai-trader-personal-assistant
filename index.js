@@ -259,6 +259,13 @@
             //UserMeetsCriteria(sender)
             return;
         }
+        if (text === 'hi' || text == 'hello') {
+            sendTextMessage(sender, "Hey there! What do you want to do? 😏 ")
+        }
+
+        if (text === 'exit') {
+            sendTextMessage(sender, 'Hope you have learnt! See you soon! 🖖😉')
+        }
 
         if (text === 'learn') {
             sendTopics(sender)
@@ -278,7 +285,8 @@
         if (text === 'pregnant') {
             sendTextMessage(sender, "Sexual rapport")
         } else {
-            sendButtonMessage(sender, text)
+            sendTextMessage(sender, "Here are the current available subjects:")
+            .then(sendButtonMessage.bind(null,sender, text))
         }
     }
 
@@ -366,7 +374,7 @@
                     "template_type": "generic",
                     "elements": [{
                         "title": "Anatomy",
-                        "subtitle": "Let's learn about the genitals.",
+                        "subtitle": "Let's learn about the genitals + Sexual Hygiene",
                         "image_url": "https://davidventzelblog.files.wordpress.com/2016/05/vitruvian.jpg?w=1200",
                         "buttons": [{
                             "type": "postback",
