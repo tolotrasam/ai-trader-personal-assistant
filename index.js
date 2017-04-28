@@ -247,7 +247,36 @@
 
         console.log('message is: ', text)
         text.toLowerCase()
+        //Here is the switch case
+        switch (text) {
+            case 'I am above 18.':
+            case 'I am under 18.':
+            var update = {
+                user_id: sender,
+                minor: text,
+            };
+            surveyToRegister(sender, update)
+            console.log("MINORITY OR MAJORITY REGISTERED")
+            askGender(sender)
+            break;
 
+            case 'hi':
+            case 'hello':
+            tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ")
+            break;
+
+            case 'exit':
+            sendTextMessage(sender, 'Hope you have learnt! See you soon! 🖖😉')
+            break;
+
+            case 'learn':
+            sendTopics(sender)
+            break;
+
+            default:
+            tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
+        }
+        /*end of switch case
         if(text == 'I am above 18.' || text == 'I am under 18.') {
             var update = {
                 user_id: sender,
@@ -270,26 +299,10 @@
         if (text === 'learn') {
             sendTopics(sender)
         }
-        if (text === 'health') {
-            sendTextMessage(sender, "No risks condom")
-        }
-        if (text === 'health') {
-            sendTextMessage(sender, "Wear condom")
-        }
-
-        if (text === 'age') {
-            console.log('age detected')
-            sendTextMessage(sender, "18")
-            console.log('age end')
-        }
-
-        if (text === 'pregnant') {
-            sendTextMessage(sender, "Sexual rapport")
-        } 
 
         else {
             tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
-        }
+        }*/
     }
 
            // console.log(sender, 'before database fetching user_id')
