@@ -473,7 +473,8 @@
           reject(body.error); // ***
       }
   });
-  }
+  })
+}
 
   function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
       var messageData = {
