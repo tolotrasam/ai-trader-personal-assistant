@@ -140,7 +140,7 @@
         if (typeof (userInDatabase['minor']) === 'undefined' || userInDatabase['minor'] === '') {
             //askAge(sender)
             checkMinor(sender)
-        } else {
+        } else if (typeof (userInDatabase['sexe']) != 'undefined' || userInDatabase['sexe'] != '') {
             //age and gender saved.
             tolotrafunctions.senderLearnOrQuestionButton(sender)
             //sendTopics(sender)
