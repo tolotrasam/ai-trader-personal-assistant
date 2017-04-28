@@ -140,7 +140,11 @@
         if (typeof (userInDatabase['minor']) === 'undefined' || userInDatabase['minor'] === '') {
             //askAge(sender)
             checkMinor(sender)
-        } 
+        } else {
+            //age and gender saved.
+            tolotrafunctions.senderLearnOrQuestionButton(sender)
+            //sendTopics(sender)
+        }
     }
 
     function surveyToRegister(senderId, update) {
