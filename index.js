@@ -211,7 +211,7 @@ function sendSingleContentButton(sender, chat_content) {
 
         } else {
             console.log(chat_content.length, 'lenght of fectch object');
-            if (chat_content.length > 1) {
+            if (chat_content.length >= 1) {
 
                 var the_content = chat_content[0];
                 var text_main = the_content.text_content;
