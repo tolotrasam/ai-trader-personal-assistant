@@ -237,6 +237,16 @@
             //loop again
             UserMeetsCriteria(sender)
         }
+
+        if (postbackText === 'get_help') {
+            sendTextMessage(sender, "A bit lost? 😜 No problem.")
+            .then(sendQuickReply1.bind(null,sender, "Here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
+            .then(sendTextMessage.bind(null,sender, "And you can always navigate through here by clicking the persistent menu"))
+            .then(sendImageMessage.bind(null,sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234")
+            .catch(function (body) {
+                console.log('aborted');
+            });
+        }
     }
 
     function decideMessagePlainText(sender, text) {
@@ -276,33 +286,6 @@
             default:
             tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
         }
-        /*end of switch case
-        if(text == 'I am above 18.' || text == 'I am under 18.') {
-            var update = {
-                user_id: sender,
-                minor: text,
-            };
-            surveyToRegister(sender, update)
-            console.log("MINORITY OR MAJORITY REGISTERED")
-            askGender(sender)
-            //UserMeetsCriteria(sender)
-            return;
-        }
-        if (text === 'hi' || text == 'hello') {
-            tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ")
-        }
-
-        if (text === 'exit') {
-            sendTextMessage(sender, 'Hope you have learnt! See you soon! 🖖😉')
-        }
-
-        if (text === 'learn') {
-            sendTopics(sender)
-        }
-
-        else {
-            tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
-        }*/
     }
 
            // console.log(sender, 'before database fetching user_id')
@@ -509,6 +492,51 @@
           }
           ]}
       }
-      callSendAPI(messageData);
+      return sendRequest(recipientId,messageData);
   }
+
+  function sendQuickReply1(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2, ct3, title3, pt3) {
+      var messageData = {
+        recipient: {
+          id: recipientId
+      },
+      message: {
+          text: messageText,
+          quick_replies:[
+          {
+              content_type: ct1,
+              title: title1,
+              payload:pt1
+          },
+          {
+              content_type: ct2,
+              title: title2,
+              payload:pt2
+          },
+          {
+              content_type: ct3,
+              title: title3,
+              payload:pt3
+          }
+          ]}
+      }
+     return sendRequest(recipientId,messageData);
+  }
+
+  function sendImageMessage(recipientId, imageUrl) {
+  var messageData = {
+    recipient: {
+      id: recipientId
+    },
+    message: {
+      attachment :{
+         type :"image",
+         payload :{
+           url : imageUrl
+        }
+      }
+    }
+  };
+ return sendRequest(recipientId, messageData);
+}
     //------------------------------------------------------------
