@@ -13,4 +13,4 @@ var UserSchema = new Schema({
     profile_url: {type: String}
 });
 
-module.exports = mongoose.model("Users", MovieSchema);
+module.exports = mongoose.model("Users", UserSchema);
