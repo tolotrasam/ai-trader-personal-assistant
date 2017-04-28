@@ -223,7 +223,7 @@
         }
 
         if (postbackcategory === 'nav' && postbacksubcategory === 'main' && postbackvalue === 'learn') {
-                sendTopics(sender)
+                tolotrafunctions.sendTopics(sender)
             }
 
         if (postbackcategory === 'registration') {
@@ -238,26 +238,15 @@
             UserMeetsCriteria(sender)
         }
 
-        if (postback == 'get_help') {
+        if (postbackText === 'get_help') {
             sendTextMessage(sender, "A bit lost? 😜 No problem.")
-            .then(sendTextMessage.bind(null,sender, "You can always navigate by clicking the persistent menu 👇"))
+            .then(sendQuickReply1.bind(null,sender, "Here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
+            .then(sendTextMessage.bind(null,sender, "And you can always navigate through here by clicking the persistent menu"))
             .then(sendImageMessage.bind(null,sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234"))
-            .then(sendQuickReply1.bind(null,sender, "And here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
             .catch(function (body) {
                 console.log('aborted');
             });
         }
-
-        if (postback == 'ask_questions') {
-            console.log('question attempt by ', sender)
-            sendTextMessage(sender, "Send your question here as a message 👇☺️")
-            //Options: Post Question, Cancel Question| All Questions are posted anonymously.
-        }
-
-        if (postback == 'learn') {
-            sendTopics(sender)
-        }
-
     }
 
     function decideMessagePlainText(sender, text) {
@@ -267,6 +256,7 @@
         }
 
         console.log('message is: ', text)
+<<<<<<< HEAD
         var textLower = text.toLowerCase()
         var questionMark = textLower.substring(textLower.length-1,textLower.length)
         //check if it's a question
@@ -285,10 +275,17 @@
             //to lower case because
             case 'i am above 18.':
             case 'i am under 18.':
+=======
+        text.toLowerCase()
+        //Here is the switch case
+        switch (text) {
+            case 'I am above 18.':
+            case 'I am under 18.':
+>>>>>>> 66b28c3b789cdb47a22c63cae9941e560d1cfbd4
             var update = {
                 user_id: sender,
                 minor: text,
-            }
+            };
             surveyToRegister(sender, update)
             console.log("MINORITY OR MAJORITY REGISTERED")
             askGender(sender)
@@ -304,7 +301,7 @@
             break;
 
             case 'learn':
-            sendTopics(sender)
+            tolotrafunctions.sendTopics(sender)
             break;
 
             default:
@@ -479,7 +476,6 @@
 
     //SET UP FOR QUICK REPLY
     function callSendAPI(messageData) {
-    return new Promise(function (resolve, reject) { // *****
       request({
         uri: 'https://graph.facebook.com/v2.6/me/messages',
         qs: { access_token: token },
@@ -493,16 +489,13 @@
 
           console.log("Successfully sent message with id %s to recipient %s",
             messageId, recipientId);
-          resolve(body); // ***
       } else {
           console.error("Unable to send message.");
           console.error(response);
           console.error(error);
-          reject(body.error); // ***
       }
   });
-  })
-}
+  }
 
   function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
       var messageData = {
@@ -552,7 +545,7 @@
           }
           ]}
       }
-     return callSendAPI(messageData);
+     return sendRequest(recipientId,messageData);
   }
 
   function sendImageMessage(recipientId, imageUrl) {
@@ -569,6 +562,6 @@
       }
     }
   };
- return callSendAPI(messageData);
+ return sendRequest(recipientId, messageData);
 }
     //------------------------------------------------------------
