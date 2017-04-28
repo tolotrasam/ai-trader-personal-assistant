@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
-var UserSchema = new Schema({
+var ContentSchema = new Schema({
     content_id: {type: String},
     parent_id: {type: String},
     text_content: {type: String},
@@ -15,4 +15,4 @@ var UserSchema = new Schema({
     active: {type: String}
 });
 
-module.exports = mongoose.model("Content", UserSchema);
+module.exports = mongoose.model("Content", ContentSchema);
