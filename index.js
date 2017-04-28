@@ -131,7 +131,7 @@ function askGender(sender) {
 
 function checkMinor(sender) {
     console.log('check if minor or major')
-    sendQuickReply(sender, "Check which applies", "text", "I am under 18.", "minor", "text", "I am above 18.", "major")
+    sendQuickReplyTwoBtn(sender, "Check which applies", "text", "I am under 18.", "minor", "text", "I am above 18.", "major")
 }
 
 function hasCompleteInformation(sender, userInDatabase) {
@@ -275,7 +275,7 @@ function decideMessagePostBack(sender, raw_postback) {
             var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex. 👨‍❤️‍💋‍👨 💑 👫";
             sendTextMessage(sender, message)
                 .then(sendTextMessage.bind(null, sender, "And to make the experience better, I'd like to get to know a bit about you."))
-                .then(sendQuickReply.bind(null, sender, "Check which one applies to you:", "text", "I am under 18.", "minor", "text", "I am above 18.", "major"))
+                .then(sendQuickReplyTwoBtn.bind(null, sender, "Check which one applies to you:", "text", "I am under 18.", "minor", "text", "I am above 18.", "major"))
                 .catch(function (body) {
                     console.log('aborted');
                 });
@@ -320,7 +320,7 @@ function decideMessagePostBack(sender, raw_postback) {
             sendTextMessage(sender, "A bit lost? 😜 No problem.")
                 .then(sendTextMessage.bind(null, sender, "You can always navigate by clicking the persistent menu 👇"))
                 .then(sendImageMessage.bind(null, sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234"))
-                .then(sendQuickReply1.bind(null, sender, "And here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
+                .then(sendQuickReplyThreeBtn.bind(null, sender, "And here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
                 .catch(function (body) {
                     console.log('aborted');
                 });
@@ -523,7 +523,7 @@ function callSendAPI(messageData) {
     })
 }
 
-function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
+function sendQuickReplyTwoBtn(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
     var messageData = {
         recipient: {
             id: recipientId
@@ -548,7 +548,7 @@ function sendQuickReply(recipientId, messageText, ct1, title1, pt1, ct2, title2,
     callSendAPI(messageData);
 }
 
-function sendQuickReply1(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2, ct3, title3, pt3) {
+function sendQuickReplyThreeBtn(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2, ct3, title3, pt3) {
     var messageData = {
         recipient: {
             id: recipientId
@@ -586,33 +586,11 @@ function sendImageMessage(recipientId, imageUrl) {
             attachment: {
                 type: "image",
                 payload: {
-                    url: imageUrl,
-                    id: recipientId
-                },
-                message: {
-                    text: messageText,
-                    quick_replies: [
-                        {
-                            content_type: ct1,
-                            title: title1,
-                            payload: pt1
-                        },
-                        {
-                            content_type: ct2,
-                            title: title2,
-                            payload: pt2
-                        },
-                        {
-                            content_type: ct3,
-                            title: title3,
-                            payload: pt3
-                        }
-                    ]
+                    url: imageUrl
                 }
             }
         }
-    }
-
+    };
     return callSendAPI(messageData);
 }
 
