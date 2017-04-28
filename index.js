@@ -256,7 +256,7 @@
         }
 
         console.log('message is: ', text)
-        textLower = text.toLowerCase()
+        var textLower = text.toLowerCase()
         //handle the age
         if(text == 'I am above 18.' || 'I am under 18.'){
             var update = {
