@@ -286,7 +286,7 @@ function decideMessagePostBack(sender, raw_postback) {
     }
 
     if (postbackcategory === 'nav' && postbacksubcategory === 'main' && postbackvalue === 'learn') {
-        sendTopics(sender)
+        tolotrafunctions.sendTopics(sender)
     }
 
     if (postbackcategory === 'registration') {
@@ -333,13 +333,13 @@ function decideMessagePostBack(sender, raw_postback) {
         }
 
         if (postback == 'learn') {
-            sendTopics(sender)
+            tolotrafunctions.sendTopics(sender)
         }
 
     }
 
     if (postback == 'learn') {
-        sendTopics(sender)
+        tolotrafunctions.sendTopics(sender)
     }
 }
 
@@ -612,7 +612,7 @@ function sendImageMessage(recipientId, imageUrl) {
             }
         }
     }
-    
+
     return callSendAPI(messageData);
 }
 
