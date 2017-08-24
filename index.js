@@ -36,9 +36,53 @@ start_timeout_interval()
 
 function sendUpdatesToEachSubscripbers(subscribers) {
     for (var subscriber of subscribers) {
-        var data = verify_and_get_asset(subscriber.asset_id)
-        sendTextMessage(subscriber.user_id, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
-        console.log('sending update to user', subscriber.user_id)
+        var current_time_stamp = new Date().getTime();
+        var last_update = subscriber.last_update;
+        var diff = current_time_stamp - last_update;
+        var frequency_count = subscriber.frequency_count;
+        var times_interval_millis = 1;
+        switch (subscriber.frequency_label) {
+            case 'minutes':
+            case 'minute':
+                times_interval_millis = 60 * 1000
+                break;
+            case 'hours':
+            case 'hour':
+                times_interval_millis = 60 * 1000 * 60
+                break;
+            case 'day':
+            case 'days':
+                times_interval_millis = 60 * 1000 * 60 * 24
+                break;
+            case 'week':
+            case 'weeks':
+                times_interval_millis = 60 * 1000 * 60 * 24 * 7
+                break;
+            case 'month':
+            case 'months':
+                times_interval_millis = 60 * 1000 * 60 * 24 * 30
+                break;
+        }
+        var frequency_millis = frequency_count * times_interval_millis
+        if (diff >= frequency_millis) {
+
+
+            var query = {_id: subscriber._id};
+            var options = {upsert: true};
+            var update = {last_update: new Date().getTime()};
+
+            var data = verify_and_get_asset(subscriber.asset_id)
+            sendTextMessage(subscriber.user_id, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
+            Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
+                if (err) {
+                    console.log("Database error: " + err);
+                } else {
+                    console.log('sending update to user', subscriber.user_id)
+
+                }
+
+            })
+        }
     }
     start_timeout_interval()
 }
@@ -85,7 +129,7 @@ function start_timeout_interval() {
     }
 
 
-    console.log('current min is' +currentMin+' and next update in milliseconds: ',next_update)
+    console.log('current min is' + currentMin + ' and next update in milliseconds: ', next_update)
     next_timeout_interval = setTimeout(function () {
         sendUpdatesToSubscripbers()
     }, next_update)
@@ -234,7 +278,7 @@ function hasCompleteInformation(sender, userInDatabase) {
 }
 
 //update is a json that contains the userid and the update fields as attribute.
-function surveyToRegister(senderId, update) {
+function ModifyOrRegisterUserById(senderId, update) {
     console.log('update user ' + senderId, JSON.stringify(update));
 
     var query = {user_id: senderId};
@@ -362,7 +406,7 @@ function add_new_user(sender) {
                 gender: bodyObj.gender,
                 date_joined: new Date().getTime(),
             }
-            surveyToRegister(sender, update)
+            ModifyOrRegisterUserById(sender, update)
 
             greeting = "Hi " + bodyObj.first_name + " 😃 ";
 
@@ -406,7 +450,7 @@ function decideMessagePostBack(sender, raw_postback) {
                 user_id: sender,
                 sexe: postbackvalue,
             };
-            surveyToRegister(sender, update)
+            ModifyOrRegisterUserById(sender, update)
         }
         //loop again
         UserMeetsCriteria(sender)
