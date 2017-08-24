@@ -366,7 +366,7 @@ function verify_and_get_asset(code_to_verify) {
     var result = symbol.filter(function (obj) {
         return obj.symbol.toLowerCase() === code_to_verify || obj.name.toLowerCase() === code_to_verify;
     });
-    if (typeof result === null) {
+    if (typeof result === 'undefined') {
         return null;
     }else{
         return result;
