@@ -3,23 +3,35 @@
 
 const token = process.env.PAGE_ACCESS_TOKEN;
 const vtoken = process.env.VERIFICATION_TOKEN;
+const db_token = process.env.MONGODB_URI
 
 const express = require('express');
 const bodyParser = require('body-parser');
+var mongoose = require("mongoose");
+
 const request = require('request');
 const app = express();
 var Promise = require('promise');
 var userData = {};
-var mongoose = require("mongoose");
-var db = mongoose.connect(process.env.MONGODB_URI);
-
 var globalvars = {sendRequest: sendRequest, userData: userData};
+
+var db = mongoose.connect(db_token);
 //for messages sequence
 
 var tolotrafunctions = require('./tolotrafunctions');
 var Users = require("./content/users");
 var Content = require("./content/content");
 // Process application/x-www-form-urlencoded
+var coinmarkethelper = require('./api/coinmarketcap')
+
+var symbol = null;
+updateSymbols()
+function updateSymbols() {
+
+    coinmarkethelper.getTicker(null, function (data, param) {
+        symbol = data;
+    })
+}
 app.use(bodyParser.urlencoded({extended: false}));
 // Process application/json
 app.use(bodyParser.json());
@@ -34,8 +46,9 @@ app.get('/', function (req, res) {
 app.get('/webhook/', function (req, res) {
     if (req.query['hub.verify_token'] === vtoken) {
         res.send(req.query['hub.challenge'])
+    } else {
+        res.send('No sir')
     }
-    res.send('No sir')
 });
 
 // Spin up the server
@@ -70,6 +83,8 @@ app.post('/webhook/', function (req, res) {
 });
 
 //Functions
+
+
 function UserMeetsCriteria(sender) {
     var userInDatabase = isUserInDatabase(sender);
 }
@@ -225,7 +240,7 @@ function sendSingleContentButton(sender, chat_content) {
                     //var payload_for_something_else = the_content.text_content;
                     if (typeof (text_main) === 'undefined' || text_main === '') {
                         if (typeof (image_url) !== 'undefined' && text_main === '') {
-                            sendQuickReplyTwoBtn(sender, 'text','What\'s next?',  'Read more', payload_for_more, 'text', 'Something else', payload_for_something_else );
+                            sendQuickReplyTwoBtn(sender, 'text', 'What\'s next?', 'Read more', payload_for_more, 'text', 'Something else', payload_for_something_else);
                             sendImageMessage(sender, image_url);
                         } else {
                             sendTextMessage(sender, 'Sorry, this is not available for the moment. Try again later');
@@ -250,7 +265,7 @@ function get_child_content_of(sender, content_target_id) {
         if (err) {
             sendTextMessage(sender, "Sorry, I couldn't get what you asked for the moment. Try out later");
         } else {
-            sendSingleContentButton(sender, chat_content )
+            sendSingleContentButton(sender, chat_content)
         }
     })
 }
@@ -347,6 +362,11 @@ function decideMessagePostBack(sender, raw_postback) {
     }
 }
 
+function verify_and_get_asset(code_to_verify) {
+    var result = symbol.filter(function (obj) {
+        return obj.symbol.toLowerCase() === code_to_verify || obj.name.toLowerCase() === code_to_verify;
+    });
+}
 function decideMessagePlainText(sender, text) {
     console.log('message plain text');
     if (text.is_echo) {
@@ -355,37 +375,54 @@ function decideMessagePlainText(sender, text) {
 
     console.log('message is: ', text);
     var textLower = text.toLowerCase();
+    var array_tolwercase = textLower.split(" ");
 
-    switch (textLower) {
+    if (array_tolwercase[0] === "get") {
+        if (typeof array_tolwercase[1] === 'undefined') {
+            sendTextMessage(sender, 'write the asset symbol or name after get. Like: get bitcoin cash');
+        } else {
+            var object_asset = verify_and_get_asset(array_tolwercase[1]);
+            coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data, params) {
+                sendTextMessage(data.name +" price now is "+data.price_usd+ " USD growing at "+data.percent_change_24h+" in 24hours")
+            })
+        }
 
-        //to lower case because
-        case 'i am above 18.':
-        case 'i am under 18.':
-            var update = {
-                user_id: sender,
-                minor: text,
-            };
-            surveyToRegister(sender, update);
-            console.log("MINORITY OR MAJORITY REGISTERED");
-            askGender(sender);
-            break;
-
-        case 'hi':
-        case 'hello':
-            tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ");
-            break;
-
-        case 'exit':
-            sendTextMessage(sender, 'Hope you have learnt! See you soon! 🖖😉');
-            break;
-
-        case 'learn':
-            tolotrafunctions.sendTopics(sender);
-            break;
-
-        default:
-            tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
     }
+
+
+    else {
+        switch (textLower) {
+            //
+            // //to lower case because
+            // case 'i am above 18.':
+            // case 'i am under 18.':
+            //     var update = {
+            //         user_id: sender,
+            //         minor: text,
+            //     };
+            //     surveyToRegister(sender, update);
+            //     console.log("MINORITY OR MAJORITY REGISTERED");
+            //     askGender(sender);
+            //     break;
+
+            case 'hi':
+            case 'hello':
+                tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ");
+                break;
+
+            case 'exit':
+                sendTextMessage(sender, 'Hope you have learnt! See you soon! 🖖😉');
+                break;
+
+            case 'learn':
+                tolotrafunctions.sendTopics(sender);
+                break;
+
+            default:
+                tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
+        }
+    }
+
 }
 
 // console.log(sender, 'before database fetching user_id')

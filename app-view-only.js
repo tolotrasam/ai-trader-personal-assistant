@@ -13,11 +13,12 @@ var userData = {};
 var mongoose = require("mongoose");
 var db = mongoose.connect(process.env.MONGODB_URI);
 
-var globalvars= {sendRequest: sendRequest, userData: userData}
+var globalvars = {sendRequest: sendRequest, userData: userData}
 //for messages sequence
 
 var tolotrafunctions = require('./tolotrafunctions')
 var Users = require("./content/users");
+var Content = require("./content/content");
 // Process application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({extended: false}))
 // Process application/json
@@ -46,7 +47,7 @@ app.post('/webhook/', function (req, res) {
     var data = req.body;
     console.log('IT STARTS HERE')
     //Make sure its a page subscription
-    if (data.object==='page'){
+    if (data.object === 'page') {
         let messaging_events = data.entry[0].messaging
         //iterate over each messaging events
         for (let i = 0; i < messaging_events.length; i++) {
@@ -128,9 +129,9 @@ function askGender(sender) {
     // sendQuickReply(sender, "What is your gender?", "text", "Male", "text", "Female")
 }
 
-function checkMinor(sender){
+function checkMinor(sender) {
     console.log('check if minor or major')
-    sendQuickReply(sender, "Check which applies", "text", "I am under 18.", "minor", "text", "I am above 18.", "major")
+    sendQuickReplyTwoBtn(sender, "Check which applies", "text", "I am under 18.", "minor", "text", "I am above 18.", "major")
 }
 
 function hasCompleteInformation(sender, userInDatabase) {
@@ -149,6 +150,7 @@ function hasCompleteInformation(sender, userInDatabase) {
     }
 }
 
+//update is a json that contains the userid and the update fields as attribute.
 function surveyToRegister(senderId, update) {
     console.log('update user ' + senderId, JSON.stringify(update))
 
@@ -181,6 +183,75 @@ function receivedMessageLog(event) {
     console.log(JSON.stringify(event));
 }
 
+function get_more_content(sender, content_target_id, id_in_group) {
+    if (!typeof (id_in_group) === 'undefined') {
+        Content.findOne({parent_id: content_target_id, id_in_group: id_in_group}, function (err, chat_content) {
+            if (err) {
+                sendTextMessage(sender, "Sorry, I couldn't get what you asked for the moment. Try out later");
+            } else {
+                //if chate_Content refered to the id of a missing or a non existing child
+                if (!chat_content) {
+                    console.log('error missing child with id:', content_target_id)
+                } else {
+                    var text_main = chat_content.text_content;
+                    if (typeof (text_main) === 'undefined') {
+                        console.log('error in get_child_content_of', 'no proriety found')
+                    } else {
+                        chat_content = content_target_id
+                        //generate card if menu, send only one if content
+                        var payload_for_more = chat_content.payload_for_more;
+                        var payload_for_something_else = chat_content.payload_for_something_else;
+                        //var payload_for_something_else = chat_content.text_content;
+                        tolotrafunctions.sendContentButton(sender, text_main, payload_for_more, payload_for_something_else);
+                    }
+                }
+
+            }
+        })
+    }
+}
+
+
+function get_child_content_of(sender, content_target_id) {
+    console.log('getting child of', content_target_id)
+    Content.find({parent_id: content_target_id}, function (err, chat_content) {
+        if (err) {
+            sendTextMessage(sender, "Sorry, I couldn't get what you asked for the moment. Try out later");
+        } else {
+            //if chate_Content refered to the id of a missing or a non existing child
+            if (!chat_content) {
+                console.log('error missing child with id:', content_target_id)
+            } else {
+
+                if (typeof (chat_content) === 'undefined' || typeof (chat_content[0]) === 'undefined') {
+                    console.log('error in get_child_content_of', 'no object found')
+                    console.log(chat_content, 'this is the object')
+                } else {
+                    if (chat_content.length > 1) {
+
+                        var the_content = chat_content[0]
+                        var text_main = the_content.text_content;
+                        if (typeof (text_main) === 'undefined') {
+                            console.log('error in get_child_content_of', 'no attribute found')
+                        } else {
+                            //generate card if menu, send only one if content
+                            var payload_for_more = the_content.payload_for_more;
+                            var payload_for_something_else = the_content.payload_for_something_else;
+                            //var payload_for_something_else = the_content.text_content;
+                            tolotrafunctions.sendContentButton(sender, text_main, payload_for_more, payload_for_something_else);
+                        }
+
+
+                    }
+                    //  for(var i = 0; i < content_target_id.length; i++){
+                    // }
+                }
+            }
+
+        }
+    })
+}
+
 function decideMessagePostBack(sender, raw_postback) {
     var postbackText = JSON.stringify(raw_postback)
     console.log('message postback', postbackText)
@@ -190,9 +261,10 @@ function decideMessagePostBack(sender, raw_postback) {
     var postbackcategory = postback[0];
     var postbacksubcategory = postback[1];
     var postbackvalue = postback[2];
+    var postbacksubvalue = postback[3];
     console.log(postback, 'post back')
 
-    if(raw_postback == 'get_started') {
+    if (raw_postback == 'get_started') {
         request({
             url: "https://graph.facebook.com/v2.6/" + sender,
             qs: {
@@ -200,10 +272,10 @@ function decideMessagePostBack(sender, raw_postback) {
                 fields: "first_name"
             },
             method: "GET"
-        }, function(error, response, body) {
+        }, function (error, response, body) {
             var greeting = "";
             if (error) {
-                console.log("Error getting user's name: " +  error);
+                console.log("Error getting user's name: " + error);
             } else {
                 var bodyObj = JSON.parse(body);
                 var name = bodyObj.first_name;
@@ -211,8 +283,8 @@ function decideMessagePostBack(sender, raw_postback) {
             }
             var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex. 👨‍❤️‍💋‍👨 💑 👫";
             sendTextMessage(sender, message)
-                .then(sendTextMessage.bind(null,sender, "And to make the experience better, I'd like to get to know a bit about you."))
-                .then(sendQuickReply.bind(null,sender, "Check which one applies to you:", "text", "I am under 18.", "minor", "text", "I am above 18.", "major"))
+                .then(sendTextMessage.bind(null, sender, "And to make the experience better, I'd like to get to know a bit about you."))
+                .then(sendQuickReplyTwoBtn.bind(null, sender, "Check which one applies to you:", "text", "I am under 18.", "minor", "text", "I am above 18.", "major"))
                 .catch(function (body) {
                     console.log('aborted');
                 });
@@ -223,7 +295,7 @@ function decideMessagePostBack(sender, raw_postback) {
     }
 
     if (postbackcategory === 'nav' && postbacksubcategory === 'main' && postbackvalue === 'learn') {
-        sendTopics(sender)
+        tolotrafunctions.sendTopics(sender)
     }
 
     if (postbackcategory === 'registration') {
@@ -236,20 +308,39 @@ function decideMessagePostBack(sender, raw_postback) {
         }
         //loop again
         UserMeetsCriteria(sender)
+    } else if (postbackcategory === 'get_content') {
+        var content_relationship = postbacksubcategory;
+        var content_target_id = postbackvalue;
+        switch (content_relationship) {
+            case 'child_of':
+                get_child_content_of(sender, content_target_id)
+                break;
+            case 'more_of':
+                var next_id = postbacksubvalue;
+                get_more_content(sender, content_target_id, next_id)
+                break;
+        }
     }
 
-    if (postback == 'get_help') {
+
+    if (raw_postback === 'get_help') {
         sendTextMessage(sender, "A bit lost? 😜 No problem.")
-            .then(sendTextMessage.bind(null,sender, "You can always navigate by clicking the persistent menu 👇"))
-            .then(sendImageMessage.bind(null,sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234"))
-            .then(sendQuickReply1.bind(null,sender, "And here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
+            .then(sendTextMessage.bind(null, sender, "You can always navigate by clicking the persistent menu 👇"))
+            .then(sendImageMessage.bind(null, sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234"))
+            .then(sendQuickReplyThreeBtn.bind(null, sender, "And here is what you can do for now ☺️", "text", "Learn", "learn", "text", "Ask A Question", "ask_question", "text", "Exit", "exit"))
             .catch(function (body) {
                 console.log('aborted');
             });
     }
 
-    if (postback == 'learn') {
-        sendTopics(sender)
+    if (raw_postback === 'ask_questions') {
+        console.log('question attempt by ', sender)
+        sendTextMessage(sender, "Send your question here as a message 👇☺️")
+        //Options: Post Question, Cancel Question| All Questions are posted anonymously.
+    }
+
+    if (raw_postback === 'learn') {
+        tolotrafunctions.sendTopics(sender)
     }
 }
 
@@ -286,7 +377,7 @@ function decideMessagePlainText(sender, text) {
             break;
 
         case 'learn':
-            sendTopics(sender)
+            tolotrafunctions.sendTopics(sender)
             break;
 
         default:
@@ -297,16 +388,6 @@ function decideMessagePlainText(sender, text) {
 // console.log(sender, 'before database fetching user_id')
 //  getMovieDetail(sender, 'director');
 
-//data base fetching//data base fetching
-function getMovieDetail(userId, field) {
-    Users.findOne({user_id: userId}, function (err, movie) {
-        if (err) {
-            sendTextMessage(userId, "Something went wrong. Try again");
-        } else {
-            sendTextMessage(userId, movie[field] + ' sent from mongo DB');
-        }
-    })
-}
 
 //API REQUEST
 function sendRequest(sender, messageData) {
@@ -370,82 +451,16 @@ function sendTextMessage(sender, text) {
     return sendRequest(sender, messageData)
 }
 
-function sendTopics(sender) {
-    let messageData = {
-        "attachment": {
-            "type": "template",
-            "payload": {
-                "template_type": "generic",
-                "elements": [{
-                    "title": "Anatomy",
-                    "subtitle": "Let's learn about the genitals + Sexual Hygiene",
-                    "image_url": "https://davidventzelblog.files.wordpress.com/2016/05/vitruvian.jpg?w=1200",
-                    "buttons": [{
-                        "type": "postback",
-                        "payload": "anatomy",
-                        "title": "Read more"
-                    }, {
-                        "type": "postback",
-                        "title": "Later",
-                        "payload": "later",
-                    }],
-                }, {
-                    "title": "Contraception",
-                    "subtitle": "Pleasure without the Consequences",
-                    "image_url": "http://blog.francetvinfo.fr/medecine/files/2013/11/contraception.jpg?w=640",
-                    "buttons": [{
-                        "type": "postback",
-                        "payload": "contraception",
-                        "title": "Read more"
-                    }, {
-                        "type": "postback",
-                        "title": "Later",
-                        "payload": "later",
-                    }],
-                },
-                    {
-                        "title": "Puberty",
-                        "subtitle": "Symptoms of puberty",
-                        "image_url": "https://i.ytimg.com/vi/Rsj6dW6qKRc/maxresdefault.jpg",
-                        "buttons": [{
-                            "type": "postback",
-                            "payload": "puberty",
-                            "title": "Read more"
-                        }, {
-                            "type": "postback",
-                            "title": "Later",
-                            "payload": "later",
-                        }],
-                    },
-                    {
-                        "title": "Sexual Orientation",
-                        "subtitle": "Heterosexual? Homosexual? Bisexual? What Am I?",
-                        "image_url": "http://theastrologypodcast.com/wp-content/uploads/2016/04/sexual-orientation-astrology-660.jpg",
-                        "buttons": [{
-                            "type": "postback",
-                            "title": "Read more",
-                            "payload": "sex_orientation",
-                        }, {
-                            "type": "postback",
-                            "title": "Later",
-                            "payload": "later",
-                        }],
-                    }]
-            }
-        }
-    }
-    sendRequest(sender, messageData)
-}
 
 function callGreetingAPI(greeting) {
     request({
         uri: 'https://graph.facebook.com/v2.6/me/thread_settings',
-        qs: { access_token: token},
+        qs: {access_token: token},
         method: 'POST',
         json: greeting
 
-    }, function(error, response, body) {
-        if(!error && response.statusCode == 200) {
+    }, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
             console.log("Successfully sent greeting message to {{user_full_name}}")
         } else {
             console.error("Unable to send greeting.");
@@ -456,11 +471,11 @@ function callGreetingAPI(greeting) {
 }
 
 //SET UP FOR QUICK REPLY
-function sendQuickReplyRequest(messageData) {
+function callSendAPI(messageData) {
     return new Promise(function (resolve, reject) { // *****
         request({
             uri: 'https://graph.facebook.com/v2.6/me/messages',
-            qs: { access_token: token },
+            qs: {access_token: token},
             method: 'POST',
             json: messageData
 
@@ -482,55 +497,85 @@ function sendQuickReplyRequest(messageData) {
     })
 }
 
-function sendQuickReply(recipientId, messageText, content1, title1, payload1, content2, title2, payload2) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            text: messageText,
-            quick_replies:[
-                {
-                    content_type: content1,
-                    title: title1,
-                    payload:payload1
-                },
-                {
-                    content_type: content2,
-                    title: title2,
-                    payload:payload2
-                }
-            ]}
-    }
-    sendQuickReplyRequest(messageData);
+//SET UP FOR QUICK REPLY
+function callSendAPI(messageData) {
+    return new Promise(function (resolve, reject) { // *****
+        request({
+            uri: 'https://graph.facebook.com/v2.6/me/messages',
+            qs: {access_token: token},
+            method: 'POST',
+            json: messageData
+
+        }, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                var recipientId = body.recipient_id;
+                var messageId = body.message_id;
+
+                console.log("Successfully sent message with id %s to recipient %s",
+                    messageId, recipientId);
+                resolve(body); // ***
+            } else {
+                console.error("Unable to send message.");
+                console.error(response);
+                console.error(error);
+                reject(body.error); // ***
+            }
+        });
+    })
 }
 
-function sendQuickReply1(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2, ct3, title3, pt3) {
+function sendQuickReplyTwoBtn(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2) {
     var messageData = {
         recipient: {
             id: recipientId
-        },
+        }
+        ,
         message: {
             text: messageText,
-            quick_replies:[
+            quick_replies: [
                 {
                     content_type: ct1,
                     title: title1,
-                    payload:pt1
+                    payload: pt1
                 },
                 {
                     content_type: ct2,
                     title: title2,
-                    payload:pt2
+                    payload: pt2
+                }
+            ]
+        }
+    }
+    callSendAPI(messageData);
+}
+
+function sendQuickReplyThreeBtn(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2, ct3, title3, pt3) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: messageText,
+            quick_replies: [
+                {
+                    content_type: ct1,
+                    title: title1,
+                    payload: pt1
+                },
+                {
+                    content_type: ct2,
+                    title: title2,
+                    payload: pt2
                 },
                 {
                     content_type: ct3,
                     title: title3,
-                    payload:pt3
+                    payload: pt3
                 }
-            ]}
+            ]
+        }
     }
-    return sendQuickReplyRequest(messageData);
+    return callSendAPI(messageData);
 }
 
 function sendImageMessage(recipientId, imageUrl) {
@@ -539,14 +584,15 @@ function sendImageMessage(recipientId, imageUrl) {
             id: recipientId
         },
         message: {
-            attachment :{
-                type :"image",
-                payload :{
-                    url : imageUrl
+            attachment: {
+                type: "image",
+                payload: {
+                    url: imageUrl
                 }
             }
         }
     };
-    return sendQuickReplyRequest(messageData);
+    return callSendAPI(messageData);
 }
+
 //------------------------------------------------------------
