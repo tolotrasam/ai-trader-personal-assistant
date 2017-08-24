@@ -371,7 +371,12 @@ function verify_and_get_asset(code_to_verify) {
     }else{
         console.log("verified asset type",typeof result)
         console.log("verified asset length", result.length)
-        return result;
+        if (result.length ===1){
+            return result[0];
+        }else {
+            console.log("more than one findings consider proposing the user to choose between them", code_to_verify)
+            return result[0]
+        }
     }
 }
 function decideMessagePlainText(sender, text) {
