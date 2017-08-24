@@ -398,7 +398,7 @@ function decideMessagePlainText(sender, text) {
                 sendTextMessage(sender, 'Sorry, this asset cannot be found. Try using the name or the symbol. Like: get ethereum')
             }
             coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data, params) {
-                sendTextMessage(data.name +" price now is "+data.price_usd+ " USD growing at "+data.percent_change_24h+" in 24hours")
+                sendTextMessage(sender, data.name +" price now is "+data.price_usd+ " USD growing at "+data.percent_change_24h+" in 24hours")
             })
         }
 
