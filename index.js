@@ -74,12 +74,12 @@ function start_timeout_interval() {
     var currentDay = current_time.getDate()
     var next_update = current_time.getTime();
 
-    if (currentMin > 45) {
+    if (currentMin => 45) {
         next_update = (60 - currentMin) * 60 * 1000
-    } else if (currentMin > 30) {
+    } else if (currentMin => 30) {
         next_update = (45 - currentMin) * 60 * 1000
 
-    } else if (currentMin > 15) {
+    } else if (currentMin => 15) {
         next_update = (30 - currentMin) * 60 * 1000
 
     } else {
@@ -479,7 +479,7 @@ function decideMessagePlainText(sender, text, event) {
 
     if (typeof payload !== "undefined") {
         if (payload.action === 'subscribe') {
-            var query = {user_id: sender, asset_id: payload.asset_symbol, asset_symbol: payload.symbol};
+            var query = {user_id: sender, asset_id: payload.asset_symbol, asset_symbol: payload.asset_symbol};
             var options = {upsert: true};
             var frequency_key_val = payload.interval.split(" ")
             var update = {
@@ -505,7 +505,6 @@ function decideMessagePlainText(sender, text, event) {
 
         return;
     }
-
 
     var array_tolwercase = textLower.split(" ");
 
