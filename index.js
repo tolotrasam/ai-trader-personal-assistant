@@ -38,12 +38,16 @@ function sendUpdatesToEachSubscripbers(subscribers) {
     for (var subscriber of subscribers) {
         var current_time_stamp = new Date().getTime();
         var last_update = subscriber.last_update;
-        var diff = current_time_stamp - last_update;
+        if (typeof last_update ==='undefined') {
+            last_update = 0
+        }
+            var diff = current_time_stamp - last_update;
         var frequency_count = subscriber.frequency_count;
         var times_interval_millis = 1;
         switch (subscriber.frequency_label) {
             case 'minutes':
             case 'minute':
+            case 'min':
                 times_interval_millis = 60 * 1000
                 break;
             case 'hours':
@@ -64,6 +68,7 @@ function sendUpdatesToEachSubscripbers(subscribers) {
                 break;
         }
         var frequency_millis = frequency_count * times_interval_millis
+        console.log(frequency_millis, "frequency millis of "+ subscriber.frequency)
         if (diff >= frequency_millis) {
 
 
@@ -128,6 +133,7 @@ function start_timeout_interval() {
         next_update = (15 - currentMin) * 60 * 1000
     }
 
+    next_update = 2 * 60 * 1000 //only for debugging
 
     console.log('current min is' + currentMin + ' and next update in milliseconds: ', next_update)
     next_timeout_interval = setTimeout(function () {
