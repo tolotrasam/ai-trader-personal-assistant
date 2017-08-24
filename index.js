@@ -437,7 +437,7 @@ function decideMessagePlainText(sender, text, event) {
                     var reply = {
                         content_type: "text",
                         title: interval_obj.title,
-                        payload: json_payload.stringify()
+                        payload: JSON.stringify(json_payload)
                     }
                     quick_replies.push(reply)
                 }
