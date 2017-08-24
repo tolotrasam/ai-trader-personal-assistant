@@ -12,8 +12,8 @@ function http_request(headers_params, cb, params) {
     console.log(headers_params)
     request(headers_params
         , function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                console.log(body)
+            if (!error && response.statusCode === 200) {
+                // console.log(body)
                 cb(JSON.parse(body), params)
                 return null
             } else {
