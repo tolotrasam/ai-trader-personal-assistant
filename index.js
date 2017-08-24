@@ -19,7 +19,7 @@ var db = mongoose.connect(db_token);
 //for messages sequence
 
 var tolotrafunctions = require('./tolotrafunctions');
-var Users = require("./content/users");
+var Users = require("./content/user_model");
 var Content = require("./content/content");
 // Process application/x-www-form-urlencoded
 var coinmarkethelper = require('./api/coinmarketcap')
