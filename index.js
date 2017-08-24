@@ -58,7 +58,7 @@ app.listen(app.get('port'), function () {
 
 app.post('/webhook/', function (req, res) {
     var data = req.body;
-    console.log('IT STARTS HERE');
+    console.log('NEWS MESSAGE STARTS HERE');
     //Make sure its a page subscription
     if (data.object === 'page') {
         let messaging_events = data.entry[0].messaging;
@@ -69,7 +69,7 @@ app.post('/webhook/', function (req, res) {
 
             if (event.message && event.message.text) {
                 let text = event.message.text;
-                decideMessagePlainText(sender, text);
+                decideMessagePlainText(sender, text, event);
                 receivedMessageLog(event)
             }
 
@@ -379,9 +379,10 @@ function verify_and_get_asset(code_to_verify) {
         }
     }
 }
-function decideMessagePlainText(sender, text) {
+function decideMessagePlainText(sender, text, event) {
     console.log('message plain text');
-    if (text.is_echo) {
+    if (event.message.is_echo) {
+        console.log('is_echo, come back :) ')
         return;
     }
 
@@ -395,18 +396,57 @@ function decideMessagePlainText(sender, text) {
         } else {
             var object_asset = verify_and_get_asset(array_tolwercase[1]);
             if (object_asset === null) {
-                sendTextMessage(sender, 'Sorry, this asset cannot be found. Try using the name or the symbol. Like: get ethereum')
+                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc')
             } else {
                 coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data_array, params) {
                     var data = data_array[0]
                     if (data.length > 1) {
                         console.log("check this url, we have more than one result in the array")
                     }
-                    sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + " in 24 hours")
+                    sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
                 })
             }
         }
 
+    }
+
+    else if (array_tolwercase[0] === "sub" || array_tolwercase[0] === "subscribe") {
+        if (typeof array_tolwercase[1] === 'undefined') {
+            sendTextMessage(sender, 'write the asset symbol or name after get. Like: subscribe bitcoin cash');
+        } else {
+            var object_asset = verify_and_get_asset(array_tolwercase[1]);
+            if (object_asset === null) {
+                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc')
+            } else {
+                var quick_replies = []
+                var sub_intervals = [{title: '30 minutes', interval: '30 min'}, {
+                    title: 'Hourly',
+                    interval: '1 hour'
+                }, {title: 'Daily', interval: '1 day'}, {title: 'Weekly', interval: '1 week'}, {
+                    title: 'Monthly',
+                    interval: '1 month'
+                }];
+                for (var interval_obj of sub_intervals) {
+                    var json_payload = {
+                        "sender": sender,
+                        "action": "subscribe",
+                        "asset_id": object_asset.id,
+                        "asset_symbol": object_asset.symbol,
+                        "interval": interval_obj.interval
+                    }
+                    var reply = {
+                        content_type: "text",
+                        title: interval_obj.title,
+                        payload: json_payload.stringify()
+                    }
+                    quick_replies.push(reply)
+                }
+                sendCustomQuickReplyBtn(sender," Choose how often do you want to receive news and price of " + object_asset.name + " or tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
+
+
+
+            }
+        }
     }
 
 
@@ -603,6 +643,18 @@ function sendQuickReplyTwoBtn(recipientId, messageText, contentType1, title1, pl
                     payload: playload2
                 }
             ]
+        }
+    };
+    callSendAPI(messageData);
+}
+function sendCustomQuickReplyBtn(recipientId, messageText, quick_replies) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: messageText,
+            quick_replies,
         }
     };
     callSendAPI(messageData);
