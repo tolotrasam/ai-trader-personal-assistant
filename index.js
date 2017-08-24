@@ -31,7 +31,7 @@ var symbol = null;
 updateSymbols(function (data, params) {
 
 })
-
+asdf
 start_timeout_interval()
 
 function sendUpdatesToEachSubscripbers(subscribers) {
