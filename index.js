@@ -479,7 +479,7 @@ function decideMessagePlainText(sender, text, event) {
 
     if (typeof payload !== "undefined") {
         if (payload.action === 'subscribe') {
-            var query = {user_id: sender, asset_id: payload.asset_symbol, asset_symbol: payload.asset_symbol};
+            var query = {user_id: sender, asset_id: payload.asset_id, asset_symbol: payload.asset_symbol};
             var options = {upsert: true};
             var frequency_key_val = payload.interval.split(" ")
             var update = {
