@@ -408,7 +408,11 @@ function decideMessagePlainText(sender, text, event) {
     var textLower = text.toLowerCase();
     var array_tolwercase = textLower.split(" ");
 
-    if (array_tolwercase[0] === "get") {
+    if (textLower === 'get started') {
+
+        add_new_user(sender)
+
+    } else if (array_tolwercase[0] === "get") {
         if (typeof array_tolwercase[1] === 'undefined') {
             sendTextMessage(sender, 'write the asset symbol or name after get. Like: get bitcoin cash');
         } else {
@@ -466,11 +470,7 @@ function decideMessagePlainText(sender, text, event) {
         }
     }
 
-    else if (textLower === 'get started') {
 
-        add_new_user(sender)
-
-    }
     else {
         switch (textLower) {
             //
