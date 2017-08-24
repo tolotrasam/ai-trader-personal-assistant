@@ -58,7 +58,6 @@ app.listen(app.get('port'), function () {
 
 app.post('/webhook/', function (req, res) {
     var data = req.body;
-    console.log('NEWS MESSAGE STARTS HERE');
     //Make sure its a page subscription
     if (data.object === 'page') {
         let messaging_events = data.entry[0].messaging;
@@ -68,12 +67,15 @@ app.post('/webhook/', function (req, res) {
             let sender = event.sender.id;
 
             if (event.message && event.message.text) {
+                console.log('NEW MESSAGE STARTS HERE');
+                receivedMessageLog(event)
                 let text = event.message.text;
                 decideMessagePlainText(sender, text, event);
-                receivedMessageLog(event)
             }
 
             else if (event.postback) {
+                console.log('NEW PAYLOAD STARTS HERE');
+
                 let text = event.postback.payload;
                 decideMessagePostBack(sender, text)
             }
@@ -270,9 +272,51 @@ function get_child_content_of(sender, content_target_id) {
     })
 }
 
+function add_new_user(sender) {
+    request({
+        url: "https://graph.facebook.com/v2.6/" + sender,
+        qs: {
+            access_token: token,
+            fields: "first_name,last_name,profile_pic,locale,timezone,gender"
+        },
+        method: "GET"
+    }, function (error, response, body) {
+        var greeting = "";
+        if (error) {
+            console.log("Error getting user's profile: " + error);
+        } else {
+            var bodyObj = JSON.parse(body);
+            var update = {
+                user_id: sender,
+                first_name: bodyObj.first_name,
+                last_name: bodyObj.last_name,
+                profile_pic: bodyObj.profile_pic,
+                locale: bodyObj.locale,
+                timezone: bodyObj.timezone,
+                gender: bodyObj.gender,
+                date_joined: new Date().getTime(),
+            }
+            surveyToRegister(sender,update)
+
+            greeting = "Hi " + name + " 😃 ";
+
+            var message = greeting + "My name is AI Trader Personal Assistant. I can tell you various details about the market such as prices and news. I can also provide trading tips. 👨‍❤️‍💋‍👨 💑 👫";
+            sendTextMessage(sender, message)
+                .then(sendTextMessage.bind(null, sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) "))
+                .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", "get bitcoin", "text", "get ltc", "get ltc"))
+                .catch(function (body) {
+                    console.log('aborted');
+                });
+
+            //before proceeding, check if user in database:
+            insertToSession(sender) // insert to session if not yet in there
+        }
+    });
+}
 function decideMessagePostBack(sender, raw_postback) {
     var postbackText = JSON.stringify(raw_postback);
     console.log('message postback', postbackText);
+
 
     //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value     f
     var postback = raw_postback.split("-");
@@ -283,33 +327,7 @@ function decideMessagePostBack(sender, raw_postback) {
     console.log(postback, 'post back');
 
     if (raw_postback == 'get_started') {
-        request({
-            url: "https://graph.facebook.com/v2.6/" + sender,
-            qs: {
-                access_token: token,
-                fields: "first_name"
-            },
-            method: "GET"
-        }, function (error, response, body) {
-            var greeting = "";
-            if (error) {
-                console.log("Error getting user's name: " + error);
-            } else {
-                var bodyObj = JSON.parse(body);
-                var name = bodyObj.first_name;
-                greeting = "Hi " + name + " 😃 ";
-            }
-            var message = greeting + "My name is Sex Education Bot. I can tell you various details regarding Relationships and Sex. 👨‍❤️‍💋‍👨 💑 👫";
-            sendTextMessage(sender, message)
-                .then(sendTextMessage.bind(null, sender, "And to make the experience better, I'd like to get to know a bit about you."))
-                .then(sendQuickReplyTwoBtn.bind(null, sender, "Check which one applies to you:", "text", "I am under 18.", "minor", "text", "I am above 18.", "major"))
-                .catch(function (body) {
-                    console.log('aborted');
-                });
-
-            //before proceeding, check if user in database:
-            insertToSession(sender) // insert to session if not yet in there
-        });
+       add_new_user(sender)
     }
 
     if (postbackcategory === 'nav' && postbacksubcategory === 'main' && postbackvalue === 'learn') {
@@ -441,8 +459,7 @@ function decideMessagePlainText(sender, text, event) {
                     }
                     quick_replies.push(reply)
                 }
-                sendCustomQuickReplyBtn(sender," Choose how often do you want to receive news and price of " + object_asset.name + " or tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
-
+                sendCustomQuickReplyBtn(sender, " Choose how often do you want to receive news and price of " + object_asset.name + " or tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
 
 
             }
@@ -469,7 +486,9 @@ function decideMessagePlainText(sender, text, event) {
             case 'hello':
                 tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ");
                 break;
-
+            case 'get started':
+                add_new_user(sender)
+                break;
             case 'exit':
                 sendTextMessage(sender, 'Hope you have learnt! See you soon! 🖖😉');
                 break;
@@ -568,33 +587,6 @@ function callGreetingAPI(greeting) {
             console.error(body);
         }
     });
-}
-
-//SET UP FOR QUICK REPLY
-function callSendAPI(messageData) {
-    return new Promise(function (resolve, reject) { // *****
-        request({
-            uri: 'https://graph.facebook.com/v2.6/me/messages',
-            qs: {access_token: token},
-            method: 'POST',
-            json: messageData
-
-        }, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                var recipientId = body.recipient_id;
-                var messageId = body.message_id;
-
-                console.log("Successfully sent message with id %s to recipient %s",
-                    messageId, recipientId);
-                resolve(body); // ***
-            } else {
-                console.error("Unable to send message.");
-                console.error(response);
-                console.error(error);
-                reject(body.error); // ***
-            }
-        });
-    })
 }
 
 //SET UP FOR QUICK REPLY
