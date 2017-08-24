@@ -74,11 +74,11 @@ function start_timeout_interval() {
     var currentDay = current_time.getDate()
     var next_update = current_time.getTime();
 
-    if (currentMin => 45) {
+    if (currentMin >= 45) {
         next_update = (60 - currentMin) * 60 * 1000
-    } else if (currentMin => 30) {
+    } else if (currentMin >= 30) {
         next_update = (45 - currentMin) * 60 * 1000
-    } else if (currentMin => 15) {
+    } else if (currentMin >= 15) {
         next_update = (30 - currentMin) * 60 * 1000
     } else {
         next_update = (15 - currentMin) * 60 * 1000
