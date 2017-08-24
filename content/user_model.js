@@ -5,7 +5,7 @@ var UserSchema = new Schema({
     user_id: {type: String},
     first_name: {type: String},
     last_name: {type: String},
-    date_joined: {type: String},
+    date_joined: {type: Object},
     date_left: {type: String},
     locale: {type: String},
     timezone: {type:Object},

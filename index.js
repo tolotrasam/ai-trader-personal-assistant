@@ -8,6 +8,7 @@ const db_token = process.env.MONGODB_URI
 const express = require('express');
 const bodyParser = require('body-parser');
 var mongoose = require("mongoose");
+var subscription = require("./content/subscription_model");
 
 const request = require('request');
 const app = express();
@@ -407,6 +408,35 @@ function decideMessagePlainText(sender, text, event) {
 
     console.log('message is: ', text);
     var textLower = text.toLowerCase();
+    if (typeof event.message.quick_reply !== 'undefined') {
+        var payload = JSON.parse(event.message.quick_reply.payload)
+    }
+
+    if (payload.action === 'subscribe') {
+        var query = {user_id: sender, asset_id: payload.asset_symbol, asset_symbol: payload.symbol};
+        var options = {upsert: true};
+        var frequency_key_val = payload.interval.split(" ")
+        var update = {
+            user_id: sender,
+            asset_id: payload.asset_id,
+            asset_symbol: payload.asset_symbol,
+            asset_name: payload.asset_name,
+            frequency_count: frequency_key_val[0],
+            frequency_label: frequency_key_val[1],
+            from: new Date().getTime()
+        };
+
+        subscription.findOneAndUpdate(query, update, options, function (err, mov) {
+            if (err) {
+                console.log("Database error: " + err);
+            } else {
+                console.log("Database sucess new subscription");
+                sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + payload.asset_name + " (" + payload.asset_symbol + ") every " + payload.interval + " . Check out your subscription list by typing: my subs or my subscription");
+            }
+        })
+    }
+
+
     var array_tolwercase = textLower.split(" ");
 
     if (textLower === 'get started') {
@@ -419,7 +449,7 @@ function decideMessagePlainText(sender, text, event) {
         } else {
             var object_asset = verify_and_get_asset(array_tolwercase[1]);
             if (object_asset === null) {
-                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. '+help_asset_code)
+                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. ' + help_asset_code)
             } else {
                 coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data_array, params) {
                     var data = data_array[0]
@@ -430,8 +460,8 @@ function decideMessagePlainText(sender, text, event) {
                 })
             }
         }
-
     }
+
 
     else if (array_tolwercase[0] === "sub" || array_tolwercase[0] === "subscribe") {
         if (typeof array_tolwercase[1] === 'undefined') {
@@ -439,7 +469,7 @@ function decideMessagePlainText(sender, text, event) {
         } else {
             var object_asset = verify_and_get_asset(array_tolwercase[1]);
             if (object_asset === null) {
-                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc. '+help_asset_code)
+                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc. ' + help_asset_code)
             } else {
                 var quick_replies = []
                 var sub_intervals = [{title: '30 minutes', interval: '30 min'}, {
@@ -454,6 +484,7 @@ function decideMessagePlainText(sender, text, event) {
                         "sender": sender,
                         "action": "subscribe",
                         "asset_id": object_asset.id,
+                        "asset_name": object_asset.name,
                         "asset_symbol": object_asset.symbol,
                         "interval": interval_obj.interval
                     }
@@ -464,8 +495,7 @@ function decideMessagePlainText(sender, text, event) {
                     }
                     quick_replies.push(reply)
                 }
-                sendCustomQuickReplyBtn(sender, " Choose how often do you want to receive news and price about " + object_asset.name + " (" + object_asset.symbol + ") or just tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
-
+                sendCustomQuickReplyBtn(sender, " Choose how often do you me want to send you news and price about " + object_asset.name + " (" + object_asset.symbol + ") or just tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
 
             }
         }
