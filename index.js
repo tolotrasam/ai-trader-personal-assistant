@@ -412,29 +412,32 @@ function decideMessagePlainText(sender, text, event) {
         var payload = JSON.parse(event.message.quick_reply.payload)
     }
 
-    if (payload.action === 'subscribe') {
-        var query = {user_id: sender, asset_id: payload.asset_symbol, asset_symbol: payload.symbol};
-        var options = {upsert: true};
-        var frequency_key_val = payload.interval.split(" ")
-        var update = {
-            user_id: sender,
-            asset_id: payload.asset_id,
-            asset_symbol: payload.asset_symbol,
-            asset_name: payload.asset_name,
-            frequency_count: frequency_key_val[0],
-            frequency_label: frequency_key_val[1],
-            from: new Date().getTime()
-        };
+    if(typeof payload!=="undefined"){
+        if (payload.action === 'subscribe') {
+            var query = {user_id: sender, asset_id: payload.asset_symbol, asset_symbol: payload.symbol};
+            var options = {upsert: true};
+            var frequency_key_val = payload.interval.split(" ")
+            var update = {
+                user_id: sender,
+                asset_id: payload.asset_id,
+                asset_symbol: payload.asset_symbol,
+                asset_name: payload.asset_name,
+                frequency_count: frequency_key_val[0],
+                frequency_label: frequency_key_val[1],
+                from: new Date().getTime()
+            };
 
-        subscription.findOneAndUpdate(query, update, options, function (err, mov) {
-            if (err) {
-                console.log("Database error: " + err);
-            } else {
-                console.log("Database sucess new subscription");
-                sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + payload.asset_name + " (" + payload.asset_symbol + ") every " + payload.interval + " . Check out your subscription list by typing: my subs or my subscription");
-            }
-        })
+            subscription.findOneAndUpdate(query, update, options, function (err, mov) {
+                if (err) {
+                    console.log("Database error: " + err);
+                } else {
+                    console.log("Database sucess new subscription");
+                    sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + payload.asset_name + " (" + payload.asset_symbol + ") every " + payload.interval + " . Check out your subscription list by typing: my subs or my subscription");
+                }
+            })
+        }
     }
+
 
 
     var array_tolwercase = textLower.split(" ");
