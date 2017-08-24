@@ -366,6 +366,11 @@ function verify_and_get_asset(code_to_verify) {
     var result = symbol.filter(function (obj) {
         return obj.symbol.toLowerCase() === code_to_verify || obj.name.toLowerCase() === code_to_verify;
     });
+    if (typeof result === null) {
+        return null;
+    }else{
+        return result;
+    }
 }
 function decideMessagePlainText(sender, text) {
     console.log('message plain text');
@@ -382,6 +387,9 @@ function decideMessagePlainText(sender, text) {
             sendTextMessage(sender, 'write the asset symbol or name after get. Like: get bitcoin cash');
         } else {
             var object_asset = verify_and_get_asset(array_tolwercase[1]);
+            if(object_asset === null) {
+                sendTextMessage(sender, 'Sorry, this asset cannot be found. Try using the name or the symbol. Like: get ethereum')
+            }
             coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data, params) {
                 sendTextMessage(data.name +" price now is "+data.price_usd+ " USD growing at "+data.percent_change_24h+" in 24hours")
             })
