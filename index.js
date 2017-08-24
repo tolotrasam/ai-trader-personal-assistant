@@ -87,6 +87,7 @@ function start_timeout_interval() {
     }
 
 
+    console.log('next update in milliseconds: ',next_update)
     next_timeout_interval = setTimeout(function () {
         sendUpdatesToSubscripbers()
     }, next_update)
