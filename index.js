@@ -23,6 +23,7 @@ var Users = require("./content/user_model");
 var Content = require("./content/content");
 // Process application/x-www-form-urlencoded
 var coinmarkethelper = require('./api/coinmarketcap')
+var help_asset_code = "If you need help because you don't know the asset name, just type 'list' and I'll help you";
 
 var symbol = null;
 updateSymbols()
@@ -298,7 +299,7 @@ function add_new_user(sender) {
             }
             surveyToRegister(sender, update)
 
-            greeting = "Hi " + name + " 😃 ";
+            greeting = "Hi " + bodyObj.first_name + " 😃 ";
 
             var message = greeting + "My name is AI Trader Personal Assistant. I can tell you various details about the market such as prices and news. I can also provide trading tips. 👨‍❤️‍💋‍👨 💑 👫";
             sendTextMessage(sender, message)
@@ -418,7 +419,7 @@ function decideMessagePlainText(sender, text, event) {
         } else {
             var object_asset = verify_and_get_asset(array_tolwercase[1]);
             if (object_asset === null) {
-                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc')
+                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. '+help_asset_code)
             } else {
                 coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data_array, params) {
                     var data = data_array[0]
@@ -438,7 +439,7 @@ function decideMessagePlainText(sender, text, event) {
         } else {
             var object_asset = verify_and_get_asset(array_tolwercase[1]);
             if (object_asset === null) {
-                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc')
+                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc. '+help_asset_code)
             } else {
                 var quick_replies = []
                 var sub_intervals = [{title: '30 minutes', interval: '30 min'}, {
