@@ -296,7 +296,7 @@ function add_new_user(sender) {
                 gender: bodyObj.gender,
                 date_joined: new Date().getTime(),
             }
-            surveyToRegister(sender,update)
+            surveyToRegister(sender, update)
 
             greeting = "Hi " + name + " 😃 ";
 
@@ -327,7 +327,7 @@ function decideMessagePostBack(sender, raw_postback) {
     console.log(postback, 'post back');
 
     if (raw_postback == 'get_started') {
-       add_new_user(sender)
+        add_new_user(sender)
     }
 
     if (postbackcategory === 'nav' && postbacksubcategory === 'main' && postbackvalue === 'learn') {
@@ -459,14 +459,18 @@ function decideMessagePlainText(sender, text, event) {
                     }
                     quick_replies.push(reply)
                 }
-                sendCustomQuickReplyBtn(sender, " Choose how often do you want to receive news and price of " + object_asset.name + " or tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
+                sendCustomQuickReplyBtn(sender, " Choose how often do you want to receive news and price about " + object_asset.name + " (" + object_asset.symbol + ") or just tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
 
 
             }
         }
     }
 
+    else if (textLower === 'get started') {
 
+        add_new_user(sender)
+
+    }
     else {
         switch (textLower) {
             //
@@ -486,9 +490,7 @@ function decideMessagePlainText(sender, text, event) {
             case 'hello':
                 tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ");
                 break;
-            case 'get started':
-                add_new_user(sender)
-                break;
+
             case 'exit':
                 sendTextMessage(sender, 'Hope you have learnt! See you soon! 🖖😉');
                 break;
