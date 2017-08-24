@@ -8,7 +8,7 @@ const db_token = process.env.MONGODB_URI
 const express = require('express');
 const bodyParser = require('body-parser');
 var mongoose = require("mongoose");
-var subscription = require("./content/subscription_model");
+var Subscription = require("./content/subscription_model");
 
 const request = require('request');
 const app = express();
@@ -25,13 +25,78 @@ var Content = require("./content/content");
 // Process application/x-www-form-urlencoded
 var coinmarkethelper = require('./api/coinmarketcap')
 var help_asset_code = "If you need help because you don't know the asset name, just type 'list' and I'll help you";
+var next_timeout_interval;
 
 var symbol = null;
-updateSymbols()
-function updateSymbols() {
+updateSymbols(function (data, params) {
+
+})
+
+start_timeout_interval()
+
+function sendUpdatesToEachSubscripbers(subscribers) {
+    for (var subscriber of subscribers) {
+        var data = verify_and_get_asset(subscriber.asset_id)
+        sendTextMessage(subscriber.user_id, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
+        console.log('sending update to user', subscriber.user_id)
+    }
+    start_timeout_interval()
+}
+function sendUpdatesToSubscripbers() {
+    console.log('updating all subscribers')
+
+    updateSymbols(function (data, params) {
+
+        Subscription.find({active: true}, function (err, user) {
+            if (err) {
+                console.log("no subscription not found or something weirder");
+                return false; // user not found or something weirder
+
+            } else {
+                if (user) {
+                    console.log(user, "subs found on database");
+
+                    sendUpdatesToEachSubscripbers(user)
+                    return true; //user found
+                } else {
+                    console.log('no result from database for');
+                    return false;
+                }
+            }
+        })
+    })
+}
+function start_timeout_interval() {
+    var current_time = new Date()
+    var currentMin = current_time.getMinutes()
+    var currentHour = current_time.getHours()
+    var currentWeekDay = current_time.getDay()
+    var currentDay = current_time.getDate()
+    var next_update = current_time.getTime();
+
+    if (currentMin > 45) {
+        next_update += (60 - current_time) * 60 * 1000
+    } else if (currentMin > 30) {
+        next_update += (45 - current_time) * 60 * 1000
+
+    } else if (currentMin > 15) {
+        next_update += (30 - current_time) * 60 * 1000
+
+    } else {
+        next_update += (15 - current_time) * 60 * 1000
+    }
+
+
+    next_timeout_interval = setTimeout(function () {
+        sendUpdatesToSubscripbers()
+    }, next_update)
+
+}
+function updateSymbols(cb) {
 
     coinmarkethelper.getTicker(null, function (data, param) {
         symbol = data;
+        cb(data, param)
     })
 }
 app.use(bodyParser.urlencoded({extended: false}));
@@ -412,7 +477,7 @@ function decideMessagePlainText(sender, text, event) {
         var payload = JSON.parse(event.message.quick_reply.payload)
     }
 
-    if(typeof payload!=="undefined"){
+    if (typeof payload !== "undefined") {
         if (payload.action === 'subscribe') {
             var query = {user_id: sender, asset_id: payload.asset_symbol, asset_symbol: payload.symbol};
             var options = {upsert: true};
@@ -423,11 +488,12 @@ function decideMessagePlainText(sender, text, event) {
                 asset_symbol: payload.asset_symbol,
                 asset_name: payload.asset_name,
                 frequency_count: frequency_key_val[0],
+                active: true,
                 frequency_label: frequency_key_val[1],
                 from: new Date().getTime()
             };
 
-            subscription.findOneAndUpdate(query, update, options, function (err, mov) {
+            Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
                 if (err) {
                     console.log("Database error: " + err);
                 } else {
@@ -436,8 +502,9 @@ function decideMessagePlainText(sender, text, event) {
                 }
             })
         }
-    }
 
+        return;
+    }
 
 
     var array_tolwercase = textLower.split(" ");

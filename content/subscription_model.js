@@ -10,6 +10,7 @@ var SubscriptionSchema = new Schema({
     frequency_count: {type: String},
     frequency_label: {type: String},
     last_update: {type: String},
+    active: {type: Boolean},
     ideal_timing: {type: String}
 });
 
