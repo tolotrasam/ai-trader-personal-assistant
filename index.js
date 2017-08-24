@@ -490,6 +490,7 @@ function decideMessagePlainText(sender, text, event) {
                 frequency_count: frequency_key_val[0],
                 active: true,
                 frequency_label: frequency_key_val[1],
+                frequency: payload.interval,
                 from: new Date().getTime()
             };
 
@@ -497,7 +498,7 @@ function decideMessagePlainText(sender, text, event) {
                 if (err) {
                     console.log("Database error: " + err);
                 } else {
-                    console.log("Database sucess new subscription");
+                    console.log("Database sucess new subscription", JSON.stringify(mov));
                     sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + payload.asset_name + " (" + payload.asset_symbol + ") every " + payload.interval + " . Check out your subscription list by typing: my subs or my subscription");
                 }
             })
