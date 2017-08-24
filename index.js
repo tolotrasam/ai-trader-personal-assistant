@@ -369,6 +369,8 @@ function verify_and_get_asset(code_to_verify) {
     if (typeof result === 'undefined') {
         return null;
     }else{
+        console.log("verified asset type",typeof result)
+        console.log("verified asset length", result.length)
         return result;
     }
 }
