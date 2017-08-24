@@ -78,16 +78,14 @@ function start_timeout_interval() {
         next_update = (60 - currentMin) * 60 * 1000
     } else if (currentMin => 30) {
         next_update = (45 - currentMin) * 60 * 1000
-
     } else if (currentMin => 15) {
         next_update = (30 - currentMin) * 60 * 1000
-
     } else {
         next_update = (15 - currentMin) * 60 * 1000
     }
 
 
-    console.log('next update in milliseconds: ',next_update)
+    console.log('current min is' +currentMin+' and next update in milliseconds: ',next_update)
     next_timeout_interval = setTimeout(function () {
         sendUpdatesToSubscripbers()
     }, next_update)
