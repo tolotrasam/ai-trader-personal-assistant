@@ -8,6 +8,7 @@
     "coinmarketcap": "^0.2.0",
     "express": "^4.15.2",
     "mongoose": "^4.11.8",
+    "promise": "^8.0.1",
     "request": "^2.81.0"
   },
   "devDependencies": {},
