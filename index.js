@@ -31,7 +31,7 @@ var symbol = null;
 updateSymbols(function (data, params) {
 
 })
-asdf
+
 start_timeout_interval()
 
 function sendUpdatesToEachSubscripbers(subscribers) {
@@ -75,15 +75,15 @@ function start_timeout_interval() {
     var next_update = current_time.getTime();
 
     if (currentMin > 45) {
-        next_update += (60 - current_time) * 60 * 1000
+        next_update = (60 - current_time) * 60 * 1000
     } else if (currentMin > 30) {
-        next_update += (45 - current_time) * 60 * 1000
+        next_update = (45 - current_time) * 60 * 1000
 
     } else if (currentMin > 15) {
-        next_update += (30 - current_time) * 60 * 1000
+        next_update = (30 - current_time) * 60 * 1000
 
     } else {
-        next_update += (15 - current_time) * 60 * 1000
+        next_update = (15 - current_time) * 60 * 1000
     }
 
 
