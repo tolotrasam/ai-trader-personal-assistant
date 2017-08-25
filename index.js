@@ -184,7 +184,7 @@ app.post('/webhook/', function (req, res) {
     //Make sure its a page subscription
     if (data.object === 'page') {
         let messaging_events = data.entry[0].messaging;
-        console.log(JSON.stringify("Fresh received",data ))
+        console.log( "Fresh received",JSON.stringify(data ))
         //iterate over each messaging events
         for (let i = 0; i < messaging_events.length; i++) {
             let event = data.entry[0].messaging[i];
