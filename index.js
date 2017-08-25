@@ -712,6 +712,11 @@ function sendSubscriptionFrequencyPicker(sender, asset_code) {
             }
             quick_replies.push(reply)
         }
+        quick_replies.push({
+            content_type: "text",
+            title: "cancel",
+            payload: JSON.stringify({action:"subscribe", cancel:true})
+        })
         setCoockiePayload(sender, 'subscribe', json_payload)
         sendCustomQuickReplyBtn(sender, " Choose how often do you me want to send you news and price about " + object_asset.name + " (" + object_asset.symbol + ") or just tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
 
@@ -790,7 +795,9 @@ function decideMessagePlainText(sender, text, event) {
                     userSession.splice(userIndexInCoockie, 1); //removing user from coockie
                 }
             }
-            addSubscriptionForUser(sender, payload)
+            if(payload.cancel !==true){
+                addSubscriptionForUser(sender, payload)
+            }
         }
         return;
     }
