@@ -743,8 +743,8 @@ function sendListAsset(sender) {
         }
     };
     var element = {
-        "title": "List of Asset",
-        "subtitle": "Showing 30 out of 1093",
+        "title": "Showing 30 out of 1093",
+        "subtitle": "PLACEHOLDER",
         "buttons": [{
             "type": "postback",
             "title": "Previous Page ",
@@ -756,12 +756,13 @@ function sendListAsset(sender) {
         }],
     }
     var element_str = "";
-    for (var n = 0; n < symbol.length; n++) {
+    for (var n = 0; n < 30; n++) {
         element_str += symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
-        if (n % 15) {
-            messageData.attachment.payload.elements.push()
-        }
     }
+    element.subtitle = element_str
+    messageData.attachment.payload.elements.push(element)
+
+    sendRequest(sender, messageData)
 }
 function decideMessagePlainText(sender, text, event) {
     console.log('message plain text');
