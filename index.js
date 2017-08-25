@@ -530,7 +530,7 @@ function decideMessagePostBack(sender, payload) {
         } else {
             console.log('post back action not defined, check array split instead')
         }
-    }else{
+    } else {
         console.log('post back action not defined, check array split instead')
     }
     //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value     f
@@ -842,7 +842,10 @@ function decideMessagePlainText(sender, text, event) {
     console.log('message is: ', text);
     var textLower = text.toLowerCase();
     if (typeof event.message.quick_reply !== 'undefined') {
-        var payload = JSON.parse(event.message.quick_reply.payload)
+        try {
+            var payload = JSON.parse(event.message.quick_reply.payload)
+        } catch (e) {
+        }
     }
 
     //QUICK REPLIES

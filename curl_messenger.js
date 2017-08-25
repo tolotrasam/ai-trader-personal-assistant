@@ -38,9 +38,13 @@ var url = "https://graph.facebook.com/v2.6/me/messenger_profile?" + serialiseObj
 
 
 var json_request = {
-    "get_started": {
-        "payload": "get_started"
-    }
+
+    "greeting": [
+        {
+            "locale": "default",
+            "text": "Trader Artificial Intelligence Companion."
+        }
+    ]
 }
 http_request({
     url: url, method: 'POST', json: json_request
