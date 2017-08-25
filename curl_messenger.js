@@ -36,13 +36,14 @@ var serialiseObject = function (obj) {
 var params = {access_token: "EAAD01x8ZAgPoBAMU5pA2CmyacZAl5uNWJ7SHwNPo80Pck5OZAftaUpZA5zsHOZAkJcwQc0GmQiv4a6tYCqZB7VbwYgcnrKEpWOLxNZBDGhKQ3CT9BBNQZCjg2JdAbN2Y7lkqLs41lz77osfZCzZBknXHG6JKGmHaZBAllKR4djRNFjMBwZDZD"}
 var url = "https://graph.facebook.com/v2.6/me/messenger_profile?" + serialiseObject(params)
 
-http_request({
-    url: url, method: 'POST', json: true,
-    body: {
-        "get_started": {
-            "payload": "get_started"
-        }
+
+var json_request = {
+    "get_started": {
+        "payload": "get_started"
     }
+}
+http_request({
+    url: url, method: 'POST', json: json_request
 }, function (data, params) {
     console.log(data, params)
 }, params)

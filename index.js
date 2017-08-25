@@ -500,33 +500,37 @@ function unsubscribeForUser(sender, asset_obj) {
 function decideMessagePostBack(sender, payload) {
     var postbackText = JSON.stringify(payload);
     console.log('message postback', postbackText);
-    try{
+    try {
         var postback_object = JSON.parse(payload)
-    }catch (e){
+    } catch (e) {
 
     }
-    if (typeof postback_object.action !== 'undefined') {
-        if (postback_object.action === 'get') {
-            sendAssetPrice(sender, postback_object.asset_id)
-        }
-        else if (postback_object.action === 'unsub') {
-            unsubscribeForUser(sender, postback_object)
-        }
+    if (typeof postback_object !== 'undefined') {
+        if (typeof postback_object.action !== 'undefined') {
+            if (postback_object.action === 'get') {
+                sendAssetPrice(sender, postback_object.asset_id)
+            }
+            else if (postback_object.action === 'unsub') {
+                unsubscribeForUser(sender, postback_object)
+            }
 
-        else if (postback_object.action === 'edit') {
-            sendSubscriptionFrequencyPicker(sender, postback_object.asset_id)
+            else if (postback_object.action === 'edit') {
+                sendSubscriptionFrequencyPicker(sender, postback_object.asset_id)
+            }
+            if (postback_object.action === 'list') {
+                sendListAsset(sender, 0)
+            }
+            if (postback_object.action === 'subs') {
+                sendSubscriptionList(sender)
+            }
+            else if (postback_object.action === 'page_list') {
+                sendListAsset(sender, postback_object.from)
+            }
+            return
+        } else {
+            console.log('post back action not defined, check array split instead')
         }
-        if (postback_object.action === 'list') {
-            sendListAsset(sender, 0)
-        }
-        if (postback_object.action === 'subs') {
-            sendSubscriptionList(sender)
-        }
-        else if (postback_object.action === 'page_list') {
-            sendListAsset(sender, postback_object.from)
-        }
-        return
-    } else {
+    }else{
         console.log('post back action not defined, check array split instead')
     }
     //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value     f
