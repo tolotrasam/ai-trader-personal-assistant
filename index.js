@@ -453,7 +453,7 @@ function unsubscribeForUser(sender, asset_obj) {
             console.log("Database error: " + err);
         } else {
             console.log("Database sucess end subscription", JSON.stringify(mov));
-            sendTextMessage(sender, "Okay! You successfully unsubscribed for " + asset_obj.asset_name + " (" + asset_obj.asset_symbol + ") every " + asset_obj.interval + " . Check out your subscription list by typing: my subs or my subscription");
+            sendTextMessage(sender, "Okay! You successfully unsubscribed for " + mov.asset_name + " (" + mov.asset_symbol + ") every " + mov.interval + " . Check out your subscription list by typing: my subs or my subscription");
         }
     })
 }
@@ -463,7 +463,7 @@ function decideMessagePostBack(sender, payload) {
     var postback_object = JSON.parse(payload)
     if (typeof postback_object.action !== 'undefined') {
         if (postback_object.action === 'get') {
-            sendAssetPrice(sender, postback_object.action, postback_object.asset_id)
+            sendAssetPrice(sender, postback_object.asset_id)
         }
         else if (postback_object.action === 'unsub') {
             unsubscribeForUser(sender, postback_object)
