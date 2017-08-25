@@ -512,11 +512,17 @@ function decideMessagePostBack(sender, payload) {
         else if (postback_object.action === 'edit') {
             sendSubscriptionFrequencyPicker(sender, postback_object.asset_id)
         }
+        if (postback_object.action === 'list') {
+            sendListAsset(sender, 0)
+        }
+        if (postback_object.action === 'subs') {
+            sendSubscriptionList(sender)
+        }
         else if (postback_object.action === 'page_list') {
             sendListAsset(sender, postback_object.from)
         }
         return
-    }else {
+    } else {
         console.log('post back action not defined, check array split instead')
     }
     //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value     f
@@ -947,13 +953,13 @@ function decideMessagePlainText(sender, text, event) {
                     content_type: "text",
                     title: "List",
                     payload: JSON.stringify({action: "list", from: 0})
-                },{
+                }, {
                     content_type: "text",
                     title: "My Subs",
                     payload: JSON.stringify({action: "subs"})
                 })
-                sendCustomQuickReplyBtn(sender, "Sorry, I don't know what's a "+textLower+" . However, I've cool stuff for you:", quick_replies)
-                // tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
+                sendCustomQuickReplyBtn(sender, "Sorry, I don't know what's a " + textLower + " . However, I've cooler stuff for you:", quick_replies)
+            // tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
         }
     }
 }
