@@ -25,8 +25,8 @@ var Content = require("./content/content");
 // Process application/x-www-form-urlencoded
 var coinmarkethelper = require('./api/coinmarketcap')
 var tips_how_to_get_list = "If you need help because you don't know the asset name, just type 'list' and I'll help you";
-var tips_how_to_sub ='Write the asset symbol or name after get. Like: subscribe bitcoin cash';
-var tips_example_subs ='. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc. ' ;
+var tips_how_to_sub = 'Write the asset symbol or name after get. Like: subscribe bitcoin cash';
+var tips_example_subs = '. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc. ';
 
 var next_timeout_interval;
 
@@ -504,7 +504,7 @@ function decideMessagePostBack(sender, raw_postback) {
 }
 
 function verify_and_get_asset(code_to_verify) {
-    code_to_verify  = code_to_verify.toLowerCase()
+    code_to_verify = code_to_verify.toLowerCase()
     var result = symbol.filter(function (obj) {
         return obj.symbol.toLowerCase() === code_to_verify || obj.name.toLowerCase() === code_to_verify || obj.id.toLowerCase() === code_to_verify;
     });
@@ -523,49 +523,49 @@ function verify_and_get_asset(code_to_verify) {
     }
 }
 function sendSubscriptionList(sender) {
-    Subscription.find({user_id: sender, active:true}, function (err, user) {
+    Subscription.find({user_id: sender, active: true}, function (err, user) {
         if (err) {
             console.log("no subscription not found or something weirder");
             return false; // user not found or something weirder
 
         } else {
-            if (user) {
+            if (user.length !== 0) {
                 console.log(user.length, "subs found on database");
                 let messageData = {
                     "attachment": {
                         "type": "template",
                         "payload": {
                             "template_type": "generic",
-                            "elements":[]
+                            "elements": []
                         }
                     }
                 };
 
-                for(var user_subs of user){
+                for (var user_subs of user) {
                     var element = {
-                            "title": user_subs.asset_name,
-                            "subtitle": "Every "+user_subs.frequency,
-                            "buttons": [{
-                                "type": "postback",
-                                "payload": "asodifj",
-                                "title": "Get "
-                            }, {
-                                "type": "postback",
-                                "title": "asodi",
-                                "payload": "Edit ",
-                            }, {
-                                "type": "postback",
-                                "title": "blah blah",
-                                "payload": "Unsubscribe",
-                            }],
-                        }
-                        messageData.attachment.payload.elements.push(element)
+                        "title": user_subs.asset_name,
+                        "subtitle": "Every " + user_subs.frequency,
+                        "buttons": [{
+                            "type": "postback",
+                            "payload": "asodifj",
+                            "title": "Get "
+                        }, {
+                            "type": "postback",
+                            "title": "asodi",
+                            "payload": "Edit ",
+                        }, {
+                            "type": "postback",
+                            "title": "blah blah",
+                            "payload": "Unsubscribe",
+                        }],
+                    }
+                    messageData.attachment.payload.elements.push(element)
                 }
                 sendRequest(sender, messageData)
                 return true; //user found
             } else {
-                sendTextMessage(sender, "You have no active subscription yet. "+tips_how_to_sub+" "+tips_example_subs)
-                console.log('no subs result from database for '+sender);
+                sendTextMessage(sender, "You have no active subscription yet. " + tips_how_to_sub + " " + tips_example_subs)
+                console.log('no subs result from database for ' + sender);
                 return false;
             }
         }
@@ -655,7 +655,7 @@ function decideMessagePlainText(sender, text, event) {
         } else {
             var object_asset = verify_and_get_asset(array_tolwercase[1]);
             if (object_asset === null) {
-                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + tips_example_subs+ tips_how_to_get_list)
+                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + tips_example_subs + tips_how_to_get_list)
             } else {
                 var quick_replies = []
                 var sub_intervals = [{title: '30 minutes', interval: '30 min'}, {
