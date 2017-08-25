@@ -715,7 +715,7 @@ function sendSubscriptionFrequencyPicker(sender, asset_code) {
         quick_replies.push({
             content_type: "text",
             title: "cancel",
-            payload: JSON.stringify({action:"subscribe", cancel:true})
+            payload: JSON.stringify({action: "subscribe", cancel: true})
         })
         setCoockiePayload(sender, 'subscribe', json_payload)
         sendCustomQuickReplyBtn(sender, " Choose how often do you me want to send you news and price about " + object_asset.name + " (" + object_asset.symbol + ") or just tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
@@ -737,31 +737,40 @@ function getUserCoockie(sender) {
     }
     return n;
 }
-function sendListAsset(sender) {
+function sendListAsset(sender, from) {
+    if (typeof from === 'undefined') {
+        from = 0
+    }
+    ;
+
     let messageData = {
         "attachment": {
             "type": "template",
             "payload": {
                 "template_type": "button",
                 "text": "PALCEHOLDER",
-                "buttons": [
-                    {
-                        "type": "postback",
-                        "title": "Previous Page ",
-                        "payload": JSON.stringify({action: "list", from: 0}),
-                    }, {
-                        "type": "postback",
-                        "title": "Next Page",
-                        "payload": JSON.stringify({action: "list", from: 30}),
-                    }
-                ]
+                "buttons": []
             }
         }
     };
 
+    if (from >= 30) {
+        messageData.attachment.payload.buttons.push({
+            "type": "postback",
+            "title": "Previous Page ",
+            "payload": JSON.stringify({action: "page_list", from: from - 30}),
+        })
+    }
+    messageData.attachment.payload.buttons.push(
+        {
+            "type": "postback",
+            "title": "Next Page",
+            "payload": JSON.stringify({action: "page_list", from: from + 30}),
+        })
+
 
     var element_str = "";
-    for (var n = 0; n < 30; n++) {
+    for (var n = from; n < from + 30; n++) {
         element_str += symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
     }
     messageData.attachment.payload.text = element_str
@@ -795,105 +804,109 @@ function decideMessagePlainText(sender, text, event) {
                     userSession.splice(userIndexInCoockie, 1); //removing user from coockie
                 }
             }
-            if(payload.cancel !==true){
+            if (payload.cancel !== true) {
                 addSubscriptionForUser(sender, payload)
+            } else {
+                sendTextMessage(sender, "Okay!")
+            }
+        } else if (payload.action === 'page_list') {
+            sendListAsset(sender, payload.from)
+            return;
+        }
+
+
+        //COOCKIE CONVERSATION
+        var userIndexInCoockie = getUserCoockie(sender)
+        if (userIndexInCoockie !== -1) {
+            var coockie_payload = userSession[userIndexInCoockie].payload
+            if (userSession[userIndexInCoockie].action === 'subscribe') {
+                userSession.splice(userIndexInCoockie, 1); //removing user from coockie
+                coockie_payload.interval = textLower;
+                addSubscriptionForUser(sender, coockie_payload)
+                return
             }
         }
-        return;
-    }
 
 
-    //COOCKIE CONVERSATION
-    var userIndexInCoockie = getUserCoockie(sender)
-    if (userIndexInCoockie !== -1) {
-        var coockie_payload = userSession[userIndexInCoockie].payload
-        if (userSession[userIndexInCoockie].action === 'subscribe') {
-            userSession.splice(userIndexInCoockie, 1); //removing user from coockie
-            coockie_payload.interval = textLower;
-            addSubscriptionForUser(sender, coockie_payload)
-            return
+        var array_tolwercase = textLower.split(" ");
+        if (textLower === 'get started') {
+            add_new_user(sender)
         }
-    }
 
+        //GETTING THE USER SUBSCRIPTION LIST
+        else if (textLower === 'my subs' || textLower === 'my subscriptions' || textLower === 'subs') {
+            sendSubscriptionList(sender)
+        } else if (array_tolwercase[0] === "get") {
+            if (typeof array_tolwercase[1] === 'undefined') {
+                sendTextMessage(sender, 'write the asset symbol or name after get. Like: get bitcoin cash');
+            } else {
 
-    var array_tolwercase = textLower.split(" ");
-    if (textLower === 'get started') {
-        add_new_user(sender)
-    }
+                // var asset_code = array_tolwercase[1]
+                var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
+                sendAssetPrice(sender, asset_code)
 
-    //GETTING THE USER SUBSCRIPTION LIST
-    else if (textLower === 'my subs' || textLower === 'my subscriptions' || textLower === 'subs') {
-        sendSubscriptionList(sender)
-    } else if (array_tolwercase[0] === "get") {
-        if (typeof array_tolwercase[1] === 'undefined') {
-            sendTextMessage(sender, 'write the asset symbol or name after get. Like: get bitcoin cash');
-        } else {
+            }
+        } else if (array_tolwercase[0] === "list" || array_tolwercase[0] === "search") {
+            if (typeof array_tolwercase[1] === 'undefined') {
+                sendTextMessage(sender, 'I found ' + symbol.length + ' Assets corresponding to your search');
+                sendListAsset(sender)
+            } else {
 
-            // var asset_code = array_tolwercase[1]
-            var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
-            sendAssetPrice(sender, asset_code)
+                // var asset_code = array_tolwercase[1]
+                // var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
+                // sendAssetPrice(sender, asset_code)
 
+            }
         }
-    } else if (array_tolwercase[0] === "list" || array_tolwercase[0] === "search") {
-        if (typeof array_tolwercase[1] === 'undefined') {
-            sendTextMessage(sender, 'I found ' + symbol.length + ' Assets corresponding to your search');
-            sendListAsset(sender)
-        } else {
 
-            // var asset_code = array_tolwercase[1]
-            // var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
-            // sendAssetPrice(sender, asset_code)
 
+        //BINARY COMMAND WITH SPACE
+        //ASKING FOR FREQUENCY BEFORE ADDING SUBSCRIPTION
+        else if (array_tolwercase[0] === "sub" || array_tolwercase[0] === "subscribe") {
+            if (typeof array_tolwercase[1] === 'undefined') {
+
+                sendTextMessage(sender, tips_how_to_sub);
+            } else {
+                sendSubscriptionFrequencyPicker(sender, array_tolwercase[1])
+
+            }
         }
-    }
 
 
-    //BINARY COMMAND WITH SPACE
-    //ASKING FOR FREQUENCY BEFORE ADDING SUBSCRIPTION
-    else if (array_tolwercase[0] === "sub" || array_tolwercase[0] === "subscribe") {
-        if (typeof array_tolwercase[1] === 'undefined') {
+        else {
+            switch (textLower) {
+                //
+                // //to lower case because
+                // case 'i am above 18.':
+                // case 'i am under 18.':
+                //     var update = {
+                //         user_id: sender,
+                //         minor: text,
+                //     };
+                //     surveyToRegister(sender, update);
+                //     console.log("MINORITY OR MAJORITY REGISTERED");
+                //     askGender(sender);
+                //     break;
 
-            sendTextMessage(sender, tips_how_to_sub);
-        } else {
-            sendSubscriptionFrequencyPicker(sender, array_tolwercase[1])
+                case 'hi':
+                case 'hello':
+                    tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ");
+                    break;
 
+                case 'exit':
+                    sendTextMessage(sender, 'Hope you have learnt! See you soon! 🖖😉');
+                    break;
+
+                case 'learn':
+                    tolotrafunctions.sendTopics(sender);
+                    break;
+
+                default:
+                    tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
+            }
         }
+
     }
-
-
-    else {
-        switch (textLower) {
-            //
-            // //to lower case because
-            // case 'i am above 18.':
-            // case 'i am under 18.':
-            //     var update = {
-            //         user_id: sender,
-            //         minor: text,
-            //     };
-            //     surveyToRegister(sender, update);
-            //     console.log("MINORITY OR MAJORITY REGISTERED");
-            //     askGender(sender);
-            //     break;
-
-            case 'hi':
-            case 'hello':
-                tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ");
-                break;
-
-            case 'exit':
-                sendTextMessage(sender, 'Hope you have learnt! See you soon! 🖖😉');
-                break;
-
-            case 'learn':
-                tolotrafunctions.sendTopics(sender);
-                break;
-
-            default:
-                tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
-        }
-    }
-
 }
 
 // console.log(sender, 'before database fetching user_id')
@@ -1031,6 +1044,7 @@ function sendQuickReplyTwoBtn(recipientId, messageText, contentType1, title1, pl
     };
     callSendAPI(messageData);
 }
+
 function sendCustomQuickReplyBtn(recipientId, messageText, quick_replies) {
     var messageData = {
         recipient: {
