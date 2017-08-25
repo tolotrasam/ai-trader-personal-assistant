@@ -187,7 +187,7 @@ app.post('/webhook/', function (req, res) {
         console.log( "Fresh received",JSON.stringify(data ))
         //iterate over each messaging events
         for (let i = 0; i < messaging_events.length; i++) {
-            let event = data.entry[0].messaging[i];
+            let event = messaging_events[i];
             let sender = event.sender.id;
 
             if (event.message && event.message.text) {
