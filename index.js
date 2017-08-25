@@ -657,10 +657,10 @@ function addSubscriptionForUser(sender, asset_obj) {
     var frequency_millis = getFrequencyInMillisOfSubscription(update)
     if (frequency_millis === 0) {
         sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + update.frequency_label + ' . Please use only minutes, hours, days or weeks (or min, hours, days, weeks')
-        sendSubscriptionFrequencyPicker(update.asset_id)
+        sendSubscriptionFrequencyPicker(sender, update.asset_id)
     } else if (frequency_millis < 5 * 60 * 1000) {
         sendTextMessage(sender, 'Wow, That\'s too fast! Please choose at least 5 minutes')
-        sendSubscriptionFrequencyPicker(update.asset_id)
+        sendSubscriptionFrequencyPicker(sender, update.asset_id)
     } else {
         Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
             if (err) {
