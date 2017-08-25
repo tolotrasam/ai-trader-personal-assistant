@@ -732,6 +732,37 @@ function getUserCoockie(sender) {
     }
     return n;
 }
+function sendListAsset(sender) {
+    let messageData = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic",
+                "elements": []
+            }
+        }
+    };
+    var element = {
+        "title": "List of Asset",
+        "subtitle": "Showing 30 out of 1093",
+        "buttons": [{
+            "type": "postback",
+            "title": "Previous Page ",
+            "payload": JSON.stringify({action: "list", from: 0}),
+        }, {
+            "type": "postback",
+            "title": "Next Page",
+            "payload": JSON.stringify({action: "list", from: 30}),
+        }],
+    }
+    var element_str = "";
+    for (var n = 0; n < symbol.length; n++) {
+        element_str += symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
+        if (n % 15) {
+            messageData.attachment.payload.elements.push()
+        }
+    }
+}
 function decideMessagePlainText(sender, text, event) {
     console.log('message plain text');
 
@@ -796,10 +827,10 @@ function decideMessagePlainText(sender, text, event) {
             sendAssetPrice(sender, asset_code)
 
         }
-    } else if (array_tolwercase[0] === "list"||array_tolwercase[0] === "search") {
+    } else if (array_tolwercase[0] === "list" || array_tolwercase[0] === "search") {
         if (typeof array_tolwercase[1] === 'undefined') {
-            sendTextMessage(sender, 'I found '+symbol.length+' Assets corresponding to your search');
-
+            sendTextMessage(sender, 'I found ' + symbol.length + ' Assets corresponding to your search');
+            sendListAsset(sender)
         } else {
 
             // var asset_code = array_tolwercase[1]
