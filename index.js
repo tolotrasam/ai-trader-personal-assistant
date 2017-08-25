@@ -76,9 +76,9 @@ function sendUpdatesToEachSubscripbers(subscribers) {
             var update = {last_update: new Date().getTime()};
 
             var data = verify_and_get_asset(subscriber.asset_id)
-            if(data===null){
-                sendTextMessage(subscriber.user_id, "Sorry Your subscription to the asset " + subscriber.asset_name+ "( " + subscriber.asset_symbol+ ") seems to be missing. Trying using get "+subscriber.asset_symbol)
-            }else {
+            if (data === null) {
+                sendTextMessage(subscriber.user_id, "Sorry, Your subscription to the asset with id " + subscriber.asset_id + "( " + subscriber.asset_symbol + ") seems to be missing. Trying using get " + subscriber.asset_symbol)
+            } else {
                 sendTextMessage(subscriber.user_id, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
             }
             Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
@@ -500,11 +500,12 @@ function decideMessagePostBack(sender, raw_postback) {
 }
 
 function verify_and_get_asset(code_to_verify) {
+    code_to_verify  = code_to_verify.toLowerCase()
     var result = symbol.filter(function (obj) {
-        return obj.symbol.toLowerCase() === code_to_verify || obj.name.toLowerCase() === code_to_verify;
+        return obj.symbol.toLowerCase() === code_to_verify || obj.name.toLowerCase() === code_to_verify || obj.id.toLowerCase() === code_to_verify;
     });
     if (result.length === 0) {
-        console.log("no asset found in coinmarket cap for "+code_to_verify)
+        console.log("no asset found in coinmarket cap for " + code_to_verify)
         return null;
     } else {
         console.log("verified asset type", typeof result)
@@ -516,6 +517,9 @@ function verify_and_get_asset(code_to_verify) {
             return result[0]
         }
     }
+}
+function sendSubscriptionList(sender) {
+
 }
 function decideMessagePlainText(sender, text, event) {
     console.log('message plain text');
@@ -566,6 +570,9 @@ function decideMessagePlainText(sender, text, event) {
 
         add_new_user(sender)
 
+    }
+    else if (textLower === 'my subs' || textLower === 'my subscriptions' || textLower === 'subs') {
+        sendSubscriptionList(sender)
     } else if (array_tolwercase[0] === "get") {
         if (typeof array_tolwercase[1] === 'undefined') {
             sendTextMessage(sender, 'write the asset symbol or name after get. Like: get bitcoin cash');
