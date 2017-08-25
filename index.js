@@ -737,30 +737,29 @@ function sendListAsset(sender) {
         "attachment": {
             "type": "template",
             "payload": {
-                "template_type": "generic",
-                "elements": []
+                "template_type": "button",
+                "text": "PALCEHOLDER",
+                "buttons": [
+                    {
+                        "type": "postback",
+                        "title": "Previous Page ",
+                        "payload": JSON.stringify({action: "list", from: 0}),
+                    }, {
+                        "type": "postback",
+                        "title": "Next Page",
+                        "payload": JSON.stringify({action: "list", from: 30}),
+                    }
+                ]
             }
         }
     };
-    var element = {
-        "title": "Showing 30 out of 1093",
-        "subtitle": "PLACEHOLDER",
-        "buttons": [{
-            "type": "postback",
-            "title": "Previous Page ",
-            "payload": JSON.stringify({action: "list", from: 0}),
-        }, {
-            "type": "postback",
-            "title": "Next Page",
-            "payload": JSON.stringify({action: "list", from: 30}),
-        }],
-    }
+
+
     var element_str = "";
     for (var n = 0; n < 30; n++) {
         element_str += symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
     }
-    element.subtitle = element_str
-    messageData.attachment.payload.elements.push(element)
+    messageData.attachment.payload.text = element_str
 
     sendRequest(sender, messageData)
 }
