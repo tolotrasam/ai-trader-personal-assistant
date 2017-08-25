@@ -38,7 +38,7 @@ start_timeout_interval()
 
 function getFrequencyInMillisOfSubscription(subscriber) {
     var frequency_count = subscriber.frequency_count;
-    var times_interval_millis = 1;
+    var times_interval_millis = 0;
     switch (subscriber.frequency_label) {
         case 'minutes':
         case 'minute':
@@ -88,6 +88,7 @@ function sendUpdatesToEachSubscripbers(subscribers) {
             if (data === null) {
                 sendTextMessage(subscriber.user_id, "Sorry, Your subscription to the asset with id " + subscriber.asset_id + "( " + subscriber.asset_symbol + ") seems to be missing. Trying using get " + subscriber.asset_symbol)
             } else {
+                sendTextMessage(sender, "New update for "+data.name+" every "+subscriber.frequency+" now here: ")
                 sendTextMessage(subscriber.user_id, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
             }
             //Updating the last_update time to the current timestamp
@@ -653,16 +654,25 @@ function addSubscriptionForUser(sender, asset_obj) {
         from: new Date().getTime()
     };
 
-    Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
-        if (err) {
-            console.log("Database error: " + err);
-        } else {
-            console.log("Database sucess new subscription", JSON.stringify(mov));
-            sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + asset_obj.asset_name + " (" + asset_obj.asset_symbol + ") every " + asset_obj.interval + " . Check out your subscription list by typing: my subs or my subscription");
-        }
-    })
+    var frequency_millis = getFrequencyInMillisOfSubscription(update)
+    if (frequency_millis === 0) {
+        sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + update.frequency_label + ' . Please use only minutes, hours, days or weeks (or min, hours, days, weeks')
+        sendSubscriptionFrequencyPicker(update.asset_id)
+    } else if (frequency_millis < 5 * 60 * 1000) {
+        sendTextMessage(sender, 'Wow, That\'s too fast! Please choose at least 5 minutes')
+        sendSubscriptionFrequencyPicker(update.asset_id)
+    } else {
+        Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
+            if (err) {
+                console.log("Database error: " + err);
+            } else {
+                console.log("Database sucess new subscription", JSON.stringify(mov));
+                sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + asset_obj.asset_name + " (" + asset_obj.asset_symbol + ") every " + asset_obj.interval + " . Check out your subscription list by typing: my subs or my subscription");
+            }
+        })
+    }
 }
-function setCoockiePayload(sender, action,payload) {
+function setCoockiePayload(sender, action, payload) {
     var coockie = {user_id: sender, action: action, payload: payload, active: true}
     userSession.push(coockie)
 }
@@ -742,7 +752,7 @@ function decideMessagePlainText(sender, text, event) {
 
     //COOCKIE CONVERSATION
     var userIndexInCoockie = getUserCoockie(sender)
-    if ( userIndexInCoockie !== -1) {
+    if (userIndexInCoockie !== -1) {
         var coockie_payload = userSession[userIndexInCoockie].payload
         if (userSession[userIndexInCoockie].action === 'subscribe') {
             userSession.splice(userIndexInCoockie, 1); //removing user from coockie
