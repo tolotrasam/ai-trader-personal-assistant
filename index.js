@@ -88,7 +88,7 @@ function sendUpdatesToEachSubscripbers(subscribers) {
             if (data === null) {
                 sendTextMessage(subscriber.user_id, "Sorry, Your subscription to the asset with id " + subscriber.asset_id + "( " + subscriber.asset_symbol + ") seems to be missing. Trying using get " + subscriber.asset_symbol)
             } else {
-                sendTextMessage(sender, "New update for "+data.name+" every "+subscriber.frequency+" now here: ")
+                sendTextMessage(subscriber.user_id, "New update for "+data.name+" every "+subscriber.frequency+" now here: ")
                 sendTextMessage(subscriber.user_id, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
             }
             //Updating the last_update time to the current timestamp
