@@ -638,6 +638,12 @@ function sendAssetPrice(sender, asset_code) {
         })
     }
 }
+
+function isInt(value) {
+    return !isNaN(value) &&
+        parseInt(Number(value)) == value &&
+        !isNaN(parseInt(value, 10));
+}
 function addSubscriptionForUser(sender, asset_obj) {
     var query = {user_id: sender, asset_id: asset_obj.asset_id, asset_symbol: asset_obj.asset_symbol};
     var options = {upsert: true};
@@ -655,9 +661,10 @@ function addSubscriptionForUser(sender, asset_obj) {
     };
 
     var frequency_millis = getFrequencyInMillisOfSubscription(update)
-    if (frequency_millis === 0) {
-        sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + update.frequency_label + ' . Please use only minutes, hours, days or weeks (or min, hours, days, weeks').then(sendSubscriptionFrequencyPicker.bind(null, sender, update.asset_id)
-        )
+    if (!isInt(update.frequency_count)) {
+        sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + update.frequency_count + '. I don\'t think it\'s a number . Please start only numbers').then(sendSubscriptionFrequencyPicker.bind(null, sender, update.asset_id))
+    } else if (frequency_millis === 0) {
+        sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + update.frequency_label + ' . Please use only minutes, hours, days or weeks (or min, hours, days, weeks').then(sendSubscriptionFrequencyPicker.bind(null, sender, update.asset_id))
     } else if (frequency_millis < 5 * 60 * 1000) {
         sendTextMessage(sender, 'Wow, That\'s too fast! Please choose at least 5 minutes').then(
             sendSubscriptionFrequencyPicker.bind(null, sender, update.asset_id))
@@ -787,6 +794,17 @@ function decideMessagePlainText(sender, text, event) {
             // var asset_code = array_tolwercase[1]
             var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
             sendAssetPrice(sender, asset_code)
+
+        }
+    } else if (array_tolwercase[0] === "list"||array_tolwercase[0] === "search") {
+        if (typeof array_tolwercase[1] === 'undefined') {
+            sendTextMessage(sender, 'I found '+symbol.length+' Assets corresponding to your search');
+
+        } else {
+
+            // var asset_code = array_tolwercase[1]
+            // var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
+            // sendAssetPrice(sender, asset_code)
 
         }
     }
