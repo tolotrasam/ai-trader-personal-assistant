@@ -846,99 +846,98 @@ function decideMessagePlainText(sender, text, event) {
             sendListAsset(sender, payload.from)
             return;
         }
+    }
 
 
-        //COOCKIE CONVERSATION
-        var userIndexInCoockie = getUserCoockie(sender)
-        if (userIndexInCoockie !== -1) {
-            var coockie_payload = userSession[userIndexInCoockie].payload
-            if (userSession[userIndexInCoockie].action === 'subscribe') {
-                userSession.splice(userIndexInCoockie, 1); //removing user from coockie
-                coockie_payload.interval = textLower;
-                addSubscriptionForUser(sender, coockie_payload)
-                return
-            }
+    //COOCKIE CONVERSATION
+    var userIndexInCoockie = getUserCoockie(sender)
+    if (userIndexInCoockie !== -1) {
+        var coockie_payload = userSession[userIndexInCoockie].payload
+        if (userSession[userIndexInCoockie].action === 'subscribe') {
+            userSession.splice(userIndexInCoockie, 1); //removing user from coockie
+            coockie_payload.interval = textLower;
+            addSubscriptionForUser(sender, coockie_payload)
+            return
         }
+    }
 
 
-        var array_tolwercase = textLower.split(" ");
-        if (textLower === 'get started') {
-            add_new_user(sender)
+    var array_tolwercase = textLower.split(" ");
+    if (textLower === 'get started') {
+        add_new_user(sender)
+    }
+
+    //GETTING THE USER SUBSCRIPTION LIST
+    else if (textLower === 'my subs' || textLower === 'my subscriptions' || textLower === 'subs') {
+        sendSubscriptionList(sender)
+    } else if (array_tolwercase[0] === "get") {
+        if (typeof array_tolwercase[1] === 'undefined') {
+            sendTextMessage(sender, 'write the asset symbol or name after get. Like: get bitcoin cash');
+        } else {
+
+            // var asset_code = array_tolwercase[1]
+            var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
+            sendAssetPrice(sender, asset_code)
+
         }
+    } else if (array_tolwercase[0] === "list" || array_tolwercase[0] === "search") {
+        if (typeof array_tolwercase[1] === 'undefined') {
+            sendTextMessage(sender, 'I found ' + symbol.length + ' Assets corresponding to your search');
+            sendListAsset(sender)
+        } else {
 
-        //GETTING THE USER SUBSCRIPTION LIST
-        else if (textLower === 'my subs' || textLower === 'my subscriptions' || textLower === 'subs') {
-            sendSubscriptionList(sender)
-        } else if (array_tolwercase[0] === "get") {
-            if (typeof array_tolwercase[1] === 'undefined') {
-                sendTextMessage(sender, 'write the asset symbol or name after get. Like: get bitcoin cash');
-            } else {
+            // var asset_code = array_tolwercase[1]
+            // var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
+            // sendAssetPrice(sender, asset_code)
 
-                // var asset_code = array_tolwercase[1]
-                var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
-                sendAssetPrice(sender, asset_code)
-
-            }
-        } else if (array_tolwercase[0] === "list" || array_tolwercase[0] === "search") {
-            if (typeof array_tolwercase[1] === 'undefined') {
-                sendTextMessage(sender, 'I found ' + symbol.length + ' Assets corresponding to your search');
-                sendListAsset(sender)
-            } else {
-
-                // var asset_code = array_tolwercase[1]
-                // var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
-                // sendAssetPrice(sender, asset_code)
-
-            }
         }
+    }
 
 
-        //BINARY COMMAND WITH SPACE
-        //ASKING FOR FREQUENCY BEFORE ADDING SUBSCRIPTION
-        else if (array_tolwercase[0] === "sub" || array_tolwercase[0] === "subscribe") {
-            if (typeof array_tolwercase[1] === 'undefined') {
+    //BINARY COMMAND WITH SPACE
+    //ASKING FOR FREQUENCY BEFORE ADDING SUBSCRIPTION
+    else if (array_tolwercase[0] === "sub" || array_tolwercase[0] === "subscribe") {
+        if (typeof array_tolwercase[1] === 'undefined') {
 
-                sendTextMessage(sender, tips_how_to_sub);
-            } else {
-                sendSubscriptionFrequencyPicker(sender, array_tolwercase[1])
+            sendTextMessage(sender, tips_how_to_sub);
+        } else {
+            sendSubscriptionFrequencyPicker(sender, array_tolwercase[1])
 
-            }
         }
+    }
 
 
-        else {
-            switch (textLower) {
-                //
-                // //to lower case because
-                // case 'i am above 18.':
-                // case 'i am under 18.':
-                //     var update = {
-                //         user_id: sender,
-                //         minor: text,
-                //     };
-                //     surveyToRegister(sender, update);
-                //     console.log("MINORITY OR MAJORITY REGISTERED");
-                //     askGender(sender);
-                //     break;
+    else {
+        switch (textLower) {
+            //
+            // //to lower case because
+            // case 'i am above 18.':
+            // case 'i am under 18.':
+            //     var update = {
+            //         user_id: sender,
+            //         minor: text,
+            //     };
+            //     surveyToRegister(sender, update);
+            //     console.log("MINORITY OR MAJORITY REGISTERED");
+            //     askGender(sender);
+            //     break;
 
-                case 'hi':
-                case 'hello':
-                    tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ");
-                    break;
+            case 'hi':
+            case 'hello':
+                tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ");
+                break;
 
-                case 'exit':
-                    sendTextMessage(sender, 'Hope you have learnt! See you soon! 🖖😉');
-                    break;
+            case 'exit':
+                sendTextMessage(sender, 'Hope you have learnt! See you soon! 🖖😉');
+                break;
 
-                case 'learn':
-                    tolotrafunctions.sendTopics(sender);
-                    break;
+            case 'learn':
+                tolotrafunctions.sendTopics(sender);
+                break;
 
-                default:
-                    tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
-            }
+            default:
+                tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
         }
-
     }
 }
 
