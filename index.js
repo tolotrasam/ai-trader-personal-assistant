@@ -472,7 +472,7 @@ function add_new_user(sender) {
             var message = greeting + "My name is AI Trader Personal Assistant. I can tell you various details about the market such as prices and news. I can also provide trading tips.  🔥🔥";
             sendTextMessage(sender, message)
                 .then(sendTextMessage.bind(null, sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) "))
-                .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", "get bitcoin", "text", "get ltc", "get ltc"))
+                .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", "tutorial", "text", "get ltc", "tutorial"))
                 .catch(function (body) {
                     console.log('aborted');
                 });
@@ -847,6 +847,7 @@ function decideMessagePlainText(sender, text, event) {
         try {
             var payload = JSON.parse(event.message.quick_reply.payload)
         } catch (e) {
+
         }
     }
 
@@ -866,11 +867,12 @@ function decideMessagePlainText(sender, text, event) {
                 addSubscriptionForUser(sender, payload)
             } else {
                 sendTextMessage(sender, "Okay!")
+                return
             }
         } else if (payload.action === 'page_list') {
             sendListAsset(sender, payload.from)
-            return;
         }
+        return;
     }
 
 
