@@ -183,30 +183,33 @@ app.post('/webhook/', function (req, res) {
     var data = req.body;
     //Make sure its a page subscription
     if (data.object === 'page') {
-        let messaging_events = data.entry[0].messaging ||  data.entry[0].standby ;
-        console.log( "Fresh received",JSON.stringify(data ))
+        let messaging_events = data.entry[0].messaging;
         //iterate over each messaging events
-        for (let i = 0; i < messaging_events.length; i++) {
-            let event = messaging_events[i];
-            let sender = event.sender.id;
+        if (typeof messaging_events !== 'undefined') {
+            for (let i = 0; i < messaging_events.length; i++) {
+                let event = messaging_events[i];
+                let sender = event.sender.id;
 
-            if (event.message && event.message.text) {
-                console.log('NEW MESSAGE STARTS HERE');
-                receivedMessageLog(event)
-                let text = event.message.text;
-                decideMessagePlainText(sender, text, event);
-            }
+                if (event.message && event.message.text) {
+                    console.log('NEW MESSAGE STARTS HERE');
+                    receivedMessageLog(event)
+                    let text = event.message.text;
+                    decideMessagePlainText(sender, text, event);
+                }
 
-            else if (event.postback) {
-                console.log('NEW PAYLOAD STARTS HERE');
-                receivedMessageLog(event)
-                let text = event.postback.payload;
-                decideMessagePostBack(sender, text, event)
+                else if (event.postback) {
+                    console.log('NEW PAYLOAD STARTS HERE');
+                    receivedMessageLog(event)
+                    let text = event.postback.payload;
+                    decideMessagePostBack(sender, text, event)
+                }
             }
+        } else {
+            console.log("Fresh received", JSON.stringify(data))
         }
     }
     res.sendStatus(200)
-});
+})
 
 //Functions
 
@@ -532,7 +535,7 @@ function sendSubscriptionList(sender) {
         } else {
             if (user.length !== 0) {
                 console.log(user.length, "subs found on database");
-                sendTextMessage(sender, "You have "+user.length+" active subscriptions:")
+                sendTextMessage(sender, "You have " + user.length + " active subscriptions:")
                 let messageData = {
                     "attachment": {
                         "type": "template",
@@ -545,7 +548,7 @@ function sendSubscriptionList(sender) {
 
                 for (var user_subs of user) {
                     var element = {
-                        "title": user_subs.asset_name+ " ("+user_subs.asset_symbol+")",
+                        "title": user_subs.asset_name + " (" + user_subs.asset_symbol + ")",
                         "subtitle": "Every " + user_subs.frequency,
                         "buttons": [{
                             "type": "postback",
