@@ -79,18 +79,51 @@ function sendUpdatesToEachSubscripbers(subscribers) {
         console.log(frequency_millis, "frequency millis of " + subscriber.frequency)
         if (diff >= frequency_millis) {
 
-
-            var query = {_id: subscriber._id};
-            var options = {upsert: true};
-            var update = {last_update: new Date().getTime()};
-
             var data = verify_and_get_asset(subscriber.asset_id)
             if (data === null) {
                 sendTextMessage(subscriber.user_id, "Sorry, Your subscription to the asset with id " + subscriber.asset_id + "( " + subscriber.asset_symbol + ") seems to be missing. Trying using get " + subscriber.asset_symbol)
             } else {
-                sendTextMessage(subscriber.user_id, "New update for " + data.name + " every " + subscriber.frequency + " now here: ")
-                sendTextMessage(subscriber.user_id, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
+
+                let messageData = {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "generic",
+                            "elements": []
+                        }
+                    }
+                };
+                var element = {
+                    "title":  data.name + " (" + subscriber.asset_symbol + ")"+ " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours",
+
+                    "subtitle": "This update is recurring every " + subscriber.frequency ,
+                    "buttons": [{
+                        "type": "postback",
+                        "payload": JSON.stringify({action: "get", asset_id: subscriber.asset_id}),
+                        "title": "Get "
+                    }, {
+                        "type": "postback",
+                        "title": "Edit",
+                        "payload": JSON.stringify({action: "edit", asset_id: subscriber.asset_id}),
+                    }, {
+                        "type": "postback",
+                        "title": "Unsubscribe",
+                        "payload": JSON.stringify({
+                            action: "unsub",
+                            _id: subscriber._id,
+                            asset_name: subscriber.asset_name,
+                            asset_symbol: subscriber.system,
+                            interval: subscriber.interval
+                        }),
+                    }],
+                }
+                messageData.attachment.payload.elements.push(element)
+                sendRequest(subscriber.user_id, messageData)
             }
+
+            var query = {_id: subscriber._id};
+            var options = {upsert: true};
+            var update = {last_update: new Date().getTime()};
             //Updating the last_update time to the current timestamp
             Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
                 if (err) {
