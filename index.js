@@ -530,7 +530,7 @@ function sendSubscriptionList(sender) {
 
         } else {
             if (user) {
-                console.log(user, "subs found on database");
+                console.log(user.length, "subs found on database");
                 let messageData = {
                     "attachment": {
                         "type": "template",
@@ -623,6 +623,8 @@ function decideMessagePlainText(sender, text, event) {
         add_new_user(sender)
 
     }
+
+    //GETTING THE USER SUBSCRIPTION LIST
     else if (textLower === 'my subs' || textLower === 'my subscriptions' || textLower === 'subs') {
         sendSubscriptionList(sender)
     } else if (array_tolwercase[0] === "get") {

@@ -5,6 +5,7 @@ var SubscriptionSchema = new Schema({
     user_id: {type: String},
     asset_id: {type: String},
     asset_symbol: {type: String},
+    asset_name: {type: String},
     from: {type: Object},
     frequency: {type: String},
     frequency_count: {type: String},
