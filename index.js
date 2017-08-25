@@ -29,7 +29,6 @@ var next_timeout_interval;
 
 var symbol = null;
 updateSymbols(function (data, params) {
-
 })
 
 start_timeout_interval()
@@ -38,10 +37,10 @@ function sendUpdatesToEachSubscripbers(subscribers) {
     for (var subscriber of subscribers) {
         var current_time_stamp = new Date().getTime();
         var last_update = subscriber.last_update;
-        if (typeof last_update ==='undefined') {
+        if (typeof last_update === 'undefined') {
             last_update = 0
         }
-            var diff = current_time_stamp - last_update;
+        var diff = current_time_stamp - last_update;
         var frequency_count = subscriber.frequency_count;
         var times_interval_millis = 1;
         switch (subscriber.frequency_label) {
@@ -68,7 +67,7 @@ function sendUpdatesToEachSubscripbers(subscribers) {
                 break;
         }
         var frequency_millis = frequency_count * times_interval_millis
-        console.log(frequency_millis, "frequency millis of "+ subscriber.frequency)
+        console.log(frequency_millis, "frequency millis of " + subscriber.frequency)
         if (diff >= frequency_millis) {
 
 
@@ -77,7 +76,11 @@ function sendUpdatesToEachSubscripbers(subscribers) {
             var update = {last_update: new Date().getTime()};
 
             var data = verify_and_get_asset(subscriber.asset_id)
-            sendTextMessage(subscriber.user_id, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
+            if(data===null){
+                sendTextMessage(subscriber.user_id, "Sorry Your subscription to the asset " + subscriber.asset_name+ "( " + subscriber.asset_symbol+ ") seems to be missing. Trying using get "+subscriber.asset_symbol)
+            }else {
+                sendTextMessage(subscriber.user_id, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
+            }
             Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
                 if (err) {
                     console.log("Database error: " + err);
@@ -133,7 +136,7 @@ function start_timeout_interval() {
         next_update = (15 - currentMin) * 60 * 1000
     }
 
-    next_update = 2 * 60 * 1000 //only for debugging
+    next_update = 5 * 60 * 1000 //only for debugging
 
     console.log('current min is' + currentMin + ' and next update in milliseconds: ', next_update)
     next_timeout_interval = setTimeout(function () {
@@ -501,6 +504,7 @@ function verify_and_get_asset(code_to_verify) {
         return obj.symbol.toLowerCase() === code_to_verify || obj.name.toLowerCase() === code_to_verify;
     });
     if (result.length === 0) {
+        console.log("no asset found in coinmarket cap for "+code_to_verify)
         return null;
     } else {
         console.log("verified asset type", typeof result)
