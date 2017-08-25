@@ -516,6 +516,8 @@ function decideMessagePostBack(sender, payload) {
             sendListAsset(sender, payload.from)
         }
         return
+    }else {
+        console.log('post back action not defined, check array split instead')
     }
     //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value     f
     var postback = payload.split("-");
