@@ -500,7 +500,11 @@ function unsubscribeForUser(sender, asset_obj) {
 function decideMessagePostBack(sender, payload) {
     var postbackText = JSON.stringify(payload);
     console.log('message postback', postbackText);
-    var postback_object = JSON.parse(payload)
+    try{
+        var postback_object = JSON.parse(payload)
+    }catch (e){
+
+    }
     if (typeof postback_object.action !== 'undefined') {
         if (postback_object.action === 'get') {
             sendAssetPrice(sender, postback_object.asset_id)
