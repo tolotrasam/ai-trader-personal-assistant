@@ -24,7 +24,10 @@ var Users = require("./content/user_model");
 var Content = require("./content/content");
 // Process application/x-www-form-urlencoded
 var coinmarkethelper = require('./api/coinmarketcap')
-var help_asset_code = "If you need help because you don't know the asset name, just type 'list' and I'll help you";
+var tips_how_to_get_list = "If you need help because you don't know the asset name, just type 'list' and I'll help you";
+var tips_how_to_sub ='Write the asset symbol or name after get. Like: subscribe bitcoin cash';
+var tips_example_subs ='. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc. ' ;
+
 var next_timeout_interval;
 
 var symbol = null;
@@ -81,6 +84,7 @@ function sendUpdatesToEachSubscripbers(subscribers) {
             } else {
                 sendTextMessage(subscriber.user_id, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
             }
+            //Updating the last_update time to the current timestamp
             Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
                 if (err) {
                     console.log("Database error: " + err);
@@ -519,7 +523,53 @@ function verify_and_get_asset(code_to_verify) {
     }
 }
 function sendSubscriptionList(sender) {
+    Subscription.find({user_id: sender, active:true}, function (err, user) {
+        if (err) {
+            console.log("no subscription not found or something weirder");
+            return false; // user not found or something weirder
 
+        } else {
+            if (user) {
+                console.log(user, "subs found on database");
+                let messageData = {
+                    "attachment": {
+                        "type": "template",
+                        "payload": {
+                            "template_type": "generic",
+                            "elements":[]
+                        }
+                    }
+                };
+
+                for(var user_subs of user){
+                    var element = {
+                            "title": user_subs.asset_name,
+                            "subtitle": "Every "+user_subs.frequency,
+                            "buttons": [{
+                                "type": "postback",
+                                "payload": "asodifj",
+                                "title": "Get "
+                            }, {
+                                "type": "postback",
+                                "title": "asodi",
+                                "payload": "Edit ",
+                            }, {
+                                "type": "postback",
+                                "title": "blah blah",
+                                "payload": "Unsubscribe",
+                            }],
+                        }
+                        messageData.attachment.payload.elements.push(element)
+                }
+                sendRequest(sender, messageData)
+                return true; //user found
+            } else {
+                sendTextMessage(sender, "You have no active subscription yet. "+tips_how_to_sub+" "+tips_example_subs)
+                console.log('no subs result from database for '+sender);
+                return false;
+            }
+        }
+    })
 }
 function decideMessagePlainText(sender, text, event) {
     console.log('message plain text');
@@ -535,6 +585,8 @@ function decideMessagePlainText(sender, text, event) {
     }
 
     if (typeof payload !== "undefined") {
+
+        //ADDING NEW SUBSCRIPTION, PAYLOAD FROM QUICK REPLY FREQUENCY
         if (payload.action === 'subscribe') {
             var query = {user_id: sender, asset_id: payload.asset_id, asset_symbol: payload.asset_symbol};
             var options = {upsert: true};
@@ -579,7 +631,7 @@ function decideMessagePlainText(sender, text, event) {
         } else {
             var object_asset = verify_and_get_asset(array_tolwercase[1]);
             if (object_asset === null) {
-                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. ' + help_asset_code)
+                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. ' + tips_how_to_get_list)
             } else {
                 coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data_array, params) {
                     var data = data_array[0]
@@ -593,13 +645,15 @@ function decideMessagePlainText(sender, text, event) {
     }
 
 
+    //ASKING FOR FREQUENCY BEFORE ADDING SUBSCRIPTION
     else if (array_tolwercase[0] === "sub" || array_tolwercase[0] === "subscribe") {
         if (typeof array_tolwercase[1] === 'undefined') {
-            sendTextMessage(sender, 'write the asset symbol or name after get. Like: subscribe bitcoin cash');
+
+            sendTextMessage(sender, tips_how_to_sub);
         } else {
             var object_asset = verify_and_get_asset(array_tolwercase[1]);
             if (object_asset === null) {
-                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc. ' + help_asset_code)
+                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + tips_example_subs+ tips_how_to_get_list)
             } else {
                 var quick_replies = []
                 var sub_intervals = [{title: '30 minutes', interval: '30 min'}, {
