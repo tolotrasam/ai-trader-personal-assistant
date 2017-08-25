@@ -238,7 +238,7 @@ app.post('/webhook/', function (req, res) {
                 }
 
                 else if (event.postback) {
-                    console.log('NEW PAYLOAD STARTS HERE');
+                    console.log('NEW POSTBACK STARTS HERE');
                     receivedMessageLog(event)
                     let payload = event.postback.payload;
                     decideMessagePostBack(sender, payload, event)
@@ -512,6 +512,10 @@ function decideMessagePostBack(sender, payload) {
         else if (postback_object.action === 'edit') {
             sendSubscriptionFrequencyPicker(sender, postback_object.asset_id)
         }
+        else if (postback_object.action === 'page_list') {
+            sendListAsset(sender, payload.from)
+        }
+        return
     }
     //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value     f
     var postback = payload.split("-");
