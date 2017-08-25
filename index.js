@@ -744,6 +744,14 @@ function decideMessagePlainText(sender, text, event) {
     if (typeof payload !== "undefined") {
         //ADDING NEW SUBSCRIPTION, PAYLOAD FROM QUICK REPLY FREQUENCY
         if (payload.action === 'subscribe') {
+            //removing coockie
+            var userIndexInCoockie = getUserCoockie(sender)
+            if (userIndexInCoockie !== -1) {
+                var coockie_payload = userSession[userIndexInCoockie].payload
+                if (userSession[userIndexInCoockie].action === 'subscribe') {
+                    userSession.splice(userIndexInCoockie, 1); //removing user from coockie
+                }
+            }
             addSubscriptionForUser(sender, payload)
         }
         return;
@@ -760,7 +768,6 @@ function decideMessagePlainText(sender, text, event) {
             addSubscriptionForUser(sender, coockie_payload)
             return
         }
-
     }
 
 
