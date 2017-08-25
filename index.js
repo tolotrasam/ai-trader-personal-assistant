@@ -581,22 +581,22 @@ function sendSubscriptionList(sender) {
                         "subtitle": "Every " + user_subs.frequency,
                         "buttons": [{
                             "type": "postback",
-                            "payload": {action: "get", asset_id: user_subs.asset_id},
+                            "payload": JSON.stringify({action: "get", asset_id: user_subs.asset_id}),
                             "title": "Get "
                         }, {
                             "type": "postback",
                             "title": "Edit",
-                            "payload": {action: "edit", asset_id: user_subs.asset_id},
+                            "payload": JSON.stringify({action: "edit", asset_id: user_subs.asset_id}),
                         }, {
                             "type": "postback",
                             "title": "Unsubscribe",
-                            "payload": {
+                            "payload": JSON.stringify({
                                 action: "unsub",
                                 _id: user_subs._id,
                                 asset_name: user_subs.asset_name,
                                 asset_symbol: user_subs.system,
                                 interval: user_subs.interval
-                            },
+                            }),
                         }],
                     }
                     messageData.attachment.payload.elements.push(element)
