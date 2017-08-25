@@ -469,7 +469,7 @@ function add_new_user(sender) {
 
             greeting = "Hi " + bodyObj.first_name + " 😃 ";
 
-            var message = greeting + "My name is AI Trader Personal Assistant. I can tell you various details about the market such as prices and news. I can also provide trading tips. 👨‍❤️‍💋‍👨 💑 👫";
+            var message = greeting + "My name is AI Trader Personal Assistant. I can tell you various details about the market such as prices and news. I can also provide trading tips.  🔥🔥";
             sendTextMessage(sender, message)
                 .then(sendTextMessage.bind(null, sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) "))
                 .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", "get bitcoin", "text", "get ltc", "get ltc"))
