@@ -198,9 +198,9 @@ app.post('/webhook/', function (req, res) {
 
             else if (event.postback) {
                 console.log('NEW PAYLOAD STARTS HERE');
-
+                receivedMessageLog(event)
                 let text = event.postback.payload;
-                decideMessagePostBack(sender, text)
+                decideMessagePostBack(sender, text, event)
             }
         }
     }
@@ -531,6 +531,7 @@ function sendSubscriptionList(sender) {
         } else {
             if (user.length !== 0) {
                 console.log(user.length, "subs found on database");
+                sendTextMessage(sender, "You have "+user.length+" active subscriptions:")
                 let messageData = {
                     "attachment": {
                         "type": "template",
@@ -543,7 +544,7 @@ function sendSubscriptionList(sender) {
 
                 for (var user_subs of user) {
                     var element = {
-                        "title": user_subs.asset_name,
+                        "title": user_subs.asset_name+ " ("+user_subs.asset_symbol+")",
                         "subtitle": "Every " + user_subs.frequency,
                         "buttons": [{
                             "type": "postback",
@@ -551,12 +552,12 @@ function sendSubscriptionList(sender) {
                             "title": "Get "
                         }, {
                             "type": "postback",
-                            "title": "asodi",
-                            "payload": "Edit ",
+                            "title": "Edit",
+                            "payload": "asf ",
                         }, {
                             "type": "postback",
-                            "title": "blah blah",
-                            "payload": "Unsubscribe",
+                            "title": "Unsubscribe",
+                            "payload": "blah blah",
                         }],
                     }
                     messageData.attachment.payload.elements.push(element)
