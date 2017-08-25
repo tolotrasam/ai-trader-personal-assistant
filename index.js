@@ -453,6 +453,7 @@ function add_new_user(sender) {
             console.log("Error getting user's profile: " + error);
         } else {
             var bodyObj = JSON.parse(body);
+            console.log(bodyObj,'profile graph api')
             var update = {
                 user_id: sender,
                 first_name: bodyObj.first_name,
