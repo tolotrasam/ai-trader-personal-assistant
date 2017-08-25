@@ -942,7 +942,18 @@ function decideMessagePlainText(sender, text, event) {
                 break;
 
             default:
-                tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
+                var quick_replies = []
+                quick_replies.push({
+                    content_type: "text",
+                    title: "List",
+                    payload: JSON.stringify({action: "list", from: 0})
+                },{
+                    content_type: "text",
+                    title: "My Subs",
+                    payload: JSON.stringify({action: "subs"})
+                })
+                sendCustomQuickReplyBtn(sender, "Sorry, I don't know what's a "+textLower+" . However, I've cool stuff for you:", quick_replies)
+                // tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
         }
     }
 }
