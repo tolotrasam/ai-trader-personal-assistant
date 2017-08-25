@@ -695,7 +695,7 @@ function sendSubscriptionFrequencyPicker(sender, asset_code) {
             }
             quick_replies.push(reply)
         }
-        setCoockiePayload(sender, 'subscribe', object_asset)
+        setCoockiePayload(sender, 'subscribe', json_payload)
         sendCustomQuickReplyBtn(sender, " Choose how often do you me want to send you news and price about " + object_asset.name + " (" + object_asset.symbol + ") or just tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
 
     }
