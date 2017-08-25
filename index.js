@@ -94,9 +94,9 @@ function sendUpdatesToEachSubscripbers(subscribers) {
                     }
                 };
                 var element = {
-                    "title":  data.name + " (" + subscriber.asset_symbol + ")"+ " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours",
+                    "title": data.name + " (" + subscriber.asset_symbol + ")" + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours",
 
-                    "subtitle": "This update is recurring every " + subscriber.frequency ,
+                    "subtitle": "This update is recurring every " + subscriber.frequency,
                     "buttons": [{
                         "type": "postback",
                         "payload": JSON.stringify({action: "get", asset_id: subscriber.asset_id}),
