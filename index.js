@@ -13,8 +13,8 @@ var Subscription = require("./content/subscription_model");
 const request = require('request');
 const app = express();
 var Promise = require('promise');
-var userData = {};
-var globalvars = {sendRequest: sendRequest, userData: userData};
+var userSession = [];
+var globalvars = {sendRequest: sendRequest, userData: userSession};
 
 var db = mongoose.connect(db_token);
 //for messages sequence
@@ -317,8 +317,8 @@ function ModifyOrRegisterUserById(senderId, update) {
 }
 
 function insertToSession(sender) {
-    if (typeof (userData.sender) === 'undefined') {
-        userData.sender = {userdId: sender}
+    if (typeof (userSession.sender) === 'undefined') {
+        userSession.sender = {userdId: sender}
     }
 }
 //To gather information about received messages
@@ -662,6 +662,10 @@ function addSubscriptionForUser(sender, asset_obj) {
         }
     })
 }
+function setCoockiePayload(sender, action,payload) {
+    var coockie = {user_id: sender, action: action, payload: payload, active: true}
+    userSession.push(coockie)
+}
 function sendSubscriptionFrequencyPicker(sender, asset_code) {
     var object_asset = verify_and_get_asset(asset_code);
     if (object_asset === null) {
@@ -691,12 +695,30 @@ function sendSubscriptionFrequencyPicker(sender, asset_code) {
             }
             quick_replies.push(reply)
         }
+        setCoockiePayload(sender, 'subscribe', object_asset)
         sendCustomQuickReplyBtn(sender, " Choose how often do you me want to send you news and price about " + object_asset.name + " (" + object_asset.symbol + ") or just tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
 
     }
 }
+function getUserCoockie(sender) {
+    var n = 0
+    var found = false
+    for (var userCoockie of userSession) {
+        if (userCoockie.user_id === sender) {
+            found = true;
+            break;
+        }
+        n++
+    }
+    if (!found) {
+        return -1;
+    }
+    return n;
+}
 function decideMessagePlainText(sender, text, event) {
     console.log('message plain text');
+
+
     if (event.message.is_echo) {
         console.log('is_echo, come back :) ')
         return;
@@ -708,23 +730,33 @@ function decideMessagePlainText(sender, text, event) {
         var payload = JSON.parse(event.message.quick_reply.payload)
     }
 
+    //QUICK REPLIES
     if (typeof payload !== "undefined") {
-
         //ADDING NEW SUBSCRIPTION, PAYLOAD FROM QUICK REPLY FREQUENCY
         if (payload.action === 'subscribe') {
             addSubscriptionForUser(sender, payload)
-
         }
-
         return;
     }
 
+
+    //COOCKIE CONVERSATION
+    var userIndexInCoockie = getUserCoockie(sender)
+    if ( userIndexInCoockie !== -1) {
+        var coockie_payload = userSession[userIndexInCoockie].payload
+        if (userSession[userIndexInCoockie].action === 'subscribe') {
+            userSession.splice(userIndexInCoockie, 1); //removing user from coockie
+            coockie_payload.interval = textLower;
+            addSubscriptionForUser(sender, coockie_payload)
+            return
+        }
+
+    }
+
+
     var array_tolwercase = textLower.split(" ");
-
     if (textLower === 'get started') {
-
         add_new_user(sender)
-
     }
 
     //GETTING THE USER SUBSCRIPTION LIST
@@ -734,13 +766,16 @@ function decideMessagePlainText(sender, text, event) {
         if (typeof array_tolwercase[1] === 'undefined') {
             sendTextMessage(sender, 'write the asset symbol or name after get. Like: get bitcoin cash');
         } else {
-            var asset_code = array_tolwercase[1]
+
+            // var asset_code = array_tolwercase[1]
+            var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
             sendAssetPrice(sender, asset_code)
 
         }
     }
 
 
+    //BINARY COMMAND WITH SPACE
     //ASKING FOR FREQUENCY BEFORE ADDING SUBSCRIPTION
     else if (array_tolwercase[0] === "sub" || array_tolwercase[0] === "subscribe") {
         if (typeof array_tolwercase[1] === 'undefined') {
