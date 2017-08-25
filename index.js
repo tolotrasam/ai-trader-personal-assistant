@@ -200,8 +200,8 @@ app.post('/webhook/', function (req, res) {
                 else if (event.postback) {
                     console.log('NEW PAYLOAD STARTS HERE');
                     receivedMessageLog(event)
-                    let text = event.postback.payload;
-                    decideMessagePostBack(sender, text, event)
+                    let payload = event.postback.payload;
+                    decideMessagePostBack(sender, payload, event)
                 }
             }
         } else {
@@ -440,20 +440,49 @@ function add_new_user(sender) {
         }
     });
 }
-function decideMessagePostBack(sender, raw_postback) {
-    var postbackText = JSON.stringify(raw_postback);
+function unsubscribeForUser(sender, asset_obj) {
+    var query = {_id: asset_obj._id};
+    var options = {upsert: true};
+    var update = {
+        active: false,
+        from: new Date().getTime()
+    };
+
+    Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
+        if (err) {
+            console.log("Database error: " + err);
+        } else {
+            console.log("Database sucess end subscription", JSON.stringify(mov));
+            sendTextMessage(sender, "Okay! You successfully unsubscribed for " + asset_obj.asset_name + " (" + asset_obj.asset_symbol + ") every " + asset_obj.interval + " . Check out your subscription list by typing: my subs or my subscription");
+        }
+    })
+}
+function decideMessagePostBack(sender, payload) {
+    var postbackText = JSON.stringify(payload);
     console.log('message postback', postbackText);
+    var postback_object = JSON.parse(payload)
+    if (typeof postback_object.action !== 'undefined') {
+        if (postback_object.action === 'get') {
+            sendAssetPrice(sender, postback_object.action, postback_object.asset_id)
+        }
+        else if (postback_object.action === 'unsub') {
+            unsubscribeForUser(sender, postback_object)
+        }
 
-
+        else if (postback_object.action === 'edit') {
+            sendSubscriptionFrequencyPicker(sender, postback_object.asset_id)
+        }
+    }
     //post back will always contain a prefix (as key) referring to its category, a dash separate post back key, sub key to value     f
-    var postback = raw_postback.split("-");
+    var postback = payload.split("-");
     var postbackcategory = postback[0];
     var postbacksubcategory = postback[1];
     var postbackvalue = postback[2];
     var postbacksubvalue = postback[3];
     console.log(postback, 'post back');
 
-    if (raw_postback == 'get_started') {
+
+    if (payload === 'get_started') {
         add_new_user(sender)
     }
 
@@ -486,7 +515,7 @@ function decideMessagePostBack(sender, raw_postback) {
     }
 
 
-    if (raw_postback === 'get_help') {
+    if (payload === 'get_help') {
         sendTextMessage(sender, "A bit lost? 😜 No problem.")
             .then(sendTextMessage.bind(null, sender, "You can always navigate by clicking the persistent menu 👇"))
             .then(sendImageMessage.bind(null, sender, "https://i1.wp.com/thedebuggers.com/wp-content/uploads/2017/01/fb-persistent-menu.png?resize=300%2C234"))
@@ -496,13 +525,13 @@ function decideMessagePostBack(sender, raw_postback) {
             });
     }
 
-    if (raw_postback === 'ask_questions') {
+    if (payload === 'ask_questions') {
         console.log('question attempt by ', sender);
         sendTextMessage(sender, "Send your question here as a message 👇☺️")
         //Options: Post Question, Cancel Question| All Questions are posted anonymously.
     }
 
-    if (raw_postback === 'learn') {
+    if (payload === 'learn') {
         tolotrafunctions.sendTopics(sender)
     }
 }
@@ -552,16 +581,22 @@ function sendSubscriptionList(sender) {
                         "subtitle": "Every " + user_subs.frequency,
                         "buttons": [{
                             "type": "postback",
-                            "payload": "asodifj",
+                            "payload": {action: "get", asset_id: user_subs.asset_id},
                             "title": "Get "
                         }, {
                             "type": "postback",
                             "title": "Edit",
-                            "payload": "asf ",
+                            "payload": {action: "edit", asset_id: user_subs.asset_id},
                         }, {
                             "type": "postback",
                             "title": "Unsubscribe",
-                            "payload": "blah blah",
+                            "payload": {
+                                action: "unsub",
+                                _id: user_subs._id,
+                                asset_name: user_subs.asset_name,
+                                asset_symbol: user_subs.system,
+                                interval: user_subs.interval
+                            },
                         }],
                     }
                     messageData.attachment.payload.elements.push(element)
@@ -575,6 +610,79 @@ function sendSubscriptionList(sender) {
             }
         }
     })
+}
+function sendAssetPrice(sender, asset_code) {
+
+    var object_asset = verify_and_get_asset(asset_code);
+    if (object_asset === null) {
+        sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + asset_code + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. ' + tips_how_to_get_list)
+    } else {
+        coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data_array, params) {
+            var data = data_array[0]
+            if (data.length > 1) {
+                console.log("check this url, we have more than one result in the array")
+            }
+            sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
+        })
+    }
+}
+function addSubscriptionForUser(sender, asset_obj) {
+    var query = {user_id: sender, asset_id: asset_obj.asset_id, asset_symbol: asset_obj.asset_symbol};
+    var options = {upsert: true};
+    var frequency_key_val = asset_obj.interval.split(" ")
+    var update = {
+        user_id: sender,
+        asset_id: asset_obj.asset_id,
+        asset_symbol: asset_obj.asset_symbol,
+        asset_name: asset_obj.asset_name,
+        frequency: asset_obj.interval,
+        frequency_count: frequency_key_val[0],
+        active: true,
+        frequency_label: frequency_key_val[1],
+        from: new Date().getTime()
+    };
+
+    Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
+        if (err) {
+            console.log("Database error: " + err);
+        } else {
+            console.log("Database sucess new subscription", JSON.stringify(mov));
+            sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + asset_obj.asset_name + " (" + asset_obj.asset_symbol + ") every " + asset_obj.interval + " . Check out your subscription list by typing: my subs or my subscription");
+        }
+    })
+}
+function sendSubscriptionFrequencyPicker(sender, asset_code) {
+    var object_asset = verify_and_get_asset(asset_code);
+    if (object_asset === null) {
+        sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + tips_example_subs + tips_how_to_get_list)
+    } else {
+        var quick_replies = []
+        var sub_intervals = [{title: '30 minutes', interval: '30 min'}, {
+            title: 'Hourly',
+            interval: '1 hour'
+        }, {title: 'Daily', interval: '1 day'}, {title: 'Weekly', interval: '1 week'}, {
+            title: 'Monthly',
+            interval: '1 month'
+        }];
+        for (var interval_obj of sub_intervals) {
+            var json_payload = {
+                "sender": sender,
+                "action": "subscribe",
+                "asset_id": object_asset.id,
+                "asset_name": object_asset.name,
+                "asset_symbol": object_asset.symbol,
+                "interval": interval_obj.interval
+            }
+            var reply = {
+                content_type: "text",
+                title: interval_obj.title,
+                payload: JSON.stringify(json_payload)
+            }
+            quick_replies.push(reply)
+        }
+        sendCustomQuickReplyBtn(sender, " Choose how often do you me want to send you news and price about " + object_asset.name + " (" + object_asset.symbol + ") or just tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
+
+    }
 }
 function decideMessagePlainText(sender, text, event) {
     console.log('message plain text');
@@ -593,29 +701,8 @@ function decideMessagePlainText(sender, text, event) {
 
         //ADDING NEW SUBSCRIPTION, PAYLOAD FROM QUICK REPLY FREQUENCY
         if (payload.action === 'subscribe') {
-            var query = {user_id: sender, asset_id: payload.asset_id, asset_symbol: payload.asset_symbol};
-            var options = {upsert: true};
-            var frequency_key_val = payload.interval.split(" ")
-            var update = {
-                user_id: sender,
-                asset_id: payload.asset_id,
-                asset_symbol: payload.asset_symbol,
-                asset_name: payload.asset_name,
-                frequency_count: frequency_key_val[0],
-                active: true,
-                frequency_label: frequency_key_val[1],
-                frequency: payload.interval,
-                from: new Date().getTime()
-            };
+            addSubscriptionForUser(sender, payload)
 
-            Subscription.findOneAndUpdate(query, update, options, function (err, mov) {
-                if (err) {
-                    console.log("Database error: " + err);
-                } else {
-                    console.log("Database sucess new subscription", JSON.stringify(mov));
-                    sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + payload.asset_name + " (" + payload.asset_symbol + ") every " + payload.interval + " . Check out your subscription list by typing: my subs or my subscription");
-                }
-            })
         }
 
         return;
@@ -636,18 +723,9 @@ function decideMessagePlainText(sender, text, event) {
         if (typeof array_tolwercase[1] === 'undefined') {
             sendTextMessage(sender, 'write the asset symbol or name after get. Like: get bitcoin cash');
         } else {
-            var object_asset = verify_and_get_asset(array_tolwercase[1]);
-            if (object_asset === null) {
-                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. ' + tips_how_to_get_list)
-            } else {
-                coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data_array, params) {
-                    var data = data_array[0]
-                    if (data.length > 1) {
-                        console.log("check this url, we have more than one result in the array")
-                    }
-                    sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
-                })
-            }
+            var asset_code = array_tolwercase[1]
+            sendAssetPrice(sender, asset_code)
+
         }
     }
 
@@ -658,37 +736,8 @@ function decideMessagePlainText(sender, text, event) {
 
             sendTextMessage(sender, tips_how_to_sub);
         } else {
-            var object_asset = verify_and_get_asset(array_tolwercase[1]);
-            if (object_asset === null) {
-                sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + array_tolwercase[1] + tips_example_subs + tips_how_to_get_list)
-            } else {
-                var quick_replies = []
-                var sub_intervals = [{title: '30 minutes', interval: '30 min'}, {
-                    title: 'Hourly',
-                    interval: '1 hour'
-                }, {title: 'Daily', interval: '1 day'}, {title: 'Weekly', interval: '1 week'}, {
-                    title: 'Monthly',
-                    interval: '1 month'
-                }];
-                for (var interval_obj of sub_intervals) {
-                    var json_payload = {
-                        "sender": sender,
-                        "action": "subscribe",
-                        "asset_id": object_asset.id,
-                        "asset_name": object_asset.name,
-                        "asset_symbol": object_asset.symbol,
-                        "interval": interval_obj.interval
-                    }
-                    var reply = {
-                        content_type: "text",
-                        title: interval_obj.title,
-                        payload: JSON.stringify(json_payload)
-                    }
-                    quick_replies.push(reply)
-                }
-                sendCustomQuickReplyBtn(sender, " Choose how often do you me want to send you news and price about " + object_asset.name + " (" + object_asset.symbol + ") or just tell me a custom interval. Like: 6 hours, 3 days, 2 weeks", quick_replies)
+            sendSubscriptionFrequencyPicker(sender, array_tolwercase[1])
 
-            }
         }
     }
 
