@@ -513,7 +513,7 @@ function decideMessagePostBack(sender, payload) {
             sendSubscriptionFrequencyPicker(sender, postback_object.asset_id)
         }
         else if (postback_object.action === 'page_list') {
-            sendListAsset(sender, payload.from)
+            sendListAsset(sender, postback_object.from)
         }
         return
     }else {
