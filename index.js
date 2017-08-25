@@ -444,11 +444,12 @@ function add_new_user(sender) {
         url: "https://graph.facebook.com/v2.6/" + sender,
         qs: {
             access_token: token,
-            fields: "first_name,last_name,profile_pic,locale,timezone,gender"
+            fields: "first_name,last_name,locale,timezone,gender"
         },
         method: "GET"
     }, function (error, response, body) {
         var greeting = "";
+        console.log(JSON.stringify(response))
         if (error) {
             console.log("Error getting user's profile: " + error);
         } else {
