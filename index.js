@@ -1119,7 +1119,7 @@ function decideMessagePlainText(sender, text, event) {
                     addSubscriptionForUser(sender, payload)
                 }
             } else {
-                sendTextMessage(sender, "Okay !").then(sendActionCallListOrSubsButton(null, sender, tips_what_to_do_next))
+                sendTextMessage(sender, "Okay !").then(sendActionCallListOrSubsButton.bind(null, sender, tips_what_to_do_next))
                 return
             }
         } else if (payload.action === 'list') {
