@@ -785,8 +785,7 @@ function addSubscriptionForUser(sender, asset_obj) {
                 console.log("Database error: " + err);
             } else {
                 console.log("Database sucess new subscription", JSON.stringify(mov));
-                sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + asset_obj.asset_name + " (" + asset_obj.asset_symbol + ") every " + asset_obj.interval + " . Check out your subscription list by typing: my subs or my subscription");
-                sendActionCallListOrSubsButton(sender, tips_what_to_do)
+                sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + asset_obj.asset_name + " (" + asset_obj.asset_symbol + ") every " + asset_obj.interval + " . Check out your subscription list by typing: my subs or my subscription").then(sendActionCallListOrSubsButton.bind(sender, tips_what_to_do));
             }
         })
     }
