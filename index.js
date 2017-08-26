@@ -1053,7 +1053,7 @@ function decideMessagePlainText(sender, text, event) {
             }
         } else if (payload.action === 'list') {
             sendListAsset(sender, 0)
-        } else if (payload.action === 'my subs') {
+        } else if (payload.action === 'my subs'||payload.action === 'subs') {
             sendSubscriptionList(sender)
         } else if (payload.action === 'sub') {
             sendSubscriptionFrequencyPicker(sender, payload.asset_id)
