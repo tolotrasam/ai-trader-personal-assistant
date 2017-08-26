@@ -129,9 +129,11 @@ function sendGetTutorial(sender) {
     sendTextMessage(sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) ")
         .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", JSON.stringify({
             action: "get",
-            asset_id: "ltc",
+            asset_id: "bitcoin",
             tutorial: true
-        }), "text", "get ltc", JSON.stringify({action: "get", asset_id: "bitcoin", tutorial: true})))
+        }), "text", "get ltc", JSON.stringify({
+            action: "get", asset_id: "ltc", tutorial: true
+        })))
         .catch(function (body) {
             console.log('aborted');
         });
