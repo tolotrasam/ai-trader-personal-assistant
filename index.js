@@ -107,8 +107,8 @@ function sendListSearchTutorial(sender) {
         title: "Search Bit",
         payload: JSON.stringify({action: "search", keyword: "bit", tutorial: true})
     })
-    sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword").then(
-        sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
+
+    sendCustomQuickReplyBtn.bind(null, sender, "This is an example of how to get or search the list of assets:", quick_replies)
 }
 function sendSubscribeTutorial(sender) {
     var quick_replies = []
@@ -725,8 +725,8 @@ function sendSubscriptionList(sender) {
 function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
     var element = {
         "title": data.name + " (" + data.symbol + ")" + " price now is " + data.price_usd + " USD growing at " +
-        data.percent_change_1h + "% in 1 hours, "+
-        data.percent_change_24h + "% in 24 hours and "+
+        data.percent_change_1h + "% in 1h, " +
+        data.percent_change_24h + "% in 24h " +
         data.percent_change_7d + "% in 7 days"
 
         ,
@@ -789,13 +789,13 @@ function sendAssetPrice(sender, asset_code, cb) {
             var isSubscribed = false
             if (err) {
                 console.log(err, "subscription not found or something weirder");
-                subtitle = "You are not subscribed to this asset"
+                subtitle = "You are not subscribed to this asset yet"
             } else {
                 if (subscription) {
                     subtitle = "You are subscribed to receive  update every " + subscription.frequency
                     isSubscribed = true
                 } else {
-                    subtitle = "You are not subscribed to this asset"
+                    subtitle = "You are not subscribed to this asset yet"
                 }
             }
             coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data_array, params) {
@@ -1118,7 +1118,7 @@ function decideMessagePlainText(sender, text, event) {
                     addSubscriptionForUser(sender, payload)
                 }
             } else {
-                sendTextMessage(sender, "Okay!").then(sendActionCallListOrSubsButton(null, sender, tips_what_to_do_next))
+                sendTextMessage(sender, "Okay !").then(sendActionCallListOrSubsButton(null, sender, tips_what_to_do_next))
                 return
             }
         } else if (payload.action === 'list') {
@@ -1137,7 +1137,7 @@ function decideMessagePlainText(sender, text, event) {
             if (payload.tutorial === true) {
 
                 sendAssetPrice(sender, payload.asset_id, function () {
-                    sendListSearchTutorial(sender)
+                    sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword").then(sendListSearchTutorial.bind(null, sender))
                 })
             } else {
                 sendAssetPrice(sender, payload.asset_id, function () {
@@ -1245,7 +1245,7 @@ function decideMessagePlainText(sender, text, event) {
                 break;
 
             default:
-                sendActionCallListOrSubsButton(sender, "Sorry, I don't know what's a " + textLower + " . However, I've cooler stuff for you:")
+                sendActionCallListOrSubsButton(sender, "Sorry, I don't know what's a " + textLower + " yet. However, I've got cooler stuff for you:")
             // tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
         }
     }
