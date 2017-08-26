@@ -108,7 +108,7 @@ function sendListSearchTutorial(sender) {
         payload: JSON.stringify({action: "search", keyword: "bit", tutorial: true})
     })
     sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword").then(
-        sendTextMessage.bind(null, sender, "Or Try clicking in one the buttons below:")).then(
+
         sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
 }
 function sendSubscribeTutorial(sender) {
@@ -123,7 +123,7 @@ function sendSubscribeTutorial(sender) {
         payload: JSON.stringify({action: "sub", asset_id: "eth"})
     })
     sendTextMessage(sender, "Ok! It's time to subscribe to an asset to get recurrent updates such as the price and news").then(
-        sendTextMessage.bind(null, sender, "Or Try clicking in one the buttons below:")).then(
+
         sendCustomQuickReplyBtn.bind(null, sender, tips_how_to_sub, quick_replies))
 }
 function sendGetTutorial(sender) {
@@ -131,7 +131,7 @@ function sendGetTutorial(sender) {
     sendTextMessage(sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) ")
         .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", JSON.stringify({
             action: "get",
-            asset_id: "bitcoin",
+            asset_id: "ltc",
             tutorial: true
         }), "text", "get ltc", JSON.stringify({action: "get", asset_id: "bitcoin", tutorial: true})))
         .catch(function (body) {
@@ -729,7 +729,7 @@ function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
             "title": "Share "
         }, {
             "type": "postback",
-            "payload": JSON.stringify({action: "get", asset_id: sender}),
+            "payload": JSON.stringify({action: "get", asset_id: data.id}),
             "title": "Get "
         }],
     }
