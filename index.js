@@ -734,7 +734,7 @@ function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
         }],
     }
     if (isSubscribed) {
-        element.push({
+        element.buttons.push({
             "type": "postback",
             "title": "Edit",
             "payload": JSON.stringify({action: "edit", asset_id: subscriber.asset_id}),
