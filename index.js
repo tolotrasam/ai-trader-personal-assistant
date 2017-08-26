@@ -27,6 +27,7 @@ var coinmarkethelper = require('./api/coinmarketcap')
 var tips_how_to_get_list = "If you need help because you don't know the asset name, just type 'list' and I'll help you";
 var tips_how_to_sub = 'Write the asset symbol or name after sub. Like:';
 var tips_example_subs = '. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc. ';
+var tips_what_to_do ="Or click an action to do from here:";
 
 var next_timeout_interval;
 
@@ -540,6 +541,7 @@ function unsubscribeForUser(sender, asset_obj) {
         } else {
             console.log("Database sucess end subscription", JSON.stringify(mov));
             sendTextMessage(sender, "Okay! You successfully unsubscribed for " + mov.asset_name + " (" + mov.asset_symbol + ") every " + mov.interval + " . Check out your subscription list by typing: my subs or my subscription");
+            sendActionCallListOrSubsButton(sender, tips_what_to_do)
         }
     })
 }
@@ -784,7 +786,7 @@ function addSubscriptionForUser(sender, asset_obj) {
             } else {
                 console.log("Database sucess new subscription", JSON.stringify(mov));
                 sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + asset_obj.asset_name + " (" + asset_obj.asset_symbol + ") every " + asset_obj.interval + " . Check out your subscription list by typing: my subs or my subscription");
-                sendActionCallListOrSubsButton(sender, "Or click an action to do from here:")
+                sendActionCallListOrSubsButton(sender, tips_what_to_do)
             }
         })
     }
