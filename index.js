@@ -693,8 +693,7 @@ function sendAssetPrice(sender, asset_code, cb) {
             if (data.length > 1) {
                 console.log("check this url, we have more than one result in the array")
             }
-            sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
-            cb(data)
+            sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours").then(cb.bind(null, data))
         })
     }
 }
