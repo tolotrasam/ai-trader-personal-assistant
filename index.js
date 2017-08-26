@@ -781,7 +781,7 @@ function sendAssetPrice(sender, asset_code, cb) {
 
     var object_asset = verify_and_get_asset(asset_code);
     if (object_asset === null) {
-        sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + asset_code + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. ' + tips_how_to_get_list).then(sendListSearchTutorial.bind(null, sender))
+        sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + asset_code + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. ' ).then(sendListSearchTutorial.bind(null, sender))
     } else {
 
         Subscription.findOne({user_id: sender, active: true, asset_id: object_asset.id}, function (err, subscription) {
