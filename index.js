@@ -15,7 +15,7 @@ const app = express();
 var Promise = require('promise');
 var userSession = [];
 var globalvars = {sendRequest: sendRequest, userData: userSession};
-
+var page_size = 20
 var db = mongoose.connect(db_token);
 //for messages sequence
 
@@ -868,24 +868,24 @@ function sendListAsset(sender, from) {
         }
     };
 
-    if (from >= 30) {
+    if (from >= page_size) {
         messageData.attachment.payload.buttons.push({
             "type": "postback",
             "title": "Previous Page ",
-            "payload": JSON.stringify({action: "page_list", from: from - 30}),
+            "payload": JSON.stringify({action: "page_list", from: from - page_size}),
         })
     }
     messageData.attachment.payload.buttons.push(
         {
             "type": "postback",
             "title": "Next Page",
-            "payload": JSON.stringify({action: "page_list", from: from + 30}),
+            "payload": JSON.stringify({action: "page_list", from: from + page_size}),
         })
 
 
     var element_str = "";
 
-    for (var n = from; n < from + 30; n++) {
+    for (var n = from; n < from + page_size; n++) {
         element_str += symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
     }
 
@@ -926,7 +926,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
                 if (temp_str.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
                     element_str.push(temp_str)
                     keyword_size++
-                    if (keyword_size >= 30) {
+                    if (keyword_size >= page_size) {
                         new_search_index = n;
                         break;
                     }
@@ -939,7 +939,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
                 if (temp_str.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
                     element_str.push(temp_str)
                     keyword_size++
-                    if (keyword_size >= 30) {
+                    if (keyword_size >= page_size) {
                         new_search_index = n;
                         break;
                     }
@@ -969,7 +969,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             })
         }
 
-        if (keyword_size === 30) {
+        if (keyword_size === page_size) {
             var button_search_index = new_search_index
             if (backward) {
                 button_search_index = search_index
