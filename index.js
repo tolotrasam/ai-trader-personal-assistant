@@ -126,7 +126,7 @@ function sendSubscribeTutorial() {
 }
 function sendGetTutorial(sender) {
 
-    sendTextMessage.bind(null, sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) ")
+    sendTextMessage(sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) ")
         .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", JSON.stringify({
             action: "get",
             asset_id: "bitcoin",
