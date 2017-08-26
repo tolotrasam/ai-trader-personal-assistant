@@ -668,7 +668,6 @@ function sendSubscriptionList(sender) {
             return false; // user not found or something weirder
 
         } else {
-            sendTextMessage(sender, "You have " + user.length + " active subscriptions:")
             if (user.length !== 0) {
                 console.log(user.length, "subs found on database");
                 let messageData = {
@@ -712,10 +711,12 @@ function sendSubscriptionList(sender) {
                     }
                     messageData.attachment.payload.elements.push(element)
                 }
-                sendRequest(sender, messageData)
+                sendTextMessage(sender, "You have " + user.length + " active subscriptions:").then(
+                    sendRequest.bind(null, sender, messageData))
                 return true; //user found
             } else {
-                sendSubscribeTutorial(sender)
+                sendTextMessage(sender, "You have " + user.length + " active subscriptions:").then(
+                    sendSubscribeTutorial.bind(null, sender))
                 console.log('no subs result from database for ' + sender);
                 return false;
             }
