@@ -114,7 +114,7 @@ function sendSubscribeTutorial(sender) {
     quick_replies.push({
         content_type: "text",
         title: "Sub bitcoin",
-        payload: JSON.stringify({action: "subscribe", asset_id: "bitcoin"})
+        payload: JSON.stringify({action: "sub", asset_id: "bitcoin"})
     }, {
         content_type: "text",
         title: "Subscribe eth",
@@ -1038,6 +1038,8 @@ function decideMessagePlainText(sender, text, event) {
             sendListAsset(sender, 0)
         } else if (payload.action === 'my subs') {
             sendSubscriptionList(sender)
+        } else if (payload.action === 'sub') {
+            sendSubscriptionFrequencyPicker(sender, payload.asset_id)
         } else if (payload.action === 'search') {
             sendSearchAsset(sender, payload.keyword, 0, false)
         } else if (payload.action === 'page_list') {
