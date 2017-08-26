@@ -570,7 +570,7 @@ function decideMessagePostBack(sender, payload) {
                 sendSubscriptionList(sender)
             }
             if (postback_object.action === 'more_action') {
-                sendSubscriptionList(sender)
+                sendSubscribeTutorial(sender)
             }
             else if (postback_object.action === 'page_list') {
                 sendListAsset(sender, postback_object.from)
@@ -957,16 +957,21 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             if (backward) {
                 button_search_index = new_search_index
             }
-            messageData.attachment.payload.buttons.push({
-                "type": "postback",
-                "title": "Previous Page ",
-                "payload": JSON.stringify({
-                    action: "page_search",
-                    backward: true,
-                    keyword: keyword,
-                    search_index: button_search_index
-                }),
-            })
+            if(backward && button_search_index===0){
+                //already the first page, do not show previous button
+            }else{
+                messageData.attachment.payload.buttons.push({
+                    "type": "postback",
+                    "title": "Previous Page ",
+                    "payload": JSON.stringify({
+                        action: "page_search",
+                        backward: true,
+                        keyword: keyword,
+                        search_index: button_search_index
+                    }),
+                })
+            }
+
         }
 
         if (keyword_size === page_size) {
