@@ -108,7 +108,7 @@ function sendListSearchTutorial(sender) {
         payload: JSON.stringify({action: "search", keyword: "bit", tutorial: true})
     })
 
-    return sendCustomQuickReplyBtn.bind(null, sender, "This is an example of how to get or search the list of assets:", quick_replies)
+    sendCustomQuickReplyBtn(sender, "This is an example of how to get or search the list of assets:", quick_replies)
 }
 function sendSubscribeTutorial(sender) {
     var quick_replies = []
