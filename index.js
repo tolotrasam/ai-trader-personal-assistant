@@ -796,8 +796,7 @@ function sendAssetPrice(sender, asset_code, cb) {
                 }
 
                 if (typeof cb !== 'undefined') {
-                    sendPriceGeneric(sender, subtitle, data, isSubscribed, subscription)
-                        .then(cb.bind(null, data))
+                    sendPriceGeneric(sender, subtitle, data, isSubscribed, subscription).then(cb.bind(null, data))
                 } else {
                     sendPriceGeneric(sender, subtitle, data, isSubscribed, subscription)
                 }
