@@ -127,7 +127,7 @@ function sendSubscribeTutorial(sender) {
 }
 function sendGetTutorial(sender) {
 
-    sendQuickReplyTwoBtn(sender, tips_how_to_get, "text", "get bitcoin", JSON.stringify({
+    return sendQuickReplyTwoBtn(sender, tips_how_to_get, "text", "get bitcoin", JSON.stringify({
         action: "get",
         asset_id: "bitcoin",
         tutorial: true
@@ -1393,7 +1393,7 @@ function sendQuickReplyTwoBtn(recipientId, messageText, contentType1, title1, pl
             ]
         }
     };
-    callSendAPI(messageData);
+    return callSendAPI(messageData);
 }
 
 function sendCustomQuickReplyBtn(recipientId, messageText, quick_replies) {
