@@ -118,7 +118,7 @@ function sendSubscribeTutorial(sender) {
     }, {
         content_type: "text",
         title: "Subscribe eth",
-        payload: JSON.stringify({action: "subscribe", asset_id: "btc"})
+        payload: JSON.stringify({action: "sub", asset_id: "btc"})
     })
     sendTextMessage(sender, "Ok! It's time to subscribe to an asset to get recurrent updates such as the price and news").then(
         sendTextMessage.bind(null, sender, "Or Try clicking in one the buttons below:")).then(
