@@ -109,7 +109,7 @@ function sendListSearchTutorial(sender) {
         payload: JSON.stringify({action: "search", keyword: "bit", tutorial: true})
     })
 
-    sendCustomQuickReplyBtn(sender, "This is an example of how to get or search the list of assets:", quick_replies)
+    return sendCustomQuickReplyBtn(sender, "This is an example of how to get or search the list of assets:", quick_replies)
 }
 function sendSubscribeTutorial(sender) {
     var quick_replies = []
@@ -122,8 +122,8 @@ function sendSubscribeTutorial(sender) {
         title: "Subscribe eth",
         payload: JSON.stringify({action: "sub", asset_id: "eth"})
     })
-    sendTextMessage(sender, "Ok! It's time to subscribe to an asset to get recurrent updates such as the price and news").then(
-        sendCustomQuickReplyBtn.bind(null, sender, tips_how_to_sub, quick_replies))
+
+    return sendCustomQuickReplyBtn(sender, tips_how_to_sub, quick_replies)
 }
 function sendGetTutorial(sender) {
 
@@ -551,7 +551,7 @@ function decideMessagePostBack(sender, payload) {
                 sendSubscriptionFrequencyPicker(sender, postback_object.asset_id)
             }
             else if (postback_object.action === 'list') {
-                sendListAsset(sender, 0)
+                sendListAsset(sender, 0, postback_object.tutorial)
             }
             else if (postback_object.action === 'subs') {
                 sendSubscriptionList(sender)
@@ -569,13 +569,17 @@ function decideMessagePostBack(sender, payload) {
             }
 
             else if (postback_object.action === 'more_action') {
-                sendSubscribeTutorial(sender)
+                if (postback_object.tutorial) {
+                    sendTextMessage(sender, "Ok! It's time to subscribe to an asset to get recurrent updates such as the price and news").then(sendSubscribeTutorial.bind(null, sender))
+                } else {
+                    sendSubscribeTutorial(sender)
+                }
             }
             else if (postback_object.action === 'page_list') {
-                sendListAsset(sender, postback_object.from)
+                sendListAsset(sender, postback_object.from, postback_object.tutorial)
             }
             else if (postback_object.action === 'page_search') {
-                sendSearchAsset(sender, postback_object.keyword, postback_object.search_index, postback_object.backward)
+                sendSearchAsset(sender, postback_object.keyword, postback_object.search_index, postback_object.backward, postback_object.tutorial)
             }
             return
         } else {
@@ -919,7 +923,7 @@ function getUserCoockie(sender) {
     }
     return n;
 }
-function sendListAsset(sender, from) {
+function sendListAsset(sender, from, isTutorial) {
     if (typeof from === 'undefined') {
         from = 0
     }
@@ -945,14 +949,22 @@ function sendListAsset(sender, from) {
         messageData.attachment.payload.buttons.push({
             "type": "postback",
             "title": "Previous Page ",
-            "payload": JSON.stringify({action: "page_list", from: from - page_size}),
+            "payload": JSON.stringify({
+                action: "page_list",
+                from: from - page_size,
+                tutorial: isTutorial
+            }),
         })
     }
     messageData.attachment.payload.buttons.push(
         {
             "type": "postback",
             "title": "Next Page",
-            "payload": JSON.stringify({action: "page_list", from: from + page_size}),
+            "payload": JSON.stringify({
+                action: "page_list",
+                from: from + page_size,
+                tutorial: isTutorial
+            }),
         })
 
 
@@ -966,7 +978,7 @@ function sendListAsset(sender, from) {
     sendRequest(sender, messageData)
 
 }
-function sendSearchAsset(sender, keyword, search_index, backward) {
+function sendSearchAsset(sender, keyword, search_index, backward, isTutorial) {
 
     sendTextMessage(sender, "Searching keyword: " + keyword)
     console.log("Searching keyword: ", keyword)
@@ -981,7 +993,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
                     "title": "More Action",
                     "payload": JSON.stringify({
                         action: "more_action",
-                        tutorial: "true"
+                        tutorial: isTutorial
                     }),
                 }]
             }
@@ -1040,6 +1052,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
                     "payload": JSON.stringify({
                         action: "page_search",
                         backward: true,
+                        tutorial: isTutorial,
                         keyword: keyword,
                         search_index: button_search_index
                     }),
@@ -1060,6 +1073,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
                     "payload": JSON.stringify({
                         action: "page_search",
                         backward: false,
+                        tutorial: isTutorial,
                         keyword: keyword,
                         search_index: button_search_index
                     }),
@@ -1129,17 +1143,17 @@ function decideMessagePlainText(sender, text, event) {
                 return
             }
         } else if (payload.action === 'list') {
-            sendListAsset(sender, 0)
+            sendListAsset(sender, 0, payload.tutorial)
         } else if (payload.action === 'my subs' || payload.action === 'subs') {
             sendSubscriptionList(sender)
         } else if (payload.action === 'sub') {
             sendSubscriptionFrequencyPicker(sender, payload.asset_id)
         } else if (payload.action === 'search') {
-            sendSearchAsset(sender, payload.keyword, 0, false)
+            sendSearchAsset(sender, payload.keyword, 0, false, payload.tutorial)
         } else if (payload.action === 'page_list') {
-            sendListAsset(sender, payload.from)
+            sendListAsset(sender, payload.from, payload.tutorial)
         } else if (payload.action === 'page_search') {
-            sendSearchAsset(sender, payload.keyword, payload.search_index, payload.backward)
+            sendSearchAsset(sender, payload.keyword, payload.search_index, payload.backward, payload.tutorial)
         } else if (payload.action === 'get') {
             if (payload.tutorial === true) {
 
