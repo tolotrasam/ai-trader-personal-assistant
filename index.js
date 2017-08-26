@@ -786,7 +786,7 @@ function sendAssetPrice(sender, asset_code, cb) {
                 console.log(err, "subscription not found or something weirder");
                 subtitle= "You are not subscribed to this asset"
             } else {
-                subtitle= "This update is recurring every " + subscriptionb.frequency
+                subtitle= "This update is recurring every " + subscription.frequency
                 isSubscribed = true
             }
             coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data_array, params) {
