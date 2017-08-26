@@ -507,9 +507,7 @@ function add_new_user(sender) {
             greeting = "Hi " + bodyObj.first_name + " 😃 ";
 
             var message = greeting + "My name is AI Trader Personal Assistant. I can tell you various details about the market such as prices and news. I can also provide trading tips.  🔥🔥";
-            sendTextMessage(sender, message)
-                .then(sendTextMessage.bind(null, sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) ").then(
-                sendGetTutorial.bind(null, sender)))
+            sendTextMessage(sender, message).then(sendTextMessage.bind(null, sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) ")).then(sendGetTutorial.bind(null, sender))
 
             //before proceeding, check if user in database:
             insertToSession(sender) // insert to session if not yet in there
