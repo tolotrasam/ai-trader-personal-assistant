@@ -907,7 +907,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             })
         }
 
-        if (keyword_size === 30 && !backward) {
+        if (keyword_size === 30 ) {
 
             messageData.attachment.payload.buttons.push(
                 {
