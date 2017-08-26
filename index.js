@@ -960,6 +960,7 @@ function decideMessagePlainText(sender, text, event) {
             sendListAsset(sender,payload.search_index, payload.backward)
         } else if (payload.action === 'get') {
             sendAssetPrice(sender, payload.asset_id)
+            var quick_replies = []
             if(payload.tutorial ===true){
                 quick_replies.push({
                     content_type: "text",
@@ -974,7 +975,6 @@ function decideMessagePlainText(sender, text, event) {
                 sendTextMessage(sender, "Or Try clicking in one the buttons below:").then(
                     sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
             }
-            var quick_replies = []
          }
         return;
     }
