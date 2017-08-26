@@ -845,6 +845,7 @@ function sendListAsset(sender, from) {
 }
 function sendSearchAsset(sender, keyword, search_index, backward) {
 
+    sendTextMessage(sender, "Searching keyword: ", keyword)
     console.log("Searching keyword: ", keyword)
     let messageData = {
         "attachment": {
@@ -903,7 +904,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             })
         }
 
-        if (keyword_size <= 30 && !backward) {
+        if (keyword_size === 30 && !backward) {
 
             messageData.attachment.payload.buttons.push(
                 {
