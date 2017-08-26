@@ -966,18 +966,19 @@ function decideMessagePlainText(sender, text, event) {
         } else if (payload.action === 'get') {
             var quick_replies = []
             if (payload.tutorial === true) {
+                quick_replies.push({
+                    content_type: "text",
+                    title: "List",
+                    payload: JSON.stringify({action: "list", from: 0, tutorial: true})
+                }, {
+                    content_type: "text",
+                    title: "Search Bitcoin",
+                    payload: JSON.stringify({action: "search", keyword: "Bitcoin", tutorial: true})
+                })
                 sendAssetPrice(sender, payload.asset_id, function () {
-                    quick_replies.push({
-                        content_type: "text",
-                        title: "List",
-                        payload: JSON.stringify({action: "list", from: 0, tutorial: true})
-                    }, {
-                        content_type: "text",
-                        title: "Search Bitcoin",
-                        payload: JSON.stringify({action: "search", keyword: "Bitcoin", tutorial: true})
-                    })
-                    sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword")
-                    sendTextMessage(sender, "Or Try clicking in one the buttons below:").then(
+
+                    sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword").then(
+                        sendTextMessage.bind(null, sender, "Or Try clicking in one the buttons below:")).then(
                         sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
                 })
             } else {
