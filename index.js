@@ -838,6 +838,7 @@ function sendListAsset(sender, from) {
 }
 function sendSearchAsset(sender, keyword, search_index, backward) {
 
+    console.log("Searching keyword: ", keyword)
     let messageData = {
         "attachment": {
             "type": "template",
@@ -1032,7 +1033,7 @@ function decideMessagePlainText(sender, text, event) {
 
         }
     } else if (array_tolwercase[0] === "search") {
-        if (typeof array_tolwercase[1] === 'undefined') {
+        if (typeof array_tolwercase[1] !== 'undefined') {
             sendTextMessage(sender, 'Here is what I found');
             sendSearchAsset(sender, array_tolwercase[1], 0, false)
         } else {
