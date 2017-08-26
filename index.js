@@ -950,7 +950,7 @@ function decideMessagePlainText(sender, text, event) {
             }
         } else if (payload.action === 'list') {
             sendListAsset(sender, 0)
-        }} else if (payload.action === 'my subs') {
+        } else if (payload.action === 'my subs') {
             sendSubscriptionList(sender)
         } else if (payload.action === 'search') {
             sendSearchAsset(sender, 0, payload.keyword, false)
