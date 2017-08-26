@@ -27,7 +27,8 @@ var coinmarkethelper = require('./api/coinmarketcap')
 var tips_how_to_get_list = "If you need help because you don't know the asset name, just type 'list' and I'll help you";
 var tips_how_to_sub = 'Write the asset symbol or name after sub. Like:';
 var tips_example_subs = '. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc. ';
-var tips_what_to_do = "Or click an action to do from here:";
+var tips_alternative_click_quick_replies = "Or click an action to do from here:";
+var tips_what_to_do_next = "What to do next?";
 
 var next_timeout_interval;
 
@@ -158,41 +159,8 @@ function sendUpdatesToEachSubscripbers(subscribers) {
                 sendTextMessage(subscriber.user_id, "Sorry, Your subscription to the asset with id " + subscriber.asset_id + "( " + subscriber.asset_symbol + ") seems to be missing. Trying using get " + subscriber.asset_symbol)
             } else {
 
-                let messageData = {
-                    "attachment": {
-                        "type": "template",
-                        "payload": {
-                            "template_type": "generic",
-                            "elements": []
-                        }
-                    }
-                };
-                var element = {
-                    "title": data.name + " (" + subscriber.asset_symbol + ")" + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours",
-
-                    "subtitle": "This update is recurring every " + subscriber.frequency,
-                    "buttons": [{
-                        "type": "postback",
-                        "payload": JSON.stringify({action: "get", asset_id: subscriber.asset_id}),
-                        "title": "Get "
-                    }, {
-                        "type": "postback",
-                        "title": "Edit",
-                        "payload": JSON.stringify({action: "edit", asset_id: subscriber.asset_id}),
-                    }, {
-                        "type": "postback",
-                        "title": "Unsubscribe",
-                        "payload": JSON.stringify({
-                            action: "unsub",
-                            _id: subscriber._id,
-                            asset_name: subscriber.asset_name,
-                            asset_symbol: subscriber.system,
-                            interval: subscriber.interval
-                        }),
-                    }],
-                }
-                messageData.attachment.payload.elements.push(element)
-                sendRequest(subscriber.user_id, messageData)
+                var subtitle = "This update is recurring every " + subscriber.frequency
+                sendPriceGeneric(subscriber.user_id, subtitle, data, true, subscriber)
             }
 
             var query = {_id: subscriber._id};
@@ -322,6 +290,26 @@ function isUserInDatabase(senderId) {
             } else {
                 console.log('no result from database for', senderId);
                 askGender(senderId);
+                return false;
+            }
+        }
+    })
+}
+function getUserFromDB(senderId, cb) {
+    Users.findOne({user_id: senderId}, function (err, user) {
+        if (err) {
+            console.log(senderId, "user not found or something weirder");
+            add_new_user(senderId)
+            return false; // user not found or something weirder
+
+        } else {
+            if (user) {
+                console.log(user, "user found on database");
+                cb(senderId, user);
+                return true; //user found
+            } else {
+                console.log('no result from database for', senderId);
+                cb(senderId, user);
                 return false;
             }
         }
@@ -541,7 +529,7 @@ function unsubscribeForUser(sender, asset_obj) {
         } else {
             console.log("Database sucess end subscription", JSON.stringify(mov));
             sendTextMessage(sender, "Okay! You successfully unsubscribed for " + mov.asset_name + " (" + mov.asset_symbol + ") every " + mov.interval + " . Check out your subscription list by typing: my subs or my subscription").then(
-                sendActionCallListOrSubsButton.bind(null, sender, tips_what_to_do));
+                sendActionCallListOrSubsButton.bind(null, sender, tips_alternative_click_quick_replies));
         }
     })
 }
@@ -730,22 +718,91 @@ function sendSubscriptionList(sender) {
         }
     })
 }
+function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
+    var element = {
+        "title": data.name + " (" + data.symbol + ")" + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours",
+
+        "subtitle": subtitle,
+        "buttons": [{
+            "type": "postback",
+            "payload": JSON.stringify({action: "share", asset_id: sender}),
+            "title": "Share "
+        }, {
+            "type": "postback",
+            "payload": JSON.stringify({action: "get", asset_id: sender}),
+            "title": "Get "
+        }],
+    }
+    if (isSubscribed) {
+        element.push({
+            "type": "postback",
+            "title": "Edit",
+            "payload": JSON.stringify({action: "edit", asset_id: subscriber.asset_id}),
+        }, {
+            "type": "postback",
+            "title": "Unsubscribe",
+            "payload": JSON.stringify({
+                action: "unsub",
+                _id: subscriber._id,
+                asset_name: subscriber.asset_name,
+                asset_symbol: subscriber.system,
+                interval: subscriber.interval
+            }),
+        })
+    } else {
+        element.push(
+            {
+                "type": "postback",
+                "title": "Subscribe",
+                "payload": JSON.stringify({action: "sub", asset_id: data.id}),
+            }
+        )
+    }
+
+    let messageData = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic",
+                "elements": []
+            }
+        }
+    };
+    messageData.attachment.payload.elements.push(element)
+    sendRequest(subscriber.user_id, messageData)
+
+}
 function sendAssetPrice(sender, asset_code, cb) {
 
     var object_asset = verify_and_get_asset(asset_code);
     if (object_asset === null) {
         sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + asset_code + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. ' + tips_how_to_get_list)
     } else {
-        coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data_array, params) {
-            var data = data_array[0]
-            if (data.length > 1) {
-                console.log("check this url, we have more than one result in the array")
-            }
-            if (typeof cb !== 'undefined') {
-                sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours").then(cb.bind(null, data))
+
+        Subscription.findOne({user_id: sender, active: true, asset_id: object_asset.id}, function (err, subscription) {
+            var subtitle = " "
+            var isSubscribed = false
+            if (err) {
+                console.log(err, "subscription not found or something weirder");
+                subtitle= "You are not subscribed to this asset"
             } else {
-                sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
+                subtitle= "This update is recurring every " + subscriptionb.frequency
+                isSubscribed = true
             }
+            coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data_array, params) {
+                var data = data_array[0]
+                if (data.length > 1) {
+                    console.log("check this url, we have more than one result in the array")
+                }
+
+                if (typeof cb !== 'undefined') {
+                    sendPriceGeneric(sender, subtitle, data, isSubscribed, subscription)
+                        .then(cb.bind(null, data))
+                } else {
+                    sendPriceGeneric(sender, subtitle, data, isSubscribed, subscription)
+                }
+            })
+
         })
     }
 }
@@ -785,7 +842,7 @@ function addSubscriptionForUser(sender, asset_obj) {
                 console.log("Database error: " + err);
             } else {
                 console.log("Database sucess new subscription", JSON.stringify(mov));
-                sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + asset_obj.asset_name + " (" + asset_obj.asset_symbol + ") every " + asset_obj.interval + " . Check out your subscription list by typing: my subs or my subscription").then(sendActionCallListOrSubsButton.bind(null, sender, tips_what_to_do));
+                sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + asset_obj.asset_name + " (" + asset_obj.asset_symbol + ") every " + asset_obj.interval + " . Check out your subscription list by typing: my subs or my subscription").then(sendActionCallListOrSubsButton.bind(null, sender, tips_alternative_click_quick_replies));
             }
         })
     }
@@ -1012,6 +1069,11 @@ function sendActionCallListOrSubsButton(sender, msg) {
     })
     sendCustomQuickReplyBtn(sender, msg, quick_replies)
 }
+function sendHi(sender) {
+    getUserFromDB(sender, function (sender, user) {
+        sendTextMessage(sender, "Hi " + user.first_name).then(sendActionCallListOrSubsButton(null, sender, tips_what_to_do_next))
+    })
+}
 function decideMessagePlainText(sender, text, event) {
     console.log('message plain text');
 
@@ -1048,7 +1110,7 @@ function decideMessagePlainText(sender, text, event) {
                     addSubscriptionForUser(sender, payload)
                 }
             } else {
-                sendTextMessage(sender, "Okay!")
+                sendTextMessage(sender, "Okay!").then(sendActionCallListOrSubsButton(null, sender, tips_what_to_do_next))
                 return
             }
         } else if (payload.action === 'list') {
@@ -1163,7 +1225,7 @@ function decideMessagePlainText(sender, text, event) {
 
             case 'hi':
             case 'hello':
-                tolotrafunctions.senderLearnOrQuestionButton(sender, "Hey there! What do you want to do? 😏 ");
+                sendHi(sender)
                 break;
 
             case 'exit':
