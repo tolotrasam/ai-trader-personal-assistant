@@ -25,7 +25,7 @@ var Content = require("./content/content");
 // Process application/x-www-form-urlencoded
 var coinmarkethelper = require('./api/coinmarketcap')
 var tips_how_to_get_list = "If you need help because you don't know the asset name, just type 'list' and I'll help you";
-var tips_how_to_sub = 'Write the asset symbol or name after get. Like: subscribe bitcoin cash';
+var tips_how_to_sub = 'Write the asset symbol or name after sub. Like:';
 var tips_example_subs = '. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc. ';
 
 var next_timeout_interval;
@@ -36,35 +36,108 @@ updateSymbols(function (data, params) {
 
 start_timeout_interval()
 
-function getFrequencyInMillisOfSubscription(subscriber) {
-    var frequency_count = subscriber.frequency_count;
-    var times_interval_millis = 0;
-    switch (subscriber.frequency_label) {
-        case 'minutes':
-        case 'minute':
-        case 'min':
-            times_interval_millis = 60 * 1000
-            break;
-        case 'hours':
-        case 'hour':
-            times_interval_millis = 60 * 1000 * 60
-            break;
-        case 'day':
-        case 'days':
-            times_interval_millis = 60 * 1000 * 60 * 24
-            break;
-        case 'week':
-        case 'weeks':
-            times_interval_millis = 60 * 1000 * 60 * 24 * 7
-            break;
-        case 'month':
-        case 'months':
-            times_interval_millis = 60 * 1000 * 60 * 24 * 30
-            break;
+app.use(bodyParser.urlencoded({extended: false}));
+// Process application/json
+app.use(bodyParser.json());
+app.set('port', (process.env.PORT || 5000));
+
+// Index route
+app.get('/', function (req, res) {
+    res.send('Hello world, I am a chat bot')
+});
+
+// for Facebook verification
+app.get('/webhook/', function (req, res) {
+    if (req.query['hub.verify_token'] === vtoken) {
+        res.send(req.query['hub.challenge'])
+    } else {
+        res.send('No sir')
     }
-    var frequency_millis = frequency_count * times_interval_millis
-    return frequency_millis;
+});
+
+// Spin up the server
+app.listen(app.get('port'), function () {
+    console.log('running on port', app.get('port'))
+});
+
+app.post('/webhook/', function (req, res) {
+    var data = req.body;
+    //Make sure its a page subscription
+    if (data.object === 'page') {
+        let messaging_events = data.entry[0].messaging;
+        //iterate over each messaging events
+        if (typeof messaging_events !== 'undefined') {
+            for (let i = 0; i < messaging_events.length; i++) {
+                let event = messaging_events[i];
+                let sender = event.sender.id;
+
+                if (event.message && event.message.text) {
+                    console.log('NEW MESSAGE STARTS HERE');
+                    receivedMessageLog(event)
+                    let text = event.message.text;
+                    decideMessagePlainText(sender, text, event);
+                }
+
+                else if (event.postback) {
+                    console.log('NEW POSTBACK STARTS HERE');
+                    receivedMessageLog(event)
+                    let payload = event.postback.payload;
+                    decideMessagePostBack(sender, payload, event)
+                }
+            }
+        } else {
+            console.log("Fresh received", JSON.stringify(data))
+        }
+    }
+    res.sendStatus(200)
+})
+
+//Functions
+//TUTORIALS
+function sendListSearchTutorial() {
+    var quick_replies = []
+    quick_replies.push({
+        content_type: "text",
+        title: "List",
+        payload: JSON.stringify({action: "list", from: 0, tutorial: true})
+    }, {
+        content_type: "text",
+        title: "Search Bit",
+        payload: JSON.stringify({action: "search", keyword: "bit", tutorial: true})
+    })
+    sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword").then(
+        sendTextMessage.bind(null, sender, "Or Try clicking in one the buttons below:")).then(
+        sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
 }
+function sendSubscribeTutorial() {
+    var quick_replies = []
+    quick_replies.push({
+        content_type: "text",
+        title: "Sub bitcoin",
+        payload: JSON.stringify({action: "sub", asset_id: "bitcoin"})
+    }, {
+        content_type: "text",
+        title: "Subscribe eth",
+        payload: JSON.stringify({action: "sub", asset_id: "btc"})
+    })
+    sendTextMessage(sender, "Ok! It's time to subscribe to an asset to get recurrent updates such as the price and news").then(
+        sendTextMessage.bind(null, sender, "Or Try clicking in one the buttons below:")).then(
+        sendCustomQuickReplyBtn.bind(null, sender, tips_how_to_sub, quick_replies))
+}
+function sendGetTutorial(sender) {
+
+    (sendTextMessage.bind(null, sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) "))
+        .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", JSON.stringify({
+            action: "get",
+            asset_id: "bitcoin",
+            tutorial: true
+        }), "text", "get ltc", JSON.stringify({action: "get", asset_id: "bitcoin", tutorial: true})))
+        .catch(function (body) {
+            console.log('aborted');
+        });
+}
+
+//SEND
 function sendUpdatesToEachSubscripbers(subscribers) {
     for (var subscriber of subscribers) {
         var current_time_stamp = new Date().getTime();
@@ -138,6 +211,38 @@ function sendUpdatesToEachSubscripbers(subscribers) {
     }
     start_timeout_interval()
 }
+function getFrequencyInMillisOfSubscription(subscriber) {
+    var frequency_count = subscriber.frequency_count;
+    var times_interval_millis = 0;
+    switch (subscriber.frequency_label) {
+        case 'minutes':
+        case 'minute':
+        case 'min':
+            times_interval_millis = 60 * 1000
+            break;
+        case 'hours':
+        case 'hour':
+            times_interval_millis = 60 * 1000 * 60
+            break;
+        case 'day':
+        case 'days':
+            times_interval_millis = 60 * 1000 * 60 * 24
+            break;
+        case 'week':
+        case 'weeks':
+            times_interval_millis = 60 * 1000 * 60 * 24 * 7
+            break;
+        case 'month':
+        case 'months':
+            times_interval_millis = 60 * 1000 * 60 * 24 * 30
+            break;
+    }
+    var frequency_millis = frequency_count * times_interval_millis
+    return frequency_millis;
+}
+
+
+//UTILS
 function sendUpdatesToSubscripbers() {
     console.log('updating all subscribers')
 
@@ -188,6 +293,7 @@ function start_timeout_interval() {
     }, next_update)
 
 }
+
 function updateSymbols(cb) {
 
     coinmarkethelper.getTicker(null, function (data, param) {
@@ -195,64 +301,6 @@ function updateSymbols(cb) {
         cb(data, param)
     })
 }
-app.use(bodyParser.urlencoded({extended: false}));
-// Process application/json
-app.use(bodyParser.json());
-app.set('port', (process.env.PORT || 5000));
-
-// Index route
-app.get('/', function (req, res) {
-    res.send('Hello world, I am a chat bot')
-});
-
-// for Facebook verification
-app.get('/webhook/', function (req, res) {
-    if (req.query['hub.verify_token'] === vtoken) {
-        res.send(req.query['hub.challenge'])
-    } else {
-        res.send('No sir')
-    }
-});
-
-// Spin up the server
-app.listen(app.get('port'), function () {
-    console.log('running on port', app.get('port'))
-});
-
-app.post('/webhook/', function (req, res) {
-    var data = req.body;
-    //Make sure its a page subscription
-    if (data.object === 'page') {
-        let messaging_events = data.entry[0].messaging;
-        //iterate over each messaging events
-        if (typeof messaging_events !== 'undefined') {
-            for (let i = 0; i < messaging_events.length; i++) {
-                let event = messaging_events[i];
-                let sender = event.sender.id;
-
-                if (event.message && event.message.text) {
-                    console.log('NEW MESSAGE STARTS HERE');
-                    receivedMessageLog(event)
-                    let text = event.message.text;
-                    decideMessagePlainText(sender, text, event);
-                }
-
-                else if (event.postback) {
-                    console.log('NEW POSTBACK STARTS HERE');
-                    receivedMessageLog(event)
-                    let payload = event.postback.payload;
-                    decideMessagePostBack(sender, payload, event)
-                }
-            }
-        } else {
-            console.log("Fresh received", JSON.stringify(data))
-        }
-    }
-    res.sendStatus(200)
-})
-
-//Functions
-
 
 function UserMeetsCriteria(sender) {
     var userInDatabase = isUserInDatabase(sender);
@@ -470,16 +518,8 @@ function add_new_user(sender) {
             greeting = "Hi " + bodyObj.first_name + " 😃 ";
 
             var message = greeting + "My name is AI Trader Personal Assistant. I can tell you various details about the market such as prices and news. I can also provide trading tips.  🔥🔥";
-            sendTextMessage(sender, message)
-                .then(sendTextMessage.bind(null, sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) "))
-                .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", JSON.stringify({
-                    action: "get",
-                    asset_id: "bitcoin",
-                    tutorial: true
-                }), "text", "get ltc", JSON.stringify({action: "get", asset_id: "bitcoin", tutorial: true})))
-                .catch(function (body) {
-                    console.log('aborted');
-                });
+            sendTextMessage(sender, message);
+            sendGetTutorial(sender)
 
             //before proceeding, check if user in database:
             insertToSession(sender) // insert to session if not yet in there
@@ -527,6 +567,9 @@ function decideMessagePostBack(sender, payload) {
                 sendListAsset(sender, 0)
             }
             if (postback_object.action === 'subs') {
+                sendSubscriptionList(sender)
+            }
+            if (postback_object.action === 'more_action') {
                 sendSubscriptionList(sender)
             }
             else if (postback_object.action === 'page_list') {
@@ -678,7 +721,7 @@ function sendSubscriptionList(sender) {
                 sendRequest(sender, messageData)
                 return true; //user found
             } else {
-                sendTextMessage(sender, "You have no active subscription yet. " + tips_how_to_sub + " " + tips_example_subs)
+                sendSubscribeTutorial(sender)
                 console.log('no subs result from database for ' + sender);
                 return false;
             }
@@ -818,7 +861,7 @@ function sendListAsset(sender, from) {
                     "title": "More Action",
                     "payload": JSON.stringify({
                         action: "more_action",
-                        tutorial:"true"
+                        tutorial: "true"
                     }),
                 }]
             }
@@ -865,7 +908,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
                     "title": "More Action",
                     "payload": JSON.stringify({
                         action: "more_action",
-                        tutorial:"true"
+                        tutorial: "true"
                     }),
                 }]
             }
@@ -910,6 +953,10 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             element_str = element_str.join("")
         }
         if (search_index > 0) {
+            var button_search_index = search_index
+            if (backward) {
+                button_search_index = new_search_index
+            }
             messageData.attachment.payload.buttons.push({
                 "type": "postback",
                 "title": "Previous Page ",
@@ -917,13 +964,16 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
                     action: "page_search",
                     backward: true,
                     keyword: keyword,
-                    search_index: search_index
+                    search_index: button_search_index
                 }),
             })
         }
 
         if (keyword_size === 30) {
-
+            var button_search_index = new_search_index
+            if (backward) {
+                button_search_index = search_index
+            }
             messageData.attachment.payload.buttons.push(
                 {
                     "type": "postback",
@@ -932,7 +982,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
                         action: "page_search",
                         backward: false,
                         keyword: keyword,
-                        search_index: new_search_index
+                        search_index: button_search_index
                     }),
                 })
         }
@@ -941,6 +991,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
     messageData.attachment.payload.text = element_str
     sendRequest(sender, messageData)
 }
+
 function decideMessagePlainText(sender, text, event) {
     console.log('message plain text');
 
@@ -989,23 +1040,9 @@ function decideMessagePlainText(sender, text, event) {
         } else if (payload.action === 'page_search') {
             sendSearchAsset(sender, payload.keyword, payload.search_index, payload.backward)
         } else if (payload.action === 'get') {
-            var quick_replies = []
             if (payload.tutorial === true) {
-                quick_replies.push({
-                    content_type: "text",
-                    title: "List",
-                    payload: JSON.stringify({action: "list", from: 0, tutorial: true})
-                }, {
-                    content_type: "text",
-                    title: "Search Bitcoin",
-                    payload: JSON.stringify({action: "search", keyword: "Bitcoin", tutorial: true})
-                })
-                sendAssetPrice(sender, payload.asset_id, function () {
 
-                    sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword").then(
-                        sendTextMessage.bind(null, sender, "Or Try clicking in one the buttons below:")).then(
-                        sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
-                })
+                sendAssetPrice(sender, payload.asset_id, sendListSearchTutorial)
             } else {
                 sendAssetPrice(sender, payload.asset_id, function () {
                 })
@@ -1075,8 +1112,7 @@ function decideMessagePlainText(sender, text, event) {
     //ASKING FOR FREQUENCY BEFORE ADDING SUBSCRIPTION
     else if (array_tolwercase[0] === "sub" || array_tolwercase[0] === "subscribe") {
         if (typeof array_tolwercase[1] === 'undefined') {
-
-            sendTextMessage(sender, tips_how_to_sub);
+            sendSubscribeTutorial()
         } else {
             sendSubscriptionFrequencyPicker(sender, array_tolwercase[1])
 
