@@ -811,14 +811,14 @@ function sendListAsset(sender, from) {
         messageData.attachment.payload.buttons.push({
             "type": "postback",
             "title": "Previous Page ",
-            "payload": JSON.stringify({action: "page_list", from: from - 30, keyword: keyword}),
+            "payload": JSON.stringify({action: "page_list", from: from - 30}),
         })
     }
     messageData.attachment.payload.buttons.push(
         {
             "type": "postback",
             "title": "Next Page",
-            "payload": JSON.stringify({action: "page_list", from: from + 30, keyword: keyword}),
+            "payload": JSON.stringify({action: "page_list", from: from + 30}),
         })
 
 
@@ -950,6 +950,8 @@ function decideMessagePlainText(sender, text, event) {
             }
         } else if (payload.action === 'list') {
             sendListAsset(sender, 0)
+        }} else if (payload.action === 'my subs') {
+            sendSubscriptionList(sender)
         } else if (payload.action === 'search') {
             sendSearchAsset(sender, 0, payload.keyword, false)
         } else if (payload.action === 'page_list') {
