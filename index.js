@@ -957,9 +957,9 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             if (backward) {
                 button_search_index = new_search_index
             }
-            if(backward && button_search_index===0){
+            if (backward && button_search_index === 0) {
                 //already the first page, do not show previous button
-            }else{
+            } else {
                 messageData.attachment.payload.buttons.push({
                     "type": "postback",
                     "title": "Previous Page ",
@@ -1029,7 +1029,9 @@ function decideMessagePlainText(sender, text, event) {
                 }
             }
             if (payload.cancel !== true) {
-                addSubscriptionForUser(sender, payload)
+                if (typeof payload.interval !== 'undefined') {
+                    addSubscriptionForUser(sender, payload)
+                }
             } else {
                 sendTextMessage(sender, "Okay!")
                 return
@@ -1051,7 +1053,7 @@ function decideMessagePlainText(sender, text, event) {
 
                 sendAssetPrice(sender, payload.asset_id, function () {
                     sendListSearchTutorial(sender)
-                } )
+                })
             } else {
                 sendAssetPrice(sender, payload.asset_id, function () {
                 })
