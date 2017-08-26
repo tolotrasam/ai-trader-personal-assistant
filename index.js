@@ -472,7 +472,7 @@ function add_new_user(sender) {
             var message = greeting + "My name is AI Trader Personal Assistant. I can tell you various details about the market such as prices and news. I can also provide trading tips.  🔥🔥";
             sendTextMessage(sender, message)
                 .then(sendTextMessage.bind(null, sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) "))
-                .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", "tutorial", "text", "get ltc", "tutorial"))
+                .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", JSON.stringify({action:"get", asset_id:"bitcoin", tutorial:true}), "text", "get ltc", JSON.stringify({action:"get", asset_id:"bitcoin", tutorial:true})))
                 .catch(function (body) {
                     console.log('aborted');
                 });
@@ -958,23 +958,24 @@ function decideMessagePlainText(sender, text, event) {
             sendListAsset(sender, payload.from)
         }else if (payload.action === 'page_search') {
             sendListAsset(sender,payload.search_index, payload.backward)
-        } else if (payload.action === 'get_tutorial') {
+        } else if (payload.action === 'get') {
             sendAssetPrice(sender, payload.asset_id)
+            if(payload.tutorial ===true){
+                quick_replies.push({
+                    content_type: "text",
+                    title: "List",
+                    payload: JSON.stringify({action: "list", from: 0, tutorial: true})
+                }, {
+                    content_type: "text",
+                    title: "Search Bitcoin",
+                    payload: JSON.stringify({action: "search", keyword: "Bitcoin", tutorial: true})
+                })
+                sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword")
+                sendTextMessage(sender, "Or Try clicking in one the buttons below:").then(
+                    sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
+            }
             var quick_replies = []
-            quick_replies.push({
-                content_type: "text",
-                title: "List",
-                payload: JSON.stringify({action: "list", from: 0, tutorial: true})
-            }, {
-                content_type: "text",
-                title: "Search Bitcoin",
-                payload: JSON.stringify({action: "search", keyword: "Bitcoin", tutorial: true})
-            })
-            sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword")
-            sendTextMessage(sender, "Or Try clicking in one the buttons below:").then(
-                sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
-
-        }
+         }
         return;
     }
 
