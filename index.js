@@ -889,6 +889,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
                 }
             }
         }
+        console.log(element_str.length, 'Results found')
         if (element_str.length ===0) {
             element_str = "No results. End of search"
         }else{
