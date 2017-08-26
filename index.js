@@ -744,7 +744,7 @@ function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
             }),
         })
     } else {
-        element.push(
+        element.buttons.push(
             {
                 "type": "postback",
                 "title": "Subscribe",
