@@ -25,7 +25,8 @@ var Content = require("./content/content");
 // Process application/x-www-form-urlencoded
 var coinmarkethelper = require('./api/coinmarketcap')
 var tips_how_to_get_list = "If you need help because you don't know the asset name, just type 'list' and I'll help you";
-var tips_how_to_sub = 'Write the asset symbol or name after sub. Like:';
+var tips_how_to_sub = 'Write the asset symbol or name after "sub" or "subscribe". This is an example:';
+var tips_how_to_get = 'Write the asset symbol or name after "get". This is an example:';
 var tips_example_subs = '. Try using the name or the symbol of the asset. Something like: subscribe ethereum or sub ltc. ';
 var tips_alternative_click_quick_replies = "Or click an action to do from here:";
 var tips_what_to_do_next = "What to do next?";
@@ -126,7 +127,7 @@ function sendSubscribeTutorial(sender) {
 }
 function sendGetTutorial(sender) {
 
-    sendQuickReplyTwoBtn(sender, "Or click here to try", "text", "get bitcoin", JSON.stringify({
+    sendQuickReplyTwoBtn(sender, tips_how_to_get, "text", "get bitcoin", JSON.stringify({
         action: "get",
         asset_id: "bitcoin",
         tutorial: true

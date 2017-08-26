@@ -67,12 +67,12 @@ var persistant_menu = {
                 {
                     "title": "My Subscriptions",
                     "type": "postback",
-                    "payload": "subs"
+                    "payload": JSON.stringify({action:"subs"})
                 },
                 {
-                    "title": "List",
+                    "title": "List of all assets",
                     "type": "postback",
-                    "payload": "list"
+                    "payload": JSON.stringify({action:"list"})
                 },
                 {
                     "title": "Help",
