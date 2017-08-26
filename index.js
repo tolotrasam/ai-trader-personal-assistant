@@ -1024,6 +1024,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             if (backward) {
                 button_search_index = new_search_index
             }
+            console.log('prev search', button_search_index)
             if (backward && button_search_index === 0) {
                 //already the first page, do not show previous button
             } else {
