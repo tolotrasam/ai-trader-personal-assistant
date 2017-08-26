@@ -845,7 +845,7 @@ function sendListAsset(sender, from) {
 }
 function sendSearchAsset(sender, keyword, search_index, backward) {
 
-    sendTextMessage(sender, "Searching keyword: ", keyword)
+    sendTextMessage(sender, "Searching keyword: "+ keyword)
     console.log("Searching keyword: ", keyword)
     let messageData = {
         "attachment": {
