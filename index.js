@@ -662,9 +662,9 @@ function sendSubscriptionList(sender) {
             return false; // user not found or something weirder
 
         } else {
+            sendTextMessage(sender, "You have " + user.length + " active subscriptions:")
             if (user.length !== 0) {
                 console.log(user.length, "subs found on database");
-                sendTextMessage(sender, "You have " + user.length + " active subscriptions:")
                 let messageData = {
                     "attachment": {
                         "type": "template",
@@ -781,7 +781,7 @@ function sendAssetPrice(sender, asset_code, cb) {
                 subtitle = "You are not subscribed to this asset"
             } else {
                 if (subscription) {
-                    subtitle = "This  update is recurring every " + subscription.frequency
+                    subtitle = "You are subscribed to receive  update every " + subscription.frequency
                     isSubscribed = true
                 } else {
                     subtitle = "You are not subscribed to this asset"
