@@ -724,7 +724,12 @@ function sendSubscriptionList(sender) {
 }
 function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
     var element = {
-        "title": data.name + " (" + data.symbol + ")" + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours",
+        "title": data.name + " (" + data.symbol + ")" + " price now is " + data.price_usd + " USD growing at " +
+        data.percent_change_1h + "% in 1 hours, "+
+        data.percent_change_24h + "% in 24 hours and "+
+        data.percent_change_7d + "% in 7 days"
+
+        ,
 
         "subtitle": subtitle,
         "buttons": [{
