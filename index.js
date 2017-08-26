@@ -859,7 +859,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
     };
 
 
-    var element_str = "";
+    var element_str = [];
     if (typeof keyword !== "undefined") {
         var keyword_size = 0;
         var new_search_index = 0
@@ -867,7 +867,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             for (var n = search_index; n >= 0; n--) {
                 var temp_str = symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
                 if (temp_str.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
-                    element_str += temp_str
+                    element_str.push( temp_str)
                     keyword_size++
                     if (keyword_size >= 30) {
                         new_search_index = n;
@@ -875,11 +875,12 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
                     }
                 }
             }
+            element_str.reverse()
         } else {
             for (var n = search_index; n < symbol.length; n++) {
                 var temp_str = symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
                 if (temp_str.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
-                    element_str += temp_str
+                    element_str.push( temp_str)
                     keyword_size++
                     if (keyword_size >= 30) {
                         new_search_index = n;
@@ -888,8 +889,10 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
                 }
             }
         }
-        if (element_str === "") {
+        if (element_str.length ===0) {
             element_str = "No results. End of search"
+        }else{
+            element_str = element_str.join("")
         }
         if (search_index > 0) {
             messageData.attachment.payload.buttons.push({
