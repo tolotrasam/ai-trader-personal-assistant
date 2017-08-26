@@ -532,6 +532,9 @@ function decideMessagePostBack(sender, payload) {
             else if (postback_object.action === 'page_list') {
                 sendListAsset(sender, postback_object.from)
             }
+            else if (postback_object.action === 'page_search') {
+                sendListAsset(sender, postback_object.search_index, postback_object.backward)
+            }
             return
         } else {
             console.log('post back action not defined, check array split instead')
@@ -693,7 +696,11 @@ function sendAssetPrice(sender, asset_code, cb) {
             if (data.length > 1) {
                 console.log("check this url, we have more than one result in the array")
             }
-            sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours").then(cb.bind(null, data))
+            if (typeof cd !== 'undefined') {
+                sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours").then(cb.bind(null, data))
+            } else {
+                sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
+            }
         })
     }
 }
@@ -858,7 +865,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
         if (backward) {
             for (var n = search_index; n >= 0; n--) {
                 var temp_str = symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
-                if (temp_str.indexOf(keyword) !== -1) {
+                if (temp_str.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
                     element_str += temp_str
                     keyword_size++
                     if (keyword_size >= 30) {
@@ -870,7 +877,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
         } else {
             for (var n = search_index; n < symbol.length; n++) {
                 var temp_str = symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
-                if (temp_str.indexOf(keyword.toLowerCase()) !== -1) {
+                if (temp_str.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
                     element_str += temp_str
                     keyword_size++
                     if (keyword_size >= 30) {
@@ -883,7 +890,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
         if (element_str === "") {
             element_str = "No results. End of search"
         }
-        if (new_search_index >= 0) {
+        if (search_index >= 0) {
             messageData.attachment.payload.buttons.push({
                 "type": "postback",
                 "title": "Previous Page ",
@@ -913,7 +920,6 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
     }
 
     messageData.attachment.payload.text = element_str
-
     sendRequest(sender, messageData)
 }
 function decideMessagePlainText(sender, text, event) {
@@ -958,7 +964,7 @@ function decideMessagePlainText(sender, text, event) {
         } else if (payload.action === 'my subs') {
             sendSubscriptionList(sender)
         } else if (payload.action === 'search') {
-            sendSearchAsset(sender, 0, payload.keyword, false)
+            sendSearchAsset(sender, payload.keyword, 0, false)
         } else if (payload.action === 'page_list') {
             sendListAsset(sender, payload.from)
         } else if (payload.action === 'page_search') {
