@@ -108,7 +108,7 @@ function sendListSearchTutorial(sender) {
         payload: JSON.stringify({action: "search", keyword: "bit", tutorial: true})
     })
 
-    sendCustomQuickReplyBtn.bind(null, sender, "This is an example of how to get or search the list of assets:", quick_replies)
+    return sendCustomQuickReplyBtn.bind(null, sender, "This is an example of how to get or search the list of assets:", quick_replies)
 }
 function sendSubscribeTutorial(sender) {
     var quick_replies = []
@@ -781,7 +781,7 @@ function sendAssetPrice(sender, asset_code, cb) {
 
     var object_asset = verify_and_get_asset(asset_code);
     if (object_asset === null) {
-        sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + asset_code + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. ' ).then(sendListSearchTutorial.bind(null, sender))
+        sendTextMessage(sender, 'Sorry, I don\'t know what\'s a ' + asset_code + '. Try using the name or the symbol of the asset. Something like: get ethereum or get ltc. ').then(sendListSearchTutorial.bind(null, sender))
     } else {
 
         Subscription.findOne({user_id: sender, active: true, asset_id: object_asset.id}, function (err, subscription) {
@@ -1398,7 +1398,7 @@ function sendCustomQuickReplyBtn(recipientId, messageText, quick_replies) {
             quick_replies,
         }
     };
-    callSendAPI(messageData);
+    return callSendAPI(messageData);
 }
 
 function sendQuickReplyThreeBtn(recipientId, messageText, ct1, title1, pt1, ct2, title2, pt2, ct3, title3, pt3) {
