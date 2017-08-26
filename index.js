@@ -769,7 +769,7 @@ function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
         }
     };
     messageData.attachment.payload.elements.push(element)
-    sendRequest(subscriber.user_id, messageData)
+    return sendRequest(subscriber.user_id, messageData)
 
 }
 function sendAssetPrice(sender, asset_code, cb) {
