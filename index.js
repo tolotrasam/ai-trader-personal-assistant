@@ -533,7 +533,7 @@ function decideMessagePostBack(sender, payload) {
                 sendListAsset(sender, postback_object.from)
             }
             else if (postback_object.action === 'page_search') {
-                sendListAsset(sender, postback_object.search_index, postback_object.backward)
+                sendSearchAsset(sender, postback_object.keyword, postback_object.search_index, postback_object.backward)
             }
             return
         } else {
@@ -890,7 +890,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
         if (element_str === "") {
             element_str = "No results. End of search"
         }
-        if (search_index >= 0) {
+        if (search_index > 0) {
             messageData.attachment.payload.buttons.push({
                 "type": "postback",
                 "title": "Previous Page ",
@@ -968,7 +968,7 @@ function decideMessagePlainText(sender, text, event) {
         } else if (payload.action === 'page_list') {
             sendListAsset(sender, payload.from)
         } else if (payload.action === 'page_search') {
-            sendListAsset(sender, payload.search_index, payload.backward)
+            sendSearchAsset(sender,  payload.keyword,payload.search_index, payload.backward)
         } else if (payload.action === 'get') {
             var quick_replies = []
             if (payload.tutorial === true) {
