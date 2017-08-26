@@ -108,7 +108,6 @@ function sendListSearchTutorial(sender) {
         payload: JSON.stringify({action: "search", keyword: "bit", tutorial: true})
     })
     sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword").then(
-
         sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
 }
 function sendSubscribeTutorial(sender) {
@@ -123,7 +122,6 @@ function sendSubscribeTutorial(sender) {
         payload: JSON.stringify({action: "sub", asset_id: "eth"})
     })
     sendTextMessage(sender, "Ok! It's time to subscribe to an asset to get recurrent updates such as the price and news").then(
-
         sendCustomQuickReplyBtn.bind(null, sender, tips_how_to_sub, quick_replies))
 }
 function sendGetTutorial(sender) {
@@ -734,7 +732,7 @@ function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
         }],
     }
     if (isSubscribed) {
-        element.buttons.push( {
+        element.buttons.push({
             "type": "postback",
             "title": "Unsubscribe",
             "payload": JSON.stringify({
@@ -780,10 +778,14 @@ function sendAssetPrice(sender, asset_code, cb) {
             var isSubscribed = false
             if (err) {
                 console.log(err, "subscription not found or something weirder");
-                subtitle= "You are not subscribed to this asset"
+                subtitle = "You are not subscribed to this asset"
             } else {
-                subtitle= "This  update is recurring every " + subscription.frequency
-                isSubscribed = true
+                if (subscription) {
+                    subtitle = "This  update is recurring every " + subscription.frequency
+                    isSubscribed = true
+                } else {
+                    subtitle = "You are not subscribed to this asset"
+                }
             }
             coinmarkethelper.getTicker({asset_id: object_asset.id}, function (data_array, params) {
                 var data = data_array[0]
