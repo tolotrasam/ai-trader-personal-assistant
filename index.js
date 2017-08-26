@@ -126,14 +126,13 @@ function sendSubscribeTutorial(sender) {
 }
 function sendGetTutorial(sender) {
 
-    sendTextMessage(sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) ")
-        .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", JSON.stringify({
-            action: "get",
-            asset_id: "bitcoin",
-            tutorial: true
-        }), "text", "get ltc", JSON.stringify({
-            action: "get", asset_id: "ltc", tutorial: true
-        })))
+    sendQuickReplyTwoBtn(sender, "Or click here to try", "text", "get bitcoin", JSON.stringify({
+        action: "get",
+        asset_id: "bitcoin",
+        tutorial: true
+    }), "text", "get ltc", JSON.stringify({
+        action: "get", asset_id: "ltc", tutorial: true
+    }))
         .catch(function (body) {
             console.log('aborted');
         });
@@ -507,8 +506,9 @@ function add_new_user(sender) {
             greeting = "Hi " + bodyObj.first_name + " 😃 ";
 
             var message = greeting + "My name is AI Trader Personal Assistant. I can tell you various details about the market such as prices and news. I can also provide trading tips.  🔥🔥";
-            sendTextMessage(sender, message);
-            sendGetTutorial(sender)
+            sendTextMessage(sender, message)
+                .then(sendTextMessage.bind(null, sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) ").then(
+                sendGetTutorial.bind(null, sender)))
 
             //before proceeding, check if user in database:
             insertToSession(sender) // insert to session if not yet in there
@@ -561,6 +561,12 @@ function decideMessagePostBack(sender, payload) {
             }
             else if (postback_object.action === 'sub') {
                 sendSubscriptionFrequencyPicker(sender, postback_object.asset_id)
+            } else if (postback_object.action === 'sub_tutorial') {
+                sendSubscribeTutorial(sender)
+            } else if (postback_object.action === 'asset_tutorial') {
+                sendListSearchTutorial(sender)
+            } else if (postback_object.action === 'get_tutorial') {
+                sendGetTutorial(sender)
             }
 
             else if (postback_object.action === 'more_action') {
