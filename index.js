@@ -454,7 +454,7 @@ function add_new_user(sender) {
             console.log("Error getting user's profile: " + error);
         } else {
             var bodyObj = JSON.parse(body);
-            console.log(bodyObj,'profile graph api')
+            console.log(bodyObj, 'profile graph api')
             var update = {
                 user_id: sender,
                 first_name: bodyObj.first_name,
@@ -796,8 +796,6 @@ function sendListAsset(sender, from) {
     if (typeof from === 'undefined') {
         from = 0
     }
-    ;
-
     let messageData = {
         "attachment": {
             "type": "template",
@@ -813,21 +811,102 @@ function sendListAsset(sender, from) {
         messageData.attachment.payload.buttons.push({
             "type": "postback",
             "title": "Previous Page ",
-            "payload": JSON.stringify({action: "page_list", from: from - 30}),
+            "payload": JSON.stringify({action: "page_list", from: from - 30, keyword: keyword}),
         })
     }
     messageData.attachment.payload.buttons.push(
         {
             "type": "postback",
             "title": "Next Page",
-            "payload": JSON.stringify({action: "page_list", from: from + 30}),
+            "payload": JSON.stringify({action: "page_list", from: from + 30, keyword: keyword}),
         })
 
 
     var element_str = "";
+
     for (var n = from; n < from + 30; n++) {
         element_str += symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
     }
+
+    messageData.attachment.payload.text = element_str
+    sendRequest(sender, messageData)
+
+}
+function sendSearchAsset(sender, keyword, search_index, backward) {
+
+    let messageData = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "button",
+                "text": "PALCEHOLDER",
+                "buttons": []
+            }
+        }
+    };
+
+
+    var element_str = "";
+    if (typeof keyword !== "undefined") {
+        var keyword_size = 0;
+        var new_search_index = 0
+        if (backward) {
+            for (var n = search_index; n >=0; n--) {
+                var temp_str = symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
+                if (temp_str.indexOf(keyword) !== -1) {
+                    element_str += temp_str
+                    keyword_size++
+                    if (keyword_size >= 30) {
+                        new_search_index = n;
+                        break;
+                    }
+                }
+            }
+        } else {
+            for (var n = search_index; n < symbol.length; n++) {
+                var temp_str = symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
+                if (temp_str.indexOf(keyword.toLowerCase()) !== -1) {
+                    element_str += temp_str
+                    keyword_size++
+                    if (keyword_size >= 30) {
+                        new_search_index = n;
+                        break;
+                    }
+                }
+            }
+        }
+        if (element_str === "") {
+            element_str = "No results. End of search"
+        }
+        if (new_search_index >= 0) {
+            messageData.attachment.payload.buttons.push({
+                "type": "postback",
+                "title": "Previous Page ",
+                "payload": JSON.stringify({
+                    action: "page_search",
+                    backward: true,
+                    keyword: keyword,
+                    search_index: search_index
+                }),
+            })
+        }
+
+        if (keyword_size <= 30 && !backward) {
+
+            messageData.attachment.payload.buttons.push(
+                {
+                    "type": "postback",
+                    "title": "Next Page",
+                    "payload": JSON.stringify({
+                        action: "page_search",
+                        backward: false,
+                        keyword: keyword,
+                        search_index: new_search_index
+                    }),
+                })
+        }
+    }
+
     messageData.attachment.payload.text = element_str
 
     sendRequest(sender, messageData)
@@ -869,8 +948,30 @@ function decideMessagePlainText(sender, text, event) {
                 sendTextMessage(sender, "Okay!")
                 return
             }
+        } else if (payload.action === 'list') {
+            sendListAsset(sender, 0)
+        } else if (payload.action === 'search') {
+            sendSearchAsset(sender, 0, payload.keyword, false)
         } else if (payload.action === 'page_list') {
             sendListAsset(sender, payload.from)
+        }else if (payload.action === 'page_search') {
+            sendListAsset(sender,payload.search_index, payload.backward)
+        } else if (payload.action === 'get_tutorial') {
+            sendAssetPrice(sender, payload.asset_id)
+            var quick_replies = []
+            quick_replies.push({
+                content_type: "text",
+                title: "List",
+                payload: JSON.stringify({action: "list", from: 0, tutorial: true})
+            }, {
+                content_type: "text",
+                title: "Search Bitcoin",
+                payload: JSON.stringify({action: "search", keyword: "Bitcoin", tutorial: true})
+            })
+            sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword")
+            sendTextMessage(sender, "Or Try clicking in one the buttons below:").then(
+                sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
+
         }
         return;
     }
@@ -907,12 +1008,23 @@ function decideMessagePlainText(sender, text, event) {
             sendAssetPrice(sender, asset_code)
 
         }
-    } else if (array_tolwercase[0] === "list" || array_tolwercase[0] === "search") {
+    } else if (array_tolwercase[0] === "list" ) {
         if (typeof array_tolwercase[1] === 'undefined') {
             sendTextMessage(sender, 'I found ' + symbol.length + ' Assets corresponding to your search');
             sendListAsset(sender)
         } else {
 
+            // var asset_code = array_tolwercase[1]
+            // var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
+            // sendAssetPrice(sender, asset_code)
+
+        }
+    } else if (array_tolwercase[0] === "search" ) {
+        if (typeof array_tolwercase[1] === 'undefined') {
+            sendTextMessage(sender, 'Here is what I found');
+            sendSearchAsset(sender,array_tolwercase[1], 0,false )
+        } else {
+            sendListAsset(sender)
             // var asset_code = array_tolwercase[1]
             // var asset_code = textLower.substr(textLower.indexOf(' ') + 1);
             // sendAssetPrice(sender, asset_code)
