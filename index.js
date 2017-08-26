@@ -813,7 +813,14 @@ function sendListAsset(sender, from) {
             "payload": {
                 "template_type": "button",
                 "text": "PALCEHOLDER",
-                "buttons": []
+                "buttons": [{
+                    "type": "postback",
+                    "title": "More Action",
+                    "payload": JSON.stringify({
+                        action: "more_action",
+                        tutorial:"true"
+                    }),
+                }]
             }
         }
     };
@@ -845,7 +852,7 @@ function sendListAsset(sender, from) {
 }
 function sendSearchAsset(sender, keyword, search_index, backward) {
 
-    sendTextMessage(sender, "Searching keyword: "+ keyword)
+    sendTextMessage(sender, "Searching keyword: " + keyword)
     console.log("Searching keyword: ", keyword)
     let messageData = {
         "attachment": {
@@ -853,7 +860,14 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             "payload": {
                 "template_type": "button",
                 "text": "PALCEHOLDER",
-                "buttons": []
+                "buttons": [{
+                    "type": "postback",
+                    "title": "More Action",
+                    "payload": JSON.stringify({
+                        action: "more_action",
+                        tutorial:"true"
+                    }),
+                }]
             }
         }
     };
@@ -867,7 +881,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             for (var n = search_index; n >= 0; n--) {
                 var temp_str = symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
                 if (temp_str.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
-                    element_str.push( temp_str)
+                    element_str.push(temp_str)
                     keyword_size++
                     if (keyword_size >= 30) {
                         new_search_index = n;
@@ -880,7 +894,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             for (var n = search_index; n < symbol.length; n++) {
                 var temp_str = symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
                 if (temp_str.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
-                    element_str.push( temp_str)
+                    element_str.push(temp_str)
                     keyword_size++
                     if (keyword_size >= 30) {
                         new_search_index = n;
@@ -890,9 +904,9 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             }
         }
         console.log(element_str.length, 'Results found')
-        if (element_str.length ===0) {
+        if (element_str.length === 0) {
             element_str = "No results. End of search"
-        }else{
+        } else {
             element_str = element_str.join("")
         }
         if (search_index > 0) {
@@ -908,7 +922,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
             })
         }
 
-        if (keyword_size === 30 ) {
+        if (keyword_size === 30) {
 
             messageData.attachment.payload.buttons.push(
                 {
@@ -973,7 +987,7 @@ function decideMessagePlainText(sender, text, event) {
         } else if (payload.action === 'page_list') {
             sendListAsset(sender, payload.from)
         } else if (payload.action === 'page_search') {
-            sendSearchAsset(sender,  payload.keyword,payload.search_index, payload.backward)
+            sendSearchAsset(sender, payload.keyword, payload.search_index, payload.backward)
         } else if (payload.action === 'get') {
             var quick_replies = []
             if (payload.tutorial === true) {
