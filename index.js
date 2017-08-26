@@ -544,20 +544,24 @@ function decideMessagePostBack(sender, payload) {
             if (postback_object.action === 'get') {
                 sendAssetPrice(sender, postback_object.asset_id)
             }
-            else if (postback_object.action === 'unsub') {
-                unsubscribeForUser(sender, postback_object)
-            }
+
 
             else if (postback_object.action === 'edit') {
                 sendSubscriptionFrequencyPicker(sender, postback_object.asset_id)
             }
-            if (postback_object.action === 'list') {
+            else if (postback_object.action === 'list') {
                 sendListAsset(sender, 0)
             }
-            if (postback_object.action === 'subs') {
+            else if (postback_object.action === 'subs') {
                 sendSubscriptionList(sender)
+            } else if (postback_object.action === 'unsub') {
+                unsubscribeForUser(sender, postback_object)
             }
-            if (postback_object.action === 'more_action') {
+            else if (postback_object.action === 'sub') {
+                sendSubscriptionFrequencyPicker(sender, postback_object.asset_id)
+            }
+
+            else if (postback_object.action === 'more_action') {
                 sendSubscribeTutorial(sender)
             }
             else if (postback_object.action === 'page_list') {
