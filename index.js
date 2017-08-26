@@ -472,7 +472,11 @@ function add_new_user(sender) {
             var message = greeting + "My name is AI Trader Personal Assistant. I can tell you various details about the market such as prices and news. I can also provide trading tips.  🔥🔥";
             sendTextMessage(sender, message)
                 .then(sendTextMessage.bind(null, sender, "Let's get started right now. Ask me the price of an asset using: get (symbol or the asset name) "))
-                .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", JSON.stringify({action:"get", asset_id:"bitcoin", tutorial:true}), "text", "get ltc", JSON.stringify({action:"get", asset_id:"bitcoin", tutorial:true})))
+                .then(sendQuickReplyTwoBtn.bind(null, sender, "Or click here to try", "text", "get bitcoin", JSON.stringify({
+                    action: "get",
+                    asset_id: "bitcoin",
+                    tutorial: true
+                }), "text", "get ltc", JSON.stringify({action: "get", asset_id: "bitcoin", tutorial: true})))
                 .catch(function (body) {
                     console.log('aborted');
                 });
@@ -678,7 +682,7 @@ function sendSubscriptionList(sender) {
         }
     })
 }
-function sendAssetPrice(sender, asset_code) {
+function sendAssetPrice(sender, asset_code, cb) {
 
     var object_asset = verify_and_get_asset(asset_code);
     if (object_asset === null) {
@@ -690,6 +694,7 @@ function sendAssetPrice(sender, asset_code) {
                 console.log("check this url, we have more than one result in the array")
             }
             sendTextMessage(sender, data.name + " price now is " + data.price_usd + " USD growing at " + data.percent_change_24h + "% in 24 hours")
+            cb(data)
         })
     }
 }
@@ -851,7 +856,7 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
         var keyword_size = 0;
         var new_search_index = 0
         if (backward) {
-            for (var n = search_index; n >=0; n--) {
+            for (var n = search_index; n >= 0; n--) {
                 var temp_str = symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
                 if (temp_str.indexOf(keyword) !== -1) {
                     element_str += temp_str
@@ -956,26 +961,30 @@ function decideMessagePlainText(sender, text, event) {
             sendSearchAsset(sender, 0, payload.keyword, false)
         } else if (payload.action === 'page_list') {
             sendListAsset(sender, payload.from)
-        }else if (payload.action === 'page_search') {
-            sendListAsset(sender,payload.search_index, payload.backward)
+        } else if (payload.action === 'page_search') {
+            sendListAsset(sender, payload.search_index, payload.backward)
         } else if (payload.action === 'get') {
-            sendAssetPrice(sender, payload.asset_id)
             var quick_replies = []
-            if(payload.tutorial ===true){
-                quick_replies.push({
-                    content_type: "text",
-                    title: "List",
-                    payload: JSON.stringify({action: "list", from: 0, tutorial: true})
-                }, {
-                    content_type: "text",
-                    title: "Search Bitcoin",
-                    payload: JSON.stringify({action: "search", keyword: "Bitcoin", tutorial: true})
+            if (payload.tutorial === true) {
+                sendAssetPrice(sender, payload.asset_id, function () {
+                    quick_replies.push({
+                        content_type: "text",
+                        title: "List",
+                        payload: JSON.stringify({action: "list", from: 0, tutorial: true})
+                    }, {
+                        content_type: "text",
+                        title: "Search Bitcoin",
+                        payload: JSON.stringify({action: "search", keyword: "Bitcoin", tutorial: true})
+                    })
+                    sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword")
+                    sendTextMessage(sender, "Or Try clicking in one the buttons below:").then(
+                        sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
                 })
-                sendTextMessage(sender, "Great! You can see the list all the asset that I know by typing: list or search keyword")
-                sendTextMessage(sender, "Or Try clicking in one the buttons below:").then(
-                    sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
+            } else {
+                sendAssetPrice(sender, payload.asset_id, function () {
+                })
             }
-         }
+        }
         return;
     }
 
@@ -1011,7 +1020,7 @@ function decideMessagePlainText(sender, text, event) {
             sendAssetPrice(sender, asset_code)
 
         }
-    } else if (array_tolwercase[0] === "list" ) {
+    } else if (array_tolwercase[0] === "list") {
         if (typeof array_tolwercase[1] === 'undefined') {
             sendTextMessage(sender, 'I found ' + symbol.length + ' Assets corresponding to your search');
             sendListAsset(sender)
@@ -1022,10 +1031,10 @@ function decideMessagePlainText(sender, text, event) {
             // sendAssetPrice(sender, asset_code)
 
         }
-    } else if (array_tolwercase[0] === "search" ) {
+    } else if (array_tolwercase[0] === "search") {
         if (typeof array_tolwercase[1] === 'undefined') {
             sendTextMessage(sender, 'Here is what I found');
-            sendSearchAsset(sender,array_tolwercase[1], 0,false )
+            sendSearchAsset(sender, array_tolwercase[1], 0, false)
         } else {
             sendListAsset(sender)
             // var asset_code = array_tolwercase[1]
