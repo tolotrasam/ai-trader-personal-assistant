@@ -94,7 +94,7 @@ app.post('/webhook/', function (req, res) {
 
 //Functions
 //TUTORIALS
-function sendListSearchTutorial() {
+function sendListSearchTutorial(sender) {
     var quick_replies = []
     quick_replies.push({
         content_type: "text",
@@ -109,7 +109,7 @@ function sendListSearchTutorial() {
         sendTextMessage.bind(null, sender, "Or Try clicking in one the buttons below:")).then(
         sendCustomQuickReplyBtn.bind(null, sender, "This is how to get the list of the assets:", quick_replies))
 }
-function sendSubscribeTutorial() {
+function sendSubscribeTutorial(sender) {
     var quick_replies = []
     quick_replies.push({
         content_type: "text",
@@ -1042,7 +1042,9 @@ function decideMessagePlainText(sender, text, event) {
         } else if (payload.action === 'get') {
             if (payload.tutorial === true) {
 
-                sendAssetPrice(sender, payload.asset_id, sendListSearchTutorial)
+                sendAssetPrice(sender, payload.asset_id, function () {
+                    sendListSearchTutorial(sender)
+                } )
             } else {
                 sendAssetPrice(sender, payload.asset_id, function () {
                 })
@@ -1112,7 +1114,7 @@ function decideMessagePlainText(sender, text, event) {
     //ASKING FOR FREQUENCY BEFORE ADDING SUBSCRIPTION
     else if (array_tolwercase[0] === "sub" || array_tolwercase[0] === "subscribe") {
         if (typeof array_tolwercase[1] === 'undefined') {
-            sendSubscribeTutorial()
+            sendSubscribeTutorial(sender)
         } else {
             sendSubscriptionFrequencyPicker(sender, array_tolwercase[1])
 
