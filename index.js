@@ -118,7 +118,7 @@ function sendSubscribeTutorial(sender) {
     }, {
         content_type: "text",
         title: "Subscribe eth",
-        payload: JSON.stringify({action: "sub", asset_id: "btc"})
+        payload: JSON.stringify({action: "sub", asset_id: "eth"})
     })
     sendTextMessage(sender, "Ok! It's time to subscribe to an asset to get recurrent updates such as the price and news").then(
         sendTextMessage.bind(null, sender, "Or Try clicking in one the buttons below:")).then(
@@ -784,6 +784,7 @@ function addSubscriptionForUser(sender, asset_obj) {
             } else {
                 console.log("Database sucess new subscription", JSON.stringify(mov));
                 sendTextMessage(sender, "Cool! I\'ll update you about everything I can find about about " + asset_obj.asset_name + " (" + asset_obj.asset_symbol + ") every " + asset_obj.interval + " . Check out your subscription list by typing: my subs or my subscription");
+                sendActionCallListOrSubsButton(sender, "Or click an action to do from here:")
             }
         })
     }
@@ -997,6 +998,19 @@ function sendSearchAsset(sender, keyword, search_index, backward) {
     sendRequest(sender, messageData)
 }
 
+function sendActionCallListOrSubsButton(sender, msg) {
+    var quick_replies = []
+    quick_replies.push({
+        content_type: "text",
+        title: "List",
+        payload: JSON.stringify({action: "list", from: 0})
+    }, {
+        content_type: "text",
+        title: "My Subs",
+        payload: JSON.stringify({action: "subs"})
+    })
+    sendCustomQuickReplyBtn(sender, msg, quick_replies)
+}
 function decideMessagePlainText(sender, text, event) {
     console.log('message plain text');
 
@@ -1160,17 +1174,7 @@ function decideMessagePlainText(sender, text, event) {
                 break;
 
             default:
-                var quick_replies = []
-                quick_replies.push({
-                    content_type: "text",
-                    title: "List",
-                    payload: JSON.stringify({action: "list", from: 0})
-                }, {
-                    content_type: "text",
-                    title: "My Subs",
-                    payload: JSON.stringify({action: "subs"})
-                })
-                sendCustomQuickReplyBtn(sender, "Sorry, I don't know what's a " + textLower + " . However, I've cooler stuff for you:", quick_replies)
+                sendActionCallListOrSubsButton(sender, "Sorry, I don't know what's a " + textLower + " . However, I've cooler stuff for you:")
             // tolotrafunctions.senderLearnOrQuestionButton(sender, "👀 Here is what you can do for now 🔥")
         }
     }
