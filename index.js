@@ -733,9 +733,9 @@ function sendSubscriptionList(sender) {
     })
 }
 function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
-    var icon_1h ="⬆"
-    var icon_24h ="⬆"
-    var icon_1w ="⬆"
+    var icon_1h ="▲"
+    var icon_24h ="▲"
+    var icon_1w ="▲"
     if(Number( data.percent_change_1h)<0){
         icon_1h = "🔻"
     }if(Number( data.percent_change_24h) <0){
