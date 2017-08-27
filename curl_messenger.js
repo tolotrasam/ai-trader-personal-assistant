@@ -53,7 +53,7 @@ var json_request = {
     "greeting": [
         {
             "locale": "default",
-            "text": "I am an Trader Artificial Intelligence Companion. I can give you the news, tips, price about the market"
+            "text": "I am a Trader Artificial Intelligence Bot Companion. I can give you the news, tips, price about the market"
         }
     ]
 }
@@ -109,7 +109,7 @@ http_request({
     url: url,
     method: 'POST',
     json: true,
-    body: persistant_menu
+    body: json_request
 }, function (data, params) {
     console.log(JSON.stringify(data), params)
 }, params)

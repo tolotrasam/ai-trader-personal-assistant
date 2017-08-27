@@ -984,7 +984,7 @@ function sendListAsset(sender, from, isTutorial) {
     var element_str = "";
 
     for (var n = from; n < from + page_size; n++) {
-        element_str += symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + " % 24h\n"
+        element_str += symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "% 24h\n"
     }
 
     messageData.attachment.payload.text = element_str
@@ -1020,7 +1020,7 @@ function sendSearchAsset(sender, keyword, search_index, backward, isTutorial) {
         var new_search_index = 0
         if (backward) {
             for (var n = search_index; n >= 0; n--) {
-                var temp_str = symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
+                var temp_str = symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "% in 24h\n"
                 if (temp_str.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
                     element_str.push(temp_str)
                     keyword_size++
