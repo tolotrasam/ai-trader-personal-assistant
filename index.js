@@ -759,7 +759,6 @@ function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
         "subtitle": subtitle,
         "buttons": [{
             "type":"element_share",
-            "payload": JSON.stringify({action: "share", asset_id: data.id}),
         }, {
             "type": "postback",
             "payload": JSON.stringify({action: "get", asset_id: data.id}),
