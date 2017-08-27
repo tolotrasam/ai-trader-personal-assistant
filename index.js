@@ -760,7 +760,6 @@ function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
         "buttons": [{
             "type":"element_share",
             "payload": JSON.stringify({action: "share", asset_id: data.id}),
-            "title": "Share "
         }, {
             "type": "postback",
             "payload": JSON.stringify({action: "get", asset_id: data.id}),
@@ -1115,7 +1114,7 @@ function sendActionCallListOrSubsButton(sender, msg) {
 }
 function sendHi(sender) {
     getUserFromDB(sender, function (sender, user) {
-        sendTextMessage(sender, "Hi " + user.first_name).then(sendActionCallListOrSubsButton(null, sender, tips_what_to_do_next))
+        sendTextMessage(sender, "Hi " + user.first_name).then(sendActionCallListOrSubsButton.bind(null, sender, tips_what_to_do_next))
     })
 }
 function decideMessagePlainText(sender, text, event) {
