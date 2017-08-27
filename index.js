@@ -758,8 +758,8 @@ function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
 
         "subtitle": subtitle,
         "buttons": [{
-            "type": "postback",
-            "payload": JSON.stringify({action: "share", asset_id: sender}),
+            "type":"element_share",
+            "payload": JSON.stringify({action: "share", asset_id: data.id}),
             "title": "Share "
         }, {
             "type": "postback",
@@ -986,7 +986,7 @@ function sendListAsset(sender, from, isTutorial) {
     var element_str = "";
 
     for (var n = from; n < from + page_size; n++) {
-        element_str += symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + "\n"
+        element_str += symbol[n].symbol + ": " + symbol[n].name + " " + symbol[n].percent_change_24h + " % 24h\n"
     }
 
     messageData.attachment.payload.text = element_str
