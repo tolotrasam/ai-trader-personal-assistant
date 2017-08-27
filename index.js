@@ -733,11 +733,25 @@ function sendSubscriptionList(sender) {
     })
 }
 function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
+    var icon_1h ="⬇"
+    var icon_24h ="⬇"
+    var icon_1w ="⬇"
+    if(Number( data.percent_change_1h) - Number(data.price_usd)<0){
+        icon_1h = "🔺"
+    }if(Number( data.percent_change_24h) - Number(data.price_usd)<0){
+        icon_24h = "🔺"
+    }if(Number( data.percent_change_7d) - Number(data.price_usd)<0){
+        icon_1w = "🔺"
+    }
+    var growth =
+        icon_1h+  data.percent_change_1h + "% in 1h, " +
+    icon_24h + data.percent_change_24h + "% in 24h, " +
+   icon_1w+ data.percent_change_7d + "% in 1w"
+
+
     var element = {
-        "title": data.name + " (" + data.symbol + ")" + " price now is " + data.price_usd + " USD growing at " +
-        data.percent_change_1h + "% in 1h, " +
-        data.percent_change_24h + "% in 24h " +
-        data.percent_change_7d + "% in 7 days"
+        "title": data.name + " (" + data.symbol + ")" + " price now 💲" + data.price_usd + "."+growth
+
 
         ,
 
