@@ -159,7 +159,7 @@ function sendUpdatesToEachSubscripbers(subscribers) {
                 sendTextMessage(subscriber.user_id, "Sorry, Your subscription to the asset with id " + subscriber.asset_id + "( " + subscriber.asset_symbol + ") seems to be missing. Trying using get " + subscriber.asset_symbol)
             } else {
 
-                var subtitle = "This update is recurring every " + subscriber.frequency
+                var subtitle = "🕒 This update is recurring every " + subscriber.frequency
                 sendPriceGeneric(subscriber.user_id, subtitle, data, true, subscriber)
             }
 
@@ -733,16 +733,17 @@ function sendSubscriptionList(sender) {
     })
 }
 function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
-    var icon_1h ="⬇"
-    var icon_24h ="⬇"
-    var icon_1w ="⬇"
-    if(Number( data.percent_change_1h) - Number(data.price_usd)<0){
-        icon_1h = "🔺"
-    }if(Number( data.percent_change_24h) - Number(data.price_usd)<0){
-        icon_24h = "🔺"
-    }if(Number( data.percent_change_7d) - Number(data.price_usd)<0){
-        icon_1w = "🔺"
+    var icon_1h ="⬆"
+    var icon_24h ="⬆"
+    var icon_1w ="⬆"
+    if(Number( data.percent_change_1h)<0){
+        icon_1h = "🔻"
+    }if(Number( data.percent_change_24h) <0){
+        icon_24h = "🔻"
+    }if(Number( data.percent_change_7d) <0){
+        icon_1w = "🔻"
     }
+
     var growth =
         icon_1h+  data.percent_change_1h + "% in 1h, " +
     icon_24h + data.percent_change_24h + "% in 24h, " +
@@ -750,7 +751,7 @@ function sendPriceGeneric(sender, subtitle, data, isSubscribed, subscriber) {
 
 
     var element = {
-        "title": data.name + " (" + data.symbol + ")" + " price now 💲" + data.price_usd + "."+growth
+        "title": data.name + " (" + data.symbol + ")" + " price now 💲" + data.price_usd + "\n"+growth
 
 
         ,
@@ -816,7 +817,7 @@ function sendAssetPrice(sender, asset_code, cb) {
                 subtitle = "You are not subscribed to this asset yet"
             } else {
                 if (subscription) {
-                    subtitle = "You are subscribed to receive  update every " + subscription.frequency
+                    subtitle = "🕒 You are subscribed to receive  update every " + subscription.frequency
                     isSubscribed = true
                 } else {
                     subtitle = "You are not subscribed to this asset yet"
